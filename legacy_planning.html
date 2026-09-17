@@ -430,6 +430,26 @@ function isMeetingNonEmpty(item){
 function combinedMeetings(){
   return [...(state.meetings||[]), ...(state.manualMeetings||[]).filter(isMeetingNonEmpty)];
 }
+function meetingHoursForComment(minutes){
+  const hours=Math.max(0,Number(minutes)||0)/60;
+  return String(Number(hours.toFixed(2)));
+}
+function communicationComment(){
+  return combinedMeetings()
+    .filter(item=>!!String(item?.summary||'').trim() || Number(item?.minutes||0)>0)
+    .map(item=>{
+      const title=String(item.summary||'Без названия').trim()||'Без названия';
+      return `${title} (${meetingHoursForComment(item.minutes)})`;
+    })
+    .join(', ');
+}
+function syncCommunicationFromMeetings(){
+  const row=(state.streamPlan||[]).find(item=>String(item.stream||'').trim().toLocaleLowerCase()==='communication');
+  if(!row) return;
+  row.hours=formatMinutes(totalMeetingMinutes());
+  row.comment=communicationComment();
+  refreshStreamPlanInputs();
+}
 function renderMeetings(){
   const c=state.data?.calendar||{};
   const note=$('meetingsNote'), calendarBox=$('meetingsTable'), manualBox=$('manualMeetingsTable');
@@ -450,6 +470,7 @@ function renderMeetings(){
       if(prop==='minutes') row.minutes=parseMeetingMinutes(e.target.value); else row[prop]=e.target.value;
       state.recalcAfterSave=true; state.revision++;
       $('meetingsTotal').textContent=`Всего: ${formatMinutes(totalMeetingMinutes())}`;
+      syncCommunicationFromMeetings();
       queueAutoSave(false,'meetings');
     });
     input.addEventListener('change',e=>{
@@ -461,6 +482,7 @@ function renderMeetings(){
       const idx=Number(btn.dataset.deleteMeetingRow);
       state.manualMeetings.splice(idx,1);
       renderMeetings();
+      syncCommunicationFromMeetings();
       queueAutoSave(false,'meetings');
     });
   });
@@ -481,6 +503,7 @@ function addMeeting(){
   state.manualMeetings.push({summary:'',minutes:0,when:String(state.data?.next_week?.from||state.planWeekStart||'')});
   state.revision++;
   renderMeetings();
+  syncCommunicationFromMeetings();
 }
 const DEFAULT_STREAMS=['Management','Defects','Live Requests','AI','Product contribution','Setup contribution','Training','Communication','Absence','Documentation','Bench','Setup Work'];
 function initStreamPlan(){
@@ -610,9 +633,8 @@ function syncStreamPlanFromTasks(markDirty=true){
     if(parsePlannedMinutes(r.hours)===0) r.hours=formatMinutes(mins);
     r.comment=(comments.get(stream)||[]).join(', ');
     if(stream==='Communication'){
-      const meetingMinutes=totalMeetingMinutes();
-      if(parsePlannedMinutes(r.hours)===0) r.hours=formatMinutes(meetingMinutes);
-      r.comment=combinedMeetings().map(x=>String(x.summary||'Без названия').trim()).filter(Boolean).join(', ');
+      r.hours=formatMinutes(totalMeetingMinutes());
+      r.comment=communicationComment();
     }
   });
 
@@ -791,7 +813,7 @@ async function loadCalendar(){
     state.currentMeetings=[];
   }
   renderCalendar(); renderMeetings(); renderDoneStreamPlan();
-  if(state.plan && !state.planLoadedFromFile){ syncStreamPlanFromTasks(false); }
+  if(state.plan){ syncStreamPlanFromTasks(false); }
 }
 
 function buildPageState(){
@@ -844,6 +866,7 @@ async function loadData(){
     updateProfileBadge();
     const ps=payload.next_week?.from||''; const pe=payload.next_week?.to||addDaysIso(ps,4);
     if($('planningPeriod')) $('planningPeriod').textContent=ps ? `${fmtDate(ps)} — ${fmtDate(pe)}` : '';
+    syncCommunicationFromMeetings();
     renderTaskDistribution(); renderMeetings(); renderStreamPlan();
     if(payload.config_required)showError(`Jira пока не настроена. Заполните username и password в ../config.ini. ${payload.config_error||''}`.trim());
   }catch(e){showError(e.message);}
