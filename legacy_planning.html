@@ -7,6 +7,7 @@ button,input{font:inherit}
 button{border:0;border-radius:8px;padding:9px 14px;cursor:pointer;background:#1f6feb;color:#fff}
 button.secondary{background:#8cafe5;color:#fff}button.secondary:hover{background:#5f91dd}.profile-btn{background:#8dd8ff;color:#17364a}.section.blue-border{border-color:#58b9e8}.section.yellow-border{border-color:#f39a3c}
 button.danger{background:#f1d7d7;color:#8f1d1d}
+.percent-col{text-align:center;width:72px}
 button:disabled{opacity:.55;cursor:not-allowed}
 .wrap{width:100%;margin:0;padding:22px}
 header{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:18px}
@@ -161,7 +162,7 @@ th{font-size:12px;text-transform:uppercase;letter-spacing:.02em;color:#6b7580;ba
     <input id="emailInput" type="email" placeholder="name@softswiss.com" autocomplete="email">
     <input id="calendarInput" type="url" placeholder="https://calendar.google.com/calendar/ical/.../public/basic.ics" style="margin-top:10px">
     <div class="calendar-help">Как получить ссылку: Google Calendar → Настройки → нужный календарь → «Интегрировать календарь» → «Публичный адрес в формате iCal». Скопируйте ссылку вида <code>.../public/basic.ics</code>.</div>
-    <div class="modal-actions"><button id="emailSave">Продолжить</button></div>
+    <div class="modal-actions"><button id="emailLogout" class="danger" type="button">Выйти</button><button id="emailSave">Обновить</button></div>
   </div>
 </div>
 <script>
@@ -584,9 +585,10 @@ function renderStreamPlan(){
   syncCommunicationFromMeetings();
   const box=$('streamPlanTable');
   const rows=state.streamPlan||[];
-  box.innerHTML=`<div class="table-wrap"><table class="stream-plan-table editable-stream-plan-table"><thead><tr><th>Stream</th><th>Hours</th><th>Comment</th></tr></thead><tbody>${rows.map((r,i)=>`<tr><td>${streamBadge(r.stream)}</td><td><input class="hours-input" data-stream-row="${i}" data-stream-prop="hours" value="${escapeAttr(r.hours)}"></td><td><input data-stream-row="${i}" data-stream-prop="comment" value="${escapeAttr(r.comment)}"></td></tr>`).join('')}</tbody></table></div>`;
+  const total=rows.reduce((sum,r)=>sum+parsePlannedMinutes(r.hours),0);
+  box.innerHTML=`<div class="table-wrap"><table class="stream-plan-table editable-stream-plan-table"><thead><tr><th>Stream</th><th>Hours</th><th class="percent-col">%</th><th>Comment</th></tr></thead><tbody>${rows.map((r,i)=>{const pct=total?Math.round(parsePlannedMinutes(r.hours)/total*100):0;return `<tr><td>${streamBadge(r.stream)}</td><td><input class="hours-input" data-stream-row="${i}" data-stream-prop="hours" value="${escapeAttr(r.hours)}"></td><td class="percent-col" data-stream-percent="${i}">${pct}%</td><td><input data-stream-row="${i}" data-stream-prop="comment" value="${escapeAttr(r.comment)}"></td></tr>`}).join('')}</tbody></table></div>`;
   box.querySelectorAll('input[data-stream-row]').forEach(input=>{
-    input.addEventListener('input',e=>{const r=state.streamPlan[Number(e.target.dataset.streamRow)];r[e.target.dataset.streamProp]=e.target.value;queueAutoSave(false,'stream');renderStreamPlanTotal();});
+    input.addEventListener('input',e=>{const r=state.streamPlan[Number(e.target.dataset.streamRow)];r[e.target.dataset.streamProp]=e.target.value;queueAutoSave(false,'stream');renderStreamPlanTotal();refreshStreamPlanPercents();});
     input.addEventListener('change',e=>{
       const r=state.streamPlan[Number(e.target.dataset.streamRow)];
       const prop=e.target.dataset.streamProp;
@@ -595,11 +597,13 @@ function renderStreamPlan(){
       state.revision++;
       queueAutoSave(false,'stream');
       renderStreamPlanTotal();
+      refreshStreamPlanPercents();
     });
   });
   renderStreamPlanTotal();
   enhanceCopyFields(box);
 }
+function refreshStreamPlanPercents(){const rows=state.streamPlan||[],total=rows.reduce((sum,r)=>sum+parsePlannedMinutes(r.hours),0);rows.forEach((r,i)=>{const cell=$(`streamPlanTable [data-stream-percent="${i}"]`);if(cell)cell.textContent=`${total?Math.round(parsePlannedMinutes(r.hours)/total*100):0}%`})}
 
 function updateStreamHoursAfterTaskChange(stream, oldStreamTotal, newStreamTotal, oldValue){
   const row=(state.streamPlan||[]).find(item=>String(item.stream||'').trim()===stream);
@@ -980,6 +984,7 @@ $('includeWorklogUser')?.addEventListener('change',async e=>{
 });
 $('changeEmail').addEventListener('click',openEmailModal);
 $('emailSave').addEventListener('click',saveEmail);
+$('emailLogout').addEventListener('click',()=>{sessionStorage.removeItem('weeklyPlanner.accessToken');sessionStorage.removeItem('weeklyPlanner.user');window.location.replace(new URL('index.html',window.location.href))});
 $('emailInput').addEventListener('keydown',e=>{if(e.key==='Enter')saveEmail()});
 $('calendarInput').addEventListener('keydown',e=>{if(e.key==='Enter')saveEmail()});
 $('addMeeting').addEventListener('click',addMeeting);

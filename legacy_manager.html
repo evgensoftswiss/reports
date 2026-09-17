@@ -9,6 +9,9 @@ button{font:inherit;border:0;border-radius:10px;cursor:pointer;font-weight:700}.
 .meetings th:nth-child(2),.meetings td:nth-child(2){width:100px;text-align:center}.meetings th:nth-child(3),.meetings td:nth-child(3){width:180px}
 .error{display:none;background:#ffe8e8;color:#a32929;border:1px solid #f3baba;border-radius:10px;padding:10px 14px;margin-bottom:14px}
 .comment-collapse summary{cursor:pointer;color:#245cae;font-size:12px;font-weight:700}.comment-collapse summary:hover{text-decoration:underline}.comment-collapse-body{margin-top:7px;line-height:1.45;word-break:break-word}
+.percent-col{width:80px;text-align:center}.task-distribution-wrap{overflow-x:hidden}.task-distribution-wrap th,.task-distribution-wrap td{padding:7px 6px;overflow-wrap:anywhere}
+.pie-label{font-size:7px;font-weight:700;fill:#27313c;pointer-events:none}
+.dist-table{min-width:0;font-size:11px}.dist-table th,.dist-table td{padding:5px 3px;overflow-wrap:anywhere;word-break:break-word}.dist-table .days-col span{width:20px!important;font-size:10px}
 .pie-chart-wrap{display:flex;justify-content:center;align-items:center;min-height:260px;position:relative}.stream-pie{width:min(100%,280px);height:auto;overflow:visible}.stream-pie path,.stream-pie circle{stroke:#fff;stroke-width:2;cursor:pointer;transition:transform .18s ease,filter .18s ease}.stream-pie path:hover,.stream-pie circle:hover{filter:brightness(1.08);transform:translate(var(--explode-x),var(--explode-y))}.pie-tooltip{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);padding:7px 10px;border-radius:8px;background:#27313c;color:#fff;font-size:12px;line-height:1.35;text-align:center;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s ease}.pie-tooltip.visible{opacity:1}.pie-empty{color:#7a8693;text-align:center;padding:20px;font-size:13px}
 @media(max-width:900px){.grid{grid-template-columns:1fr}.right-stack{min-width:0}.users{grid-row:auto}.wrap{padding:12px}}
 .dist-track{height:40px;position:relative;width:100%;background:linear-gradient(to right,transparent 19.8%,#edf0f4 19.8%,#edf0f4 20.2%,transparent 20.2%,transparent 39.8%,#edf0f4 39.8%,#edf0f4 40.2%,transparent 40.2%,transparent 59.8%,#edf0f4 59.8%,#edf0f4 60.2%,transparent 60.2%,transparent 79.8%,#edf0f4 79.8%,#edf0f4 80.2%,transparent 80.2%)}.dist-line{position:absolute;top:21px;height:13px;background:#d9efff;z-index:1}.dist-dot{position:absolute;left:0;top:16px;width:10px;height:10px;border-radius:50%;background:#d9efff;z-index:10;transform:translateX(-50%)}.dist-dot2{left:100%;z-index:11}</style></head><body><div class="wrap">
@@ -59,7 +62,8 @@ function commentCell(row){
 }
 function planHtml(rows){
   if(!rows?.length)return '<div class="empty">Нет данных</div>';
-  return `<div class="table-wrap"><table><thead><tr><th class="stream-col">Stream</th><th class="hours-col">Hours</th><th>Comment</th></tr></thead><tbody>${rows.map(r=>`<tr><td><span class="stream" ${streamStyle(r.stream)}>${esc(r.stream)}</span></td><td><div class="hours">${esc(r.hours)}</div></td><td>${commentCell(r)}</td></tr>`).join('')}</tbody></table></div>`;
+  const total=rows.reduce((sum,r)=>sum+parseHours(r.hours),0);
+  return `<div class="table-wrap"><table><thead><tr><th class="stream-col">Stream</th><th class="hours-col">Hours</th><th class="percent-col">%</th><th>Comment</th></tr></thead><tbody>${rows.map(r=>{const pct=total?Math.round(parseHours(r.hours)/total*100):0;return `<tr><td><span class="stream" ${streamStyle(r.stream)}>${esc(r.stream)}</span></td><td><div class="hours">${esc(r.hours)}</div></td><td class="percent-col">${pct}%</td><td>${commentCell(r)}</td></tr>`}).join('')}</tbody></table></div>`;
 }
 function parseHours(value){
   const text=String(value??'').trim().toLowerCase().replace(',','.');
@@ -84,12 +88,13 @@ function renderStreamPie(){
     const path=`M ${cx} ${cy} L ${p1[0].toFixed(2)} ${p1[1].toFixed(2)} A ${radius} ${radius} 0 ${large} 1 ${p2[0].toFixed(2)} ${p2[1].toFixed(2)} Z`;
     const mid=(angle+end)/2, explodeX=(Math.cos(mid)*8).toFixed(2), explodeY=(Math.sin(mid)*8).toFixed(2);
     angle=end;
-    return `<path d="${path}" fill="${colors[i%colors.length]}" style="--explode-x:${explodeX}px;--explode-y:${explodeY}px" data-name="${esc(row.name)}" data-hours="${(row.minutes/60).toFixed(2)}"><title>${esc(row.name)} — ${esc(row.hours)}</title></path>`;
+    const pct=Math.round(row.minutes/total*100), labelPoint=point(mid,58);
+    return `<path d="${path}" fill="${colors[i%colors.length]}" style="--explode-x:${explodeX}px;--explode-y:${explodeY}px" data-name="${esc(row.name)}" data-hours="${(row.minutes/60).toFixed(2)}" data-percent="${pct}"><title>${esc(row.name)} — ${pct}% — ${esc(row.hours)}</title></path><text x="${labelPoint[0].toFixed(1)}" y="${labelPoint[1].toFixed(1)}" text-anchor="middle" dominant-baseline="middle" class="pie-label">${esc(row.name)} ${pct}%</text>`;
   }).join('');
   box.innerHTML=`<div class="pie-chart-wrap"><svg class="stream-pie" viewBox="0 0 240 240" role="img" aria-label="Распределение часов по стримам"><circle cx="120" cy="120" r="38" fill="#fff" stroke="#fff" stroke-width="2"></circle>${slices}<circle cx="120" cy="120" r="38" fill="#fff" stroke="#fff" stroke-width="2"></circle></svg><div class="pie-tooltip" id="pieTooltip"></div></div>`;
   const tooltip=$('pieTooltip');
   box.querySelectorAll('.stream-pie path').forEach(slice=>{
-    const show=()=>{tooltip.textContent=`${slice.dataset.name}: ${slice.dataset.hours} ч`;tooltip.classList.add('visible');};
+    const show=()=>{tooltip.textContent=`${slice.dataset.name}: ${slice.dataset.percent}% · ${slice.dataset.hours} ч`;tooltip.classList.add('visible');};
     slice.addEventListener('mouseenter',show); slice.addEventListener('focus',show);
     slice.addEventListener('mouseleave',()=>tooltip.classList.remove('visible')); slice.addEventListener('blur',()=>tooltip.classList.remove('visible'));
   });
