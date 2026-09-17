@@ -3,19 +3,22 @@
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f4f6f8;color:#27313c;font-family:Arial,sans-serif}.wrap{width:100%;padding:22px}
 header{display:flex;align-items:center;gap:16px;margin-bottom:18px}h1{font-size:24px;margin:0}.period{font-size:13px;color:#74808c;margin-top:5px}
-button{font:inherit;border:0;border-radius:10px;cursor:pointer;font-weight:700}.load-btn{margin-left:auto;background:#73b56c;color:#fff;padding:12px 30px;font-size:16px}.load-btn:hover{background:#5ea456}.load-btn:disabled{opacity:.6;cursor:default}
+button{font:inherit;border:0;border-radius:10px;cursor:pointer;font-weight:700}.logout-btn{margin-left:auto;background:#fff;color:#a32929;border:1px solid #efb8b8;padding:10px 16px}.logout-btn:hover{background:#fff1f1}.load-btn{background:#73b56c;color:#fff;padding:12px 30px;font-size:16px}.load-btn:hover{background:#5ea456}.load-btn:disabled{opacity:.6;cursor:default}
 .grid{display:grid;grid-template-columns:minmax(240px,25%) 1fr;gap:16px;align-items:start}.section{background:#fff;border:1px solid #cfcfcf;border-radius:14px;overflow:hidden}.section-head{padding:15px 18px;border-bottom:1px solid #edf0f4}.section-head h2{font-size:17px;margin:0}.pad{padding:14px 18px}.left-stack,.right-stack,.selected-user-content{display:flex;flex-direction:column;gap:16px}.right-stack{min-width:0}.selected-user-panel{min-width:0}.selected-user-head{padding:15px 18px;border-bottom:1px solid #edf0f4;background:#f8fafc}.selected-user-head h2{font-size:17px;margin:0}.selected-user-label{font-size:13px;color:#6f7b87;margin-top:4px}.selected-user-content{padding:16px}.inner-section{background:#fff;border:1px solid #e1e5e9;border-radius:12px;overflow:hidden}.subnote{font-size:12px;color:#74808c;margin-top:4px}.users{grid-row:auto}.user{width:100%;padding:10px 12px;border-radius:8px;background:transparent;text-align:left;color:#27313c;font-weight:500}.user:hover{background:#f2f5f8}.user.active{background:#e6f0ff;color:#245cae;font-weight:700}
 .table-wrap{width:100%;overflow-x:auto}table{width:100%;border-collapse:collapse;table-layout:fixed}th,td{padding:9px 10px;border-bottom:1px solid #edf0f4;text-align:left;vertical-align:middle}th{font-size:12px;color:#6b7785;background:#fafbfc}td{font-size:13px}.stream-col{width:160px}.hours-col{width:90px;text-align:center}.hours{text-align:center;background:#f4f5f6;border:1px solid #dfe3e7;border-radius:7px;padding:7px 8px}.stream{display:inline-block;padding:4px 10px 5px;border-radius:999px;background:#eef2f6;white-space:nowrap}.status{display:inline-block;padding:4px 12px 5px;border-radius:999px;background:#eef2f6;color:#56616d;font-size:12px;white-space:nowrap;margin-top:4px}.dist-table{width:100%;table-layout:fixed}.dist-table .task-col{width:30%}.dist-table .stream-col{width:13%}.dist-table .complexity-col{width:9%;text-align:center}.dist-table .days-col{width:48%;padding:0}.empty{padding:20px;color:#7a8693;text-align:center}
 .meetings th:nth-child(2),.meetings td:nth-child(2){width:100px;text-align:center}.meetings th:nth-child(3),.meetings td:nth-child(3){width:180px}
 .error{display:none;background:#ffe8e8;color:#a32929;border:1px solid #f3baba;border-radius:10px;padding:10px 14px;margin-bottom:14px}
+.comment-collapse summary{cursor:pointer;color:#245cae;font-size:12px;font-weight:700}.comment-collapse summary:hover{text-decoration:underline}.comment-collapse-body{margin-top:7px;line-height:1.45;word-break:break-word}
+.pie-chart-wrap{display:flex;justify-content:center;align-items:center;min-height:260px;position:relative}.stream-pie{width:min(100%,280px);height:auto;overflow:visible}.stream-pie path,.stream-pie circle{stroke:#fff;stroke-width:2;cursor:pointer;transition:transform .18s ease,filter .18s ease}.stream-pie path:hover,.stream-pie circle:hover{filter:brightness(1.08);transform:translate(var(--explode-x),var(--explode-y))}.pie-tooltip{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);padding:7px 10px;border-radius:8px;background:#27313c;color:#fff;font-size:12px;line-height:1.35;text-align:center;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s ease}.pie-tooltip.visible{opacity:1}.pie-empty{color:#7a8693;text-align:center;padding:20px;font-size:13px}
 @media(max-width:900px){.grid{grid-template-columns:1fr}.right-stack{min-width:0}.users{grid-row:auto}.wrap{padding:12px}}
 .dist-track{height:40px;position:relative;width:100%;background:linear-gradient(to right,transparent 19.8%,#edf0f4 19.8%,#edf0f4 20.2%,transparent 20.2%,transparent 39.8%,#edf0f4 39.8%,#edf0f4 40.2%,transparent 40.2%,transparent 59.8%,#edf0f4 59.8%,#edf0f4 60.2%,transparent 60.2%,transparent 79.8%,#edf0f4 79.8%,#edf0f4 80.2%,transparent 80.2%)}.dist-line{position:absolute;top:21px;height:13px;background:#d9efff;z-index:1}.dist-dot{position:absolute;left:0;top:16px;width:10px;height:10px;border-radius:50%;background:#d9efff;z-index:10;transform:translateX(-50%)}.dist-dot2{left:100%;z-index:11}</style></head><body><div class="wrap">
-<header><div><h1>Weekly Planner Manager</h1><div id="period" class="period"></div></div><button id="load" class="load-btn">Загрузить</button></header>
+<header><div><h1>Weekly Planner Manager</h1><div id="period" class="period"></div></div><button id="logout" class="logout-btn" type="button">Выйти</button><button id="load" class="load-btn">Загрузить</button></header>
 <div id="error" class="error"></div>
 <div class="grid">
 <div class="left-stack">
 <section class="section users"><div class="section-head"><h2>Пользователи</h2></div><div id="users" class="pad"></div></section>
 <section class="section"><div class="section-head"><h2>Общий план на следующую неделю</h2></div><div id="aggregate" class="pad"></div></section>
+<section class="section"><div class="section-head"><h2>Распределение по стримам</h2></div><div id="streamPie" class="pad"></div></section>
 </div>
 <section class="section selected-user-panel">
   <div class="selected-user-head"><h2>Выбранный пользователь</h2><div id="selectedUserLabel" class="selected-user-label">Пользователь не выбран</div></div>
@@ -28,16 +31,70 @@ button{font:inherit;border:0;border-radius:10px;cursor:pointer;font-weight:700}.
 </div></div>
 <script>
 const $=id=>document.getElementById(id);let state={users:[],selected:null,streamColors:{},aggregatePlan:[]};
+function logout(){sessionStorage.removeItem('weeklyPlanner.accessToken');sessionStorage.removeItem('weeklyPlanner.user');window.location.replace(new URL('index.html',window.location.href))}
+$('logout').addEventListener('click',logout);
 function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function error(msg=''){const e=$('error');e.textContent=msg;e.style.display=msg?'block':'none'}
 async function json(r){const t=await r.text();let p;try{p=JSON.parse(t)}catch{throw new Error(t||`HTTP ${r.status}`)}if(!r.ok)throw new Error(p.error||`HTTP ${r.status}`);return p}
 function renderUsers(){const b=$('users');if(!state.users.length){b.innerHTML='<div class="empty">Нет загруженных отчетов</div>';return}b.innerHTML=state.users.map((u,i)=>`<button class="user ${state.selected===i?'active':''}" data-i="${i}">${esc(u.email)}</button>`).join('');b.querySelectorAll('.user').forEach(x=>x.onclick=()=>selectUser(Number(x.dataset.i)))}
 function streamStyle(name){const c=state.streamColors?.[name];return c?`style="background:${esc(c.background)};color:${esc(c.color)}"`:''}
+function consolidateCommunicationComment(comment){
+  const totals=new Map();
+  String(comment||'').split(/\s*,\s*/).map(item=>item.trim()).filter(Boolean).forEach(item=>{
+    const match=item.match(/^(.*?)\s*\(([0-9]+(?:[.,][0-9]+)?)\)\s*$/);
+    const name=(match?match[1]:item).trim();
+    if(!name)return;
+    const hours=match?Number(match[2].replace(',','.')):0;
+    totals.set(name,(totals.get(name)||0)+(Number.isFinite(hours)?hours:0));
+  });
+  return [...totals.entries()].map(([name,hours])=>`${name} (${Number(hours.toFixed(2))})`).join(', ');
+}
+function commentCell(row){
+  let comment=String(row.comment||'');
+  if(String(row.stream||'').trim().toLocaleLowerCase()==='communication') comment=consolidateCommunicationComment(comment);
+  if(!comment)return '';
+  if(String(row.stream||'').trim().toLocaleLowerCase()!=='communication' || comment.length<120) return esc(comment);
+  const count=comment.split(/\s*,\s*/).filter(Boolean).length;
+  return `<details class="comment-collapse"><summary>Показать комментарии (${count})</summary><div class="comment-collapse-body">${esc(comment)}</div></details>`;
+}
 function planHtml(rows){
   if(!rows?.length)return '<div class="empty">Нет данных</div>';
-  return `<div class="table-wrap"><table><thead><tr><th class="stream-col">Stream</th><th class="hours-col">Hours</th><th>Comment</th></tr></thead><tbody>${rows.map(r=>`<tr><td><span class="stream" ${streamStyle(r.stream)}>${esc(r.stream)}</span></td><td><div class="hours">${esc(r.hours)}</div></td><td>${esc(r.comment)}</td></tr>`).join('')}</tbody></table></div>`;
+  return `<div class="table-wrap"><table><thead><tr><th class="stream-col">Stream</th><th class="hours-col">Hours</th><th>Comment</th></tr></thead><tbody>${rows.map(r=>`<tr><td><span class="stream" ${streamStyle(r.stream)}>${esc(r.stream)}</span></td><td><div class="hours">${esc(r.hours)}</div></td><td>${commentCell(r)}</td></tr>`).join('')}</tbody></table></div>`;
 }
-function renderAggregate(){ $('aggregate').innerHTML=planHtml(state.aggregatePlan); }
+function parseHours(value){
+  const text=String(value??'').trim().toLowerCase().replace(',','.');
+  if(!text)return 0;
+  const hm=text.match(/^(\d+(?:\.\d+)?)\s*h(?:\s*(\d+)\s*m)?$/);
+  if(hm)return Number(hm[1])*60+Number(hm[2]||0);
+  const mm=text.match(/^(\d+(?:\.\d+)?)\s*m$/);
+  if(mm)return Number(mm[1]);
+  const numeric=Number(text); return Number.isFinite(numeric)?numeric*60:0;
+}
+function renderStreamPie(){
+  const box=$('streamPie'); if(!box)return;
+  const rows=(state.aggregatePlan||[]).map(r=>({name:String(r.stream||'Без названия'),hours:String(r.hours||'0h'),minutes:parseHours(r.hours)})).filter(r=>r.minutes>0);
+  if(!rows.length){box.innerHTML='<div class="pie-empty">Нет запланированных часов</div>';return;}
+  const total=rows.reduce((sum,r)=>sum+r.minutes,0), cx=120, cy=120, radius=88;
+  const colors=['#4d82d8','#53ad78','#e0a33a','#c96c91','#7f70c9','#3cabb3','#dd765b','#76904b','#a26cba','#5b879f','#d18b52','#6d7884'];
+  const point=(angle,r)=>[cx+Math.cos(angle)*r,cy+Math.sin(angle)*r];
+  let angle=-Math.PI/2;
+  const slices=rows.map((row,i)=>{
+    const end=angle+(row.minutes/total)*Math.PI*2, p1=point(angle,radius), p2=point(end,radius);
+    const large=end-angle>Math.PI?1:0;
+    const path=`M ${cx} ${cy} L ${p1[0].toFixed(2)} ${p1[1].toFixed(2)} A ${radius} ${radius} 0 ${large} 1 ${p2[0].toFixed(2)} ${p2[1].toFixed(2)} Z`;
+    const mid=(angle+end)/2, explodeX=(Math.cos(mid)*8).toFixed(2), explodeY=(Math.sin(mid)*8).toFixed(2);
+    angle=end;
+    return `<path d="${path}" fill="${colors[i%colors.length]}" style="--explode-x:${explodeX}px;--explode-y:${explodeY}px" data-name="${esc(row.name)}" data-hours="${(row.minutes/60).toFixed(2)}"><title>${esc(row.name)} — ${esc(row.hours)}</title></path>`;
+  }).join('');
+  box.innerHTML=`<div class="pie-chart-wrap"><svg class="stream-pie" viewBox="0 0 240 240" role="img" aria-label="Распределение часов по стримам"><circle cx="120" cy="120" r="38" fill="#fff" stroke="#fff" stroke-width="2"></circle>${slices}<circle cx="120" cy="120" r="38" fill="#fff" stroke="#fff" stroke-width="2"></circle></svg><div class="pie-tooltip" id="pieTooltip"></div></div>`;
+  const tooltip=$('pieTooltip');
+  box.querySelectorAll('.stream-pie path').forEach(slice=>{
+    const show=()=>{tooltip.textContent=`${slice.dataset.name}: ${slice.dataset.hours} ч`;tooltip.classList.add('visible');};
+    slice.addEventListener('mouseenter',show); slice.addEventListener('focus',show);
+    slice.addEventListener('mouseleave',()=>tooltip.classList.remove('visible')); slice.addEventListener('blur',()=>tooltip.classList.remove('visible'));
+  });
+}
+function renderAggregate(){ $('aggregate').innerHTML=planHtml(state.aggregatePlan); renderStreamPie(); }
 function meetingRows(items){return (items||[]).map(m=>`<tr><td>${esc(m.summary)}</td><td>${esc(m.minutes?((m.minutes%60?Math.floor(m.minutes/60)+'h '+m.minutes%60+'m':m.minutes/60+'h')):'0h')}</td><td>${esc(m.when)}</td></tr>`).join('')}
 function meetingsHtml(m){const all=[...(m?.calendar||[]),...(m?.manual||[])];if(!all.length)return '<div class="empty">Нет данных</div>';return `<div class="table-wrap"><table class="meetings"><thead><tr><th>Мит</th><th>Длит.</th><th>Когда</th></tr></thead><tbody>${meetingRows(all)}</tbody></table></div>`}
 
