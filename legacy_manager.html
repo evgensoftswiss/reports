@@ -1,5 +1,5 @@
 <!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Weekly Planner Manager</title>
+<meta name="wp-build" content="0.2.4"><title>Weekly Planner Manager</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f4f6f8;color:#27313c;font-family:Arial,sans-serif}.wrap{width:100%;padding:22px}
 header{display:flex;align-items:center;gap:16px;margin-bottom:18px}h1{font-size:24px;margin:0}.period{font-size:13px;color:#74808c;margin-top:5px}.export-btn{background:#e8eef8;color:#245cae;border:1px solid #bfd0e8;padding:10px 16px}.export-btn:hover{background:#dce8f8}
@@ -12,6 +12,20 @@ button{font:inherit;border:0;border-radius:10px;cursor:pointer;font-weight:700}.
 .pie-legend{display:flex;flex-direction:column;gap:6px;margin-left:14px;min-width:150px}.pie-legend-item{display:flex;align-items:center;gap:7px;font-size:12px}.pie-legend-swatch{width:11px;height:11px;border-radius:3px;flex:0 0 auto}.pie-label{display:none}.zero-value{opacity:.25}
 .comment-fold{position:relative;width:100%;padding-right:22px;cursor:pointer;line-height:1.4}.comment-fold:focus-visible{outline:2px solid #8fb8e8;outline-offset:2px;border-radius:3px}.comment-fold-text{display:block;width:100%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.comment-fold-arrow{position:absolute;right:2px;top:50%;color:#74808c;font-size:14px;line-height:1;transform:translateY(-50%);transition:transform .16s ease}.comment-fold.open .comment-fold-text{overflow:visible;white-space:normal;text-overflow:clip}.comment-fold.open .comment-fold-arrow{transform:translateY(-50%) rotate(180deg)}
 .percent-col{width:80px;text-align:center}.dist-table-wrap{overflow-x:hidden}
+/* One text node; expanding changes the table row height, never adds a copy. */
+.comment-fold{display:block;min-width:0;min-height:32px;padding:6px 24px 6px 0}
+.comment-fold-text{min-width:0;overflow-wrap:anywhere}
+.comment-fold.open .comment-fold-text{overflow:hidden;max-height:none;white-space:normal}
+.dist-table{width:99%;table-layout:fixed}
+.dist-table .task-col{width:30%}
+.dist-table .stream-col{width:18%}
+.dist-table .complexity-col{width:90px;white-space:nowrap;padding:9px 4px}
+.dist-table .days-col{width:auto}
+.dist-table td:first-child{overflow-wrap:anywhere}
+.dist-table .stream{max-width:100%;white-space:normal;overflow-wrap:anywhere}
+.dist-table .status{max-width:100%;white-space:normal}
+.dist-table .dist-track{width:calc(100% - 18px);margin:0 9px;overflow:visible}
+.dist-table .dist-header{margin:0 9px}
 .pie-label{font-size:7px;font-weight:700;fill:#27313c;pointer-events:none}.percent-badge{display:inline-block;min-width:48px;padding:7px 8px;text-align:center;background:#f4f5f6;border:1px solid #dfe3e7;border-radius:7px}.stream-plan-table th:nth-child(1),.stream-plan-table td:nth-child(1){width:25%}.stream-plan-table th:nth-child(2),.stream-plan-table td:nth-child(2){width:16%}.stream-plan-table th:nth-child(3),.stream-plan-table td:nth-child(3){width:12%}.stream-plan-table th:nth-child(4),.stream-plan-table td:nth-child(4){width:47%;overflow-wrap:anywhere}
 .pie-chart-wrap{display:flex;justify-content:center;align-items:center;min-height:260px;position:relative}.stream-pie{width:min(100%,280px);height:auto;overflow:visible}.stream-pie path,.stream-pie circle{stroke:#fff;stroke-width:2;cursor:pointer;transition:transform .18s ease,filter .18s ease}.stream-pie path:hover,.stream-pie circle:hover{filter:brightness(1.08);transform:translate(var(--explode-x),var(--explode-y))}.pie-tooltip{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);padding:7px 10px;border-radius:8px;background:#27313c;color:#fff;font-size:12px;line-height:1.35;text-align:center;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s ease}.pie-tooltip.visible{opacity:1}.pie-empty{color:#7a8693;text-align:center;padding:20px;font-size:13px}
 @media(max-width:900px){.grid{grid-template-columns:1fr}.right-stack{min-width:0}.users{grid-row:auto}.wrap{padding:12px}}
@@ -105,7 +119,7 @@ function renderStreamPie(){
     const mid=(angle+end)/2, explodeX=(Math.cos(mid)*8).toFixed(2), explodeY=(Math.sin(mid)*8).toFixed(2);
     angle=end;
     const pct=Math.round(row.minutes/total*100), labelPoint=point(mid,58);
-    return `<path d="${path}" fill="${colors[i%colors.length]}" style="--explode-x:${explodeX}px;--explode-y:${explodeY}px" data-name="${esc(row.name)}" data-hours="${(row.minutes/60).toFixed(2)}" data-percent="${pct}"><title>${esc(row.name)} — ${pct}% — ${esc(row.hours)}</title></path>`;
+    return `<path d="${path}" fill="${colors[i%colors.length]}" style="--explode-x:${explodeX}px;--explode-y:${explodeY}px" data-name="${esc(row.name)}" data-hours="${(row.minutes/60).toFixed(2)}" data-percent="${pct}"><meta name="wp-build" content="0.2.4"><title>${esc(row.name)} — ${pct}% — ${esc(row.hours)}</title></path>`;
   }).join('');
   const legend=rows.map((row,i)=>`<div class="pie-legend-item"><span class="pie-legend-swatch" style="background:${colors[i%colors.length]}"></span><span>${esc(row.name)} — ${Math.round(row.minutes/total*100)}%</span></div>`).join('');
   box.innerHTML=`<div class="pie-chart-wrap"><svg class="stream-pie" viewBox="0 0 240 240" role="img" aria-label="Распределение часов по стримам"><circle cx="120" cy="120" r="38" fill="#fff" stroke="#fff" stroke-width="2"></circle>${slices}<circle cx="120" cy="120" r="38" fill="#fff" stroke="#fff" stroke-width="2"></circle></svg><div class="pie-legend">${legend}</div><div class="pie-tooltip" id="pieTooltip"></div></div>`;
