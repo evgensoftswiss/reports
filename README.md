@@ -1,4 +1,4 @@
-# Weekly Planner Frontend 0.1.0
+# Weekly Planner Frontend 0.1.1
 
 Статический HTML/JS-интерфейс для размещения на GitHub Pages.
 
@@ -31,3 +31,5 @@ https://home.namsilat.com/weekly-planner-api
 - access token хранится только в памяти вкладки.
 
 Legacy HTML сохранён внутри проекта без серверной части. `planner.html` и `manager.html` загружают рабочие интерфейсы только после проверки API-сессии.
+
+Версия 0.1.1 гарантированно загружает `config.js` и `auth-bridge.js` до запуска legacy-интерфейса. Благодаря этому относительные запросы `/api/...` всегда направляются в Weekly Planner API, а не в GitHub Pages.
