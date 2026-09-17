@@ -1,0 +1,6 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Weekly Planner Manager</title><link rel="stylesheet" href="styles.css"></head>
+<body class="embedded-page"><div id="page"></div><div id="loadError" class="message error"></div>
+<script>
+(async()=>{try{const response=await fetch('legacy_manager.html');if(!response.ok)throw new Error('Не удалось загрузить Manager');let html=await response.text();const base=new URL('.',location.href).href;html=html.replace('<head>','<head><base href="'+base+'"><script src="config.js"><\/script><script src="auth-bridge.js"><\/script>');document.querySelector('#page').innerHTML=html;Array.from(document.querySelector('#page').querySelectorAll('script')).forEach(old=>{const script=document.createElement('script');if(old.src)script.src=old.src;else script.textContent=old.textContent;old.replaceWith(script)});}catch(error){document.querySelector('#loadError').textContent=error.message;}})();
+</script></body></html>

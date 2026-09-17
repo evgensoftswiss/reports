@@ -1,0 +1,974 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Планирование следующей недели</title><style>
+:root{font-family:Inter,Segoe UI,Arial,sans-serif;color:#202124;background:#f4f6f8;font-size:14px}
+*{box-sizing:border-box}
+body{margin:0}
+button,input{font:inherit}
+button{border:0;border-radius:8px;padding:9px 14px;cursor:pointer;background:#1f6feb;color:#fff}
+button.secondary{background:#8cafe5;color:#fff}button.secondary:hover{background:#5f91dd}.profile-btn{background:#8dd8ff;color:#17364a}.section.blue-border{border-color:#58b9e8}.section.yellow-border{border-color:#f39a3c}
+button.danger{background:#f1d7d7;color:#8f1d1d}
+button:disabled{opacity:.55;cursor:not-allowed}
+.wrap{width:100%;margin:0;padding:22px}
+header{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:18px}
+h1{margin:0;font-size:25px}
+.subtitle{color:#66717c;margin-top:5px} .period-nav{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.period-arrow{width:18px;height:24px;padding:0 0 5px 0;border-radius:8px;background:#e9e9e9;color:#27313c;font-size:20px;line-height:1;margin-top:2px}.period-arrow:hover{background:#bfc3c7}.period-arrow:disabled{opacity:.45;cursor:not-allowed}
+.userbox{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.user-email{font-weight:600;padding:9px 12px;background:transparent;border:0;border-radius:0}.calendar-badge{padding:9px 12px;background:#fff;border:1px solid #d8dee5;border-radius:8px;color:#56616d}.calendar-badge.connected{color:#58b957;font-weight:700}.calendar-badge.disconnected{color:#d64545;font-weight:700}
+.section{position:relative;background:#fff;border:1px solid #dce2e8;border-radius:12px;margin-bottom:16px;overflow:hidden}.section.loading-state .section-loading{display:flex}.section-loading{display:none;position:absolute;inset:0;z-index:5;align-items:center;justify-content:center;background:rgba(244,246,248,.78);backdrop-filter:blur(1px);color:#3f4b57;font-size:15px;font-weight:700;pointer-events:all}.section-loading span{padding:10px 16px;border-radius:9px;background:rgba(255,255,255,.94);border:1px solid #d8dee5;box-shadow:0 6px 20px rgba(0,0,0,.08)}
+.section-head{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid #e6eaf0}
+.section-title{font-size:17px;font-weight:700}
+.section-note{color:#707a85;font-size:13px;margin-top:2px}.calendar-help{margin-top:7px;color:#7a848e;font-size:12px;line-height:1.4}.calendar-help code{background:#f1f3f5;padding:1px 4px;border-radius:4px}.meeting-table{width:100%;min-width:0;table-layout:fixed}.meeting-table th:nth-child(1),.meeting-table td:nth-child(1){width:auto}.meeting-table th:nth-child(2),.meeting-table td:nth-child(2){width:110px}.meeting-table th:nth-child(3),.meeting-table td:nth-child(3){width:180px}.meeting-table td{overflow-wrap:anywhere}.meeting-table input{width:100%;max-width:100%;box-sizing:border-box;min-width:0}.meeting-time{white-space:normal;color:#66717c}
+.pad{padding:14px 16px}
+.grid-two{display:grid;grid-template-columns:1.05fr 1.55fr;gap:16px}
+.section-pair{display:grid;grid-template-columns:1fr;gap:16px;margin-bottom:16px}.section-pair>.section{margin-bottom:0}@media (min-width:1300px){.section-pair{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.table-wrap{overflow:auto}.meeting-table-wrap{overflow-x:hidden}
+.meetings-divider{height:1px;background:#dfe4e9;margin:18px 0}.meeting-add-wrap{display:flex;justify-content:center;margin-top:14px}.meeting-table input:disabled{background:#f2f4f6;color:#5f6872;border-color:#dfe4e9;opacity:1;cursor:default}.meeting-date-wrap{display:flex;align-items:center;gap:6px}.meeting-date-wrap input[type=date]{min-width:0}.meeting-delete-btn{flex:0 0 auto;border:0;background:transparent;color:#d34a4a;padding:4px 6px;cursor:pointer;font-size:12px}.meeting-delete-btn:hover{color:#a82222;background:transparent}
+table{width:100%;border-collapse:collapse;min-width:720px}
+th,td{padding:9px 10px;border-bottom:1px solid #edf0f4;text-align:left;vertical-align:middle}
+th{font-size:12px;text-transform:uppercase;letter-spacing:.02em;color:#6b7580;background:#fafbfc;position:sticky;top:0;z-index:1}
+.key{font-weight:700;white-space:nowrap}
+.summary{max-width:520px}
+.status{display:inline-block;padding:4px 12px 5px 12px;border-radius:999px;background:#eef2f6;color:#56616d;font-size:12px;white-space:nowrap}
+.time-cell input,.custom-cell input{width:100%;min-width:85px;padding:7px 8px;border:1px solid #ccd4dc;border-radius:7px;background:#fff}
+.total{font-weight:700;text-align:right;margin-top:10px;color:#34404b}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.reference-table{width:100%;min-width:0;table-layout:fixed}.reference-table th:nth-child(1),.reference-table td:nth-child(1){width:25%}.reference-table th:nth-child(2),.reference-table td:nth-child(2){width:90px}.reference-table th:nth-child(3),.reference-table td:nth-child(3){width:90px}.reference-table th:nth-child(4),.reference-table td:nth-child(4){width:auto}.reference-table td,.reference-table th{overflow-wrap:anywhere;vertical-align:top}.import-help{font-size:12px;color:#666;margin-top:7px;line-height:1.4}.import-help code{background:#f1f3f5;border-radius:4px;padding:1px 4px}
+.plan-table{width:100%;min-width:0;table-layout:fixed}
+.plan-table .task-col{width:auto;min-width:0}
+.plan-table .stream-col{width:105px;min-width:105px;max-width:105px}
+.plan-table .exact-col,.plan-table .possible-col{width:96px;min-width:96px;max-width:96px}
+.plan-table th,.plan-table td{overflow-wrap:anywhere}
+.plan-table .task-col{word-break:break-word}
+.plan-table .time-cell input{min-width:0;width:100%}
+.plan-table .task-link{color:#1f6feb;text-decoration:none}
+.plan-table .task-link:hover{text-decoration:underline}
+.plan-table td:last-child,.plan-table th:last-child{border-right:0}
+.icon-btn{padding:5px 8px;background:#eef1f5;color:#596570;border-radius:6px}
+.empty{padding:24px;text-align:center;color:#7a838c}
+.banner{display:none;padding:10px 12px;border-radius:8px;margin-bottom:12px;background:#fdeaea;color:#8d2020}
+.loading{color:#65717d}
+.modal{position:fixed;inset:0;background:rgba(23,28,34,.38);display:none;align-items:center;justify-content:center;z-index:10}
+.modal.open{display:flex}
+.modal-card{width:min(440px,calc(100vw - 32px));background:#fff;border-radius:14px;padding:22px;box-shadow:0 18px 60px rgba(0,0,0,.2)}
+.modal-card h2{margin:0 0 7px}
+.modal-card p{margin:0 0 15px;color:#68727c}
+.modal-card input,.modal-card textarea{width:100%;padding:10px;border:1px solid #cbd3dc;border-radius:8px}.reference-modal-card{width:min(760px,calc(100vw - 32px))}.reference-modal-card textarea{resize:vertical;font:13px ui-monospace,SFMono-Regular,Consolas,monospace;line-height:1.45}
+.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}
+.ref-row{background:#fafbfc}
+.ref-row td{color:#59636d}
+.add-field{display:inline-flex;gap:6px;align-items:center}
+.field-title{min-width:110px}
+.save-status{color:#63707d;font-size:13px}.total-alert{color:#c62828!important}.task-distribution-table{width:100%;min-width:0;table-layout:fixed;border-collapse:collapse}.task-distribution-table th,.task-distribution-table td{padding:8px 10px;border-bottom:1px solid #edf0f4;vertical-align:middle;min-width:0}.task-distribution-table .task-col{width:30%;max-width:30%;text-align:left}.task-distribution-table .stream-col{width:12%;text-align:left}.task-distribution-table .planned-col{width:10%;text-align:center}.task-distribution-table .days-col{width:48%;padding-left:0;padding-right:0}.task-distribution-table .planned-value{text-align:center;white-space:nowrap;font-variant-numeric:tabular-nums}.task-distribution-table .planned-value .hours-value{display:inline-block;min-width:56px;padding:4px 8px;border:1px solid #d7dde5;border-radius:8px;background:#f3f5f7;color:#4f5b67;box-sizing:border-box}.task-distribution-table .task-distribution-task{overflow:hidden}.task-distribution-table .task-distribution-task a{display:inline;font-weight:700}.task-distribution-table .stream-col .status{max-width:100%;overflow:hidden;text-overflow:ellipsis}.task-distribution-days{position:relative;height:42px;overflow:visible}.task-distribution-days .day-cell{position:absolute;top:0;bottom:0;width:20%;border-left:1px solid #edf0f4;background:#fff}.task-distribution-days .day-cell:nth-child(even){background:#fafbfc}.task-distribution-days .day-cell:nth-child(1){left:0}.task-distribution-days .day-cell:nth-child(2){left:20%}.task-distribution-days .day-cell:nth-child(3){left:40%}.task-distribution-days .day-cell:nth-child(4){left:60%}.task-distribution-days .day-cell:nth-child(5){left:80%}.task-distribution-header{height:34px;position:relative;display:grid;grid-template-columns:repeat(5,1fr);align-items:center;border-bottom:1px solid #edf0f4}.task-distribution-header>div{height:34px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;border-left:1px solid #edf0f4}.task-distribution-header>div:nth-child(even){background:#fafbfc}.task-distribution-canvas{position:relative;height:42px}.task-distribution-line{position:absolute;top:21px;height:13px;z-index:1;transform:translateY(-50%)}.task-distribution-line.green{background:#58bf68}.task-distribution-line.yellow{background:#f0c700}.task-distribution-line.red{background:#ef5350}.task-distribution-point{position:absolute;top:50%;width:22px;height:22px;padding:0;border-radius:50%;transform:translate(-50%,-50%);z-index:10;border:0;cursor:grab;box-shadow:0 0 0 1px rgba(0,0,0,.04)}.task-distribution-point.end{z-index:11}.task-distribution-point.green{background:#58bf68}.task-distribution-point.yellow{background:#f0c700}.task-distribution-point.red{background:#ef5350}.task-distribution-point.dragging{cursor:grabbing}.task-distribution-task a{color:#1f6feb;text-decoration:none;font-weight:700}.task-distribution-task a:hover{text-decoration:underline}.task-distribution-meta{font-size:13px;color:#56616d;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.task-distribution-empty{padding:20px;text-align:center;color:#7a838c}.task-distribution-table .stream-badge{display:inline-block;max-width:100%;overflow:hidden;text-overflow:ellipsis;vertical-align:middle}.task-distribution-table .stream-col,.task-distribution-table .planned-col{white-space:nowrap}
+@media (max-width:980px){.grid-two{grid-template-columns:1fr}header{align-items:flex-start;flex-direction:column}.userbox{width:100%;justify-content:space-between}}
+/* Stream summary tables: each table owns its own column geometry. */
+.stream-plan-total-inline{margin-top:0;margin-left:auto;text-align:right;white-space:nowrap}
+.stream-plan-table{width:100%;min-width:0;table-layout:fixed;border-collapse:collapse}
+.stream-plan-table th,.stream-plan-table td{overflow-wrap:anywhere;vertical-align:middle}
+.stream-plan-table input{width:100%;box-sizing:border-box}
+.stream-plan-table .hours-input{text-align:center}
+/* Editable plan: readable Stream/Hours columns, Comment takes the remaining width. */
+.editable-stream-plan-table{table-layout:fixed}
+.editable-stream-plan-table th:nth-child(1),.editable-stream-plan-table td:nth-child(1){width:160px;min-width:160px;max-width:160px;white-space:nowrap;overflow:visible}
+.editable-stream-plan-table th:nth-child(2),.editable-stream-plan-table td:nth-child(2){width:90px;min-width:90px;max-width:90px;text-align:center;white-space:nowrap}
+.editable-stream-plan-table th:nth-child(3),.editable-stream-plan-table td:nth-child(3){width:auto;min-width:0}
+.editable-stream-plan-table td:nth-child(2){text-align:center}
+.editable-stream-plan-table td:nth-child(3) input{width:100%;min-width:0;box-sizing:border-box}
+/* Historical/reference plan. */
+.reference-plan-table th:nth-child(1),.reference-plan-table td:nth-child(1){width:160px;min-width:160px}
+.reference-plan-table th:nth-child(2),.reference-plan-table td:nth-child(2){width:95px;min-width:95px;text-align:center;vertical-align:middle}
+.reference-plan-table th:nth-child(3),.reference-plan-table td:nth-child(3){width:95px;min-width:95px;text-align:center;vertical-align:middle}
+.reference-plan-table th:nth-child(4),.reference-plan-table td:nth-child(4){width:auto}
+/* Completed/current-week summary. */
+.done-stream-plan-table th:nth-child(1),.done-stream-plan-table td:nth-child(1){width:160px;min-width:160px}
+.done-stream-plan-table th:nth-child(2),.done-stream-plan-table td:nth-child(2){width:95px;min-width:95px;text-align:center}
+.done-stream-plan-table th:nth-child(3),.done-stream-plan-table td:nth-child(3){width:auto}
+.copy-field-wrap{position:relative;width:100%;min-width:0}.copy-field-wrap>input,.copy-field-wrap>textarea{width:100%;min-width:0;box-sizing:border-box;padding-right:36px}.copy-btn{position:absolute;right:4px;top:50%;transform:translateY(-50%);width:26px;height:24px;min-width:26px;padding:0;border:0;border-radius:0;background:none;color:#5c6874;font-size:12px;line-height:1;cursor:pointer;z-index:2}.copy-btn:hover{background:none;border:0;color:#3a78d9}.copy-btn.copied{background:none;border:0;color:#2f7d32}.copy-btn:focus{outline:2px solid #8cafe5;outline-offset:1px;background:none;border:0}.copy-field-wrap:has(input:disabled) .copy-btn{opacity:.95;cursor:pointer}.auto-comment-links{margin-top:4px;font-size:12px;line-height:1.35;color:#66717c}.auto-comment-links a{color:#1f6feb;text-decoration:none}.auto-comment-links a:hover{text-decoration:underline}
+.task-distribution-wrap{overflow-x:hidden;width:100%}
+.distribution-worklog-option{display:flex;align-items:center;gap:7px;font-size:12px;color:#56616d;white-space:nowrap;margin-left:auto}.distribution-worklog-option input{margin:0;width:16px;height:16px}
+
+/* Weekly Planner 0.2.x */
+.task-distribution-table{width:100%;min-width:0;table-layout:fixed}
+.task-distribution-table .task-col{width:30%;max-width:30%}
+.task-distribution-table .stream-col{width:12%}
+.task-distribution-table .complexity-col{width:90px;text-align:center;white-space:nowrap}
+.task-distribution-table .days-col{width:auto}
+.task-distribution-table .task-distribution-point{pointer-events:none;cursor:default}
+.task-distribution-table .task-distribution-line{pointer-events:none}
+
+.page-save-wrap{display:flex;justify-content:center;align-items:center;gap:12px;padding:12px 0 28px}.page-save-btn,.page-save-btn,.page-load-btn{border:0;border-radius:10px;font-size:16px;font-weight:700;padding:12px 30px;color:#fff;cursor:pointer;transition:background .15s ease,opacity .15s ease;}.page-save-btn{background:#3a78d9}.page-save-btn:hover{background:#5f91dd}.page-load-btn{background:#6f9fe8}.page-load-btn:hover{background:#5f91dd}.page-save-btn:disabled,.page-load-btn:disabled{opacity:.65;cursor:default}.page-save-result{display:none}.planner-section,.card,section{border-color:#cfcfcf !important;}
+
+
+.page-save-btn,.page-load-btn{border:0;border-radius:10px;padding:12px 30px;font-size:16px;font-weight:700;cursor:pointer;transition:background .15s ease,opacity .15s ease;box-shadow:none;}
+.page-save-btn{background:#3a78d9;color:#fff;}
+.page-save-btn:hover{background:#5f91dd;}
+.page-load-btn{background:#73b56c;color:#fff;}
+.page-load-btn:hover{background:#5ea456;}
+.page-save-btn:disabled,.page-load-btn:disabled{opacity:.65;cursor:default;}
+</style></head><body>
+<div class="wrap">
+<header>
+  <div style="flex:1"><h1>Планирование следующей недели</h1><div id="planningPeriod" class="section-note"></div></div>
+  <div class="userbox">
+    <div id="userEmail" class="user-email">Email не задан</div>
+    <div id="calendarBadge" class="calendar-badge">Календарь: не подключён</div>
+    <button id="changeEmail" class="secondary profile-btn">Профиль</button>
+  </div>
+</header>
+<div id="errorBanner" class="banner"></div>
+
+<section class="section blue-border task-distribution-section">
+  <div class="section-loading"><span>Загрузка данных…</span></div>
+  <div class="section-head">
+    <div>
+      <div class="section-title">Распределение задач на следующую неделю</div>
+      <div id="taskDistributionNote" class="section-note">Загрузка…</div>
+    </div>
+    <label class="distribution-worklog-option"><input id="includeWorklogUser" type="checkbox"> Учитывать задачи с упоминанием пользователя в логах</label>
+  </div>
+  <div class="pad"><div id="taskDistributionTable"></div></div>
+</section>
+
+<div class="section-pair">
+<section class="section yellow-border">
+  <div class="section-loading"><span>Загрузка данных…</span></div>
+  <div class="section-head">
+    <div><div class="section-title">Миты на следующую неделю</div><div id="meetingsNote" class="section-note">Загрузка календаря…</div></div>
+    <div class="actions"><span id="meetingsSaveStatus" class="save-status"></span><div id="meetingsTotal" class="total stream-plan-total-inline">Всего: 0h</div></div>
+  </div>
+  <div class="pad">
+    <div id="meetingsTable"></div>
+    <div class="meetings-divider"></div>
+    <div id="manualMeetingsTable"></div>
+    <div class="meeting-add-wrap"><button id="addMeeting" class="secondary">+ Добавить мит</button></div>
+  </div>
+</section>
+
+<section class="section yellow-border stream-plan-section">
+  <div class="section-loading"><span>Загрузка данных…</span></div>
+  <div class="section-head">
+    <div><div class="section-title">План на следующую неделю</div><div class="section-note">Распределение времени по направлениям</div></div>
+    <div class="actions"><span id="saveStatus" class="save-status"></span><div id="streamPlanTotal" class="total stream-plan-total-inline">Всего: 0h / 40h</div></div>
+  </div>
+  <div class="pad"><div id="streamPlanTable"></div></div>
+</section>
+</div>
+
+<div class="page-save-wrap"><button id="submitPlan" class="page-save-btn">Сохранить</button><button id="loadPlan" class="page-load-btn">Загрузить</button><span id="submitPlanStatus" class="page-save-result"></span></div>
+
+<div id="emailModal" class="modal">
+  <div class="modal-card">
+    <h2>Ваш профиль</h2>
+    <p>Email нужен для Jira. Публичная ссылка календаря используется для подсчёта запланированных митингов на следующую неделю.</p>
+    <input id="emailInput" type="email" placeholder="name@softswiss.com" autocomplete="email">
+    <input id="calendarInput" type="url" placeholder="https://calendar.google.com/calendar/ical/.../public/basic.ics" style="margin-top:10px">
+    <div class="calendar-help">Как получить ссылку: Google Calendar → Настройки → нужный календарь → «Интегрировать календарь» → «Публичный адрес в формате iCal». Скопируйте ссылку вида <code>.../public/basic.ics</code>.</div>
+    <div class="modal-actions"><button id="emailSave">Продолжить</button></div>
+  </div>
+</div>
+<script>
+
+const EMAIL_KEY = 'weeklyPlanner.email';
+const CAL_KEY = 'weeklyPlanner.calendarUrl';
+const WEEK_KEY = 'weeklyPlanner.selectedWeekStart';
+const WORKLOG_FILTER_KEY = 'weeklyPlanner.includeWorklogUser';
+const state = {email:'', calendarUrl:'', streamColors:{}, statusColors:{}, data:null, plan:null, streamPlan:[], taskTimeline:[], meetings:[], manualMeetings:[], currentMeetings:[], doneStreamPlan:[], dirty:false, showAllUnclosed:false, includeWorklogUser:false, recalcAfterSave:false, saveSource:'tasks', revision:0, selectedWeekStart:'', planLoadedFromFile:false};
+let autoSaveTimer=null;
+let autoSaveInFlight=false;
+let autoSaveQueued=false;
+const $ = id => document.getElementById(id);
+
+function escapeHtml(value){
+  return String(value ?? '').replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
+}
+function escapeAttr(value){ return escapeHtml(value); }
+function fmtDate(iso){
+  const d=new Date(iso+'T00:00:00');
+  return d.toLocaleDateString('ru-RU',{day:'2-digit',month:'2-digit',year:'numeric'});
+}
+function showError(message){$('errorBanner').textContent=message||'Ошибка';$('errorBanner').style.display='block';}
+function hideError(){$('errorBanner').style.display='none';}
+function openEmailModal(){ $('emailModal').classList.add('open'); $('emailInput').value=state.email||''; $('calendarInput').value=state.calendarUrl||''; setTimeout(()=>$('emailInput').focus(),0); }
+async function saveEmail(){
+  const email=$('emailInput').value.trim().toLowerCase();
+  const calendarUrl=$('calendarInput').value.trim();
+  if(!email || !email.includes('@')){ showError('Введите корректный email.'); return; }
+  if(calendarUrl && !/^https?:\/\//i.test(calendarUrl)){ showError('Ссылка на календарь должна начинаться с http:// или https://'); return; }
+  state.email=email; state.calendarUrl=calendarUrl;
+  localStorage.setItem(EMAIL_KEY,email);
+  localStorage.setItem(CAL_KEY,calendarUrl);
+  try{
+    await persistProfile(email,calendarUrl);
+    $('emailModal').classList.remove('open');
+    updateProfileBadge();
+    await loadData();
+    if(state.plan) queueAutoSave(true);
+  }catch(e){showError(`Не удалось сохранить профиль: ${e.message}`);}
+}
+function updateProfileBadge(){
+  $('userEmail').textContent=state.email||'Email не задан';
+  const calendarBadge=$('calendarBadge');
+  calendarBadge.textContent=state.calendarUrl?'Календарь: подключён':'Календарь: не подключён';
+  calendarBadge.classList.toggle('connected',!!state.calendarUrl);
+  calendarBadge.classList.toggle('disconnected',!state.calendarUrl);
+}
+function formatMinutes(minutes){
+  const n=Math.max(0,Math.round(Number(minutes)||0));
+  const h=Math.floor(n/60),m=n%60;
+  if(n===0) return '0h';
+  if(h>0 && m===0) return `${h}h`;
+  if(h>0) return `${h}h ${m}m`;
+  if(h===0) return `0h ${m}m`;
+  return `${h}h ${m}m`;
+}
+function formatHours(seconds){
+  const minutes=Math.round((Number(seconds)||0)/60);
+  return formatMinutes(minutes);
+}
+function parsePlannedMinutes(value){
+  const s=String(value||'').trim().toLowerCase().replace(',', '.');
+  if(!s) return 0;
+  let m=0;
+  const hm=s.match(/(\d+(?:\.\d+)?)\s*h/); if(hm) m += Number(hm[1])*60;
+  const mm=s.match(/(\d+(?:\.\d+)?)\s*m/); if(mm) m += Number(mm[1]);
+  if(m) return m;
+  if(/^\d+(?:\.\d+)?$/.test(s)) return Number(s)*60;
+  return 0;
+}
+function pillStyle(name, colors){
+  const key=String(name||'').trim();
+  const style=(colors&&colors[key])||null;
+  if(!style) return '';
+  const parts=[];
+  if(style.background) parts.push(`background:${escapeAttr(style.background)}`);
+  if(style.color) parts.push(`color:${escapeAttr(style.color)}`);
+  return parts.length?` style="${parts.join(';')}"`:'';
+}
+function streamBadge(name){ return `<span class="status"${pillStyle(name,state.streamColors)}>${escapeHtml(name||'Live Requests')}</span>`; }
+function statusBadge(name){ return `<span class="status"${pillStyle(name,state.statusColors)}>${escapeHtml(name||'')}</span>`; }
+
+function distributionWorkingDays(weekStart){
+  return [0,1,2,3,4].map(offset=>addDaysIso(weekStart,offset));
+}
+function distributionDayIndex(dateValue, weekStart){
+  if(!dateValue || dateValue==='0') return null;
+  const ms1=Date.parse(String(weekStart)+'T00:00:00Z'), ms2=Date.parse(String(dateValue)+'T00:00:00Z');
+  if(Number.isNaN(ms1)||Number.isNaN(ms2)) return null;
+  const diff=Math.round((ms2-ms1)/86400000);
+  if(diff<0) return -1;
+  if(diff>4) return 5;
+  return diff;
+}
+function businessDaysRemaining(endDate){
+  if(!endDate || endDate==='0') return 0;
+  const today=new Date(); today.setHours(0,0,0,0);
+  const end=new Date(String(endDate)+'T00:00:00'); if(Number.isNaN(end.getTime())) return 0;
+  if(end<=today) return 0;
+  let count=0, cursor=new Date(today); cursor.setDate(cursor.getDate()+1);
+  while(cursor<=end){ const day=cursor.getDay(); if(day!==0 && day!==6) count++; cursor.setDate(cursor.getDate()+1); }
+  return count;
+}
+function businessDaysBetweenInclusive(fromDate,toDate){
+  if(!fromDate || !toDate || fromDate==='0' || toDate==='0') return 0;
+  const from=new Date(String(fromDate)+'T00:00:00');
+  const to=new Date(String(toDate)+'T00:00:00');
+  if(Number.isNaN(from.getTime()) || Number.isNaN(to.getTime()) || from>to) return 0;
+  let count=0, cursor=new Date(from);
+  while(cursor<=to){
+    const day=cursor.getDay();
+    if(day!==0 && day!==6) count++;
+    cursor.setDate(cursor.getDate()+1);
+  }
+  return count;
+}
+function distributionColor(endDate,referenceDate=null){
+  if(!endDate || endDate==='0') return 'green';
+  const reference=referenceDate || new Date().toISOString().slice(0,10);
+  const days=businessDaysRemainingFrom(reference,endDate);
+  if(days<=1) return 'red';
+  if(days<=3) return 'yellow';
+  return 'green';
+}
+function businessDaysRemainingFrom(startDate,endDate){
+  if(!startDate || !endDate || startDate==='0' || endDate==='0') return 0;
+  const start=new Date(String(startDate)+'T00:00:00');
+  const end=new Date(String(endDate)+'T00:00:00');
+  if(Number.isNaN(start.getTime()) || Number.isNaN(end.getTime()) || end<=start) return 0;
+  let count=0, cursor=new Date(start); cursor.setDate(cursor.getDate()+1);
+  while(cursor<=end){
+    const day=cursor.getDay();
+    if(day!==0 && day!==6) count++;
+    cursor.setDate(cursor.getDate()+1);
+  }
+  return count;
+}
+function distributionSegmentColor(dayDate,endDate){
+  if(!endDate || endDate==='0') return 'green';
+  const days=businessDaysRemainingFrom(dayDate,endDate);
+  if(days<=1) return 'red';
+  if(days<=3) return 'yellow';
+  return 'green';
+}
+function distributionPointPercent(dayIndex){
+  if(dayIndex===null || dayIndex===-1) return 0;
+  if(dayIndex>=5) return 100;
+  return dayIndex*20+10;
+}
+function timelineEntryFor(row){
+  const key=String(row.key||'').toUpperCase();
+  const saved=(state.taskTimeline||[]).find(x=>String(x.key||'').toUpperCase()===key);
+  if(saved) return {key,point1:String(saved.point1||'0'),point2:String(saved.point2||'0')};
+  const p1=String(row.target_start||'0')||'0';
+  const p2=String(row.target_end||'0')||'0';
+  return {key,point1:p1,point2:p2};
+}
+function upsertTimelineEntry(key,point1,point2){
+  const upper=String(key||'').toUpperCase();
+  if(!upper)return;
+  if(String(point2||'0')==='0') point1='0';
+  const list=(state.taskTimeline||[]).filter(x=>String(x.key||'').toUpperCase()!==upper);
+  list.push({key:upper,point1:String(point1||'0'),point2:String(point2||'0')});
+  state.taskTimeline=list;
+}
+function renderTaskDistribution(){
+  const box=$('taskDistributionTable'); if(!box)return;
+  const rows=state.data?.distribution_tasks||[];
+  const weekStart=state.data?.next_week?.from||'';
+  const weekEnd=state.data?.next_week?.to||addDaysIso(weekStart,4);
+  $('taskDistributionNote').textContent=`${fmtDate(weekStart)} — ${fmtDate(weekEnd)}`;
+  if(!rows.length){box.innerHTML='<div class="task-distribution-empty">Нет задач для распределения.</div>';return;}
+  const dates=distributionWorkingDays(weekStart);
+  const header=dates.map(d=>`<div>${fmtDate(d).slice(0,5)}</div>`).join('');
+  const body=rows.map(row=>{
+    const p1=String(row.target_start||'0'); const p2=String(row.target_end||'0');
+    const startIdx=distributionDayIndex(p1,weekStart); const endIdx=distributionDayIndex(p2,weekStart);
+    const effectiveEnd=row.target_end||'0';
+    const lineStart=(p1==='0'||startIdx===null||startIdx===-1)?0:distributionPointPercent(startIdx);
+    const lineEnd=(p2==='0'||endIdx===null)?0:distributionPointPercent(endIdx);
+    const showLine=p2!=='0'&&lineEnd>=lineStart;
+    const startPercent=(p1==='0'||startIdx===null||startIdx===-1)?0:distributionPointPercent(startIdx);
+    const endPercent=(p2==='0'||endIdx===null)?0:distributionPointPercent(endIdx);
+    const startColor=distributionColor(effectiveEnd,p1!=='0'?p1:weekStart);
+    const endColor=distributionColor(effectiveEnd,p2!=='0'?p2:weekStart);
+    let line='';
+    if(showLine){
+      const segments=[];
+      for(let i=0;i<5;i++){
+        const segStart=Math.max(lineStart,i*20), segEnd=Math.min(lineEnd,(i+1)*20);
+        if(segEnd<=segStart)continue;
+        segments.push(`<div class="task-distribution-line ${distributionSegmentColor(dates[i],effectiveEnd)}" style="left:${segStart}%;width:${Math.max(0,segEnd-segStart)}%"></div>`);
+      }
+      line=segments.join('');
+    }
+    const point1=`<span class="task-distribution-point ${startColor}" style="left:${startPercent}%" aria-hidden="true"></span>`;
+    const point2=`<span class="task-distribution-point end ${endColor}" style="left:${endPercent}%" aria-hidden="true"></span>`;
+    const planned=escapeHtml(String(row.complexity||''));
+    const key=escapeHtml(row.key||''); const summary=row.summary?` — ${escapeHtml(row.summary)}`:'';
+    const stream=streamBadge(row.stream||'Live Requests'); const status=row.status?`<div style="margin-top:5px">${statusBadge(row.status)}</div>`:'';
+    return `<tr><td class="task-distribution-task task-col"><div><a class="task-link" href="${escapeAttr(row.url||('https://jira.softswiss.net/browse/'+row.key))}" target="_blank" rel="noopener noreferrer"><b>${key}</b></a>${summary}</div>${status}</td><td class="stream-col">${stream}</td><td class="complexity-col"><div class="hours-value">${planned||'—'}</div></td><td class="days-col"><div class="task-distribution-canvas"><div class="task-distribution-days">${[0,1,2,3,4].map(()=>'<div class="day-cell"></div>').join('')}</div>${line}${point1}${point2}</div></td></tr>`;
+  }).join('');
+  box.innerHTML=`<div class="table-wrap task-distribution-wrap"><table class="task-distribution-table"><thead><tr><th class="task-col">Задача</th><th class="stream-col">Stream</th><th class="complexity-col">Complexity</th><th class="days-col"><div class="task-distribution-header">${header}</div></th></tr></thead><tbody>${body}</tbody></table></div>`;
+}
+
+function renderFact(){
+  const box=$('factTable'), items=state.data.current_work.issues||[];
+  if(!items.length){box.innerHTML='<div class="empty">На этой неделе пока нет worklog\'ов.</div>';}
+  else{
+    box.innerHTML=`<div class="table-wrap"><table><thead><tr><th>Задача</th><th>Stream</th><th>Статус</th><th>За неделю</th></tr></thead><tbody>${items.map(i=>`<tr><td>${i.key?`<a class="task-link key" href="${escapeAttr(i.url || (i.key ? 'https://jira.softswiss.net/browse/'+i.key : '#'))}" target="_blank" rel="noopener noreferrer">${escapeHtml(i.key)}</a>`:''}${i.summary?' — '+escapeHtml(i.summary):''}</td><td>${streamBadge(i.stream||'Live Requests')}</td><td>${statusBadge(i.status)}</td><td><b>${escapeHtml(formatHours(i.logged_seconds))}</b></td></tr>`).join('')}</tbody></table></div>`;
+    document.getElementById('factTotal').textContent=`Итого: ${formatHours(state.data.current_work.total_seconds||0)}`;
+  }
+  const p=state.data.current_week;$('factNote').textContent=`${fmtDate(p.from)} — ${fmtDate(p.to)} · всего ${formatHours(state.data.current_work.total_seconds||0)}`;
+}
+function renderPrevious(){
+  const box=$('previousTable');
+  const plan=state.data?.previous_plan;
+  const p=state.data.current_week;
+  $('previousNote').textContent=`${fmtDate(p.from)} — ${fmtDate(p.to)} · сохранённый план`;
+
+  const sourceRows = plan && Array.isArray(plan.stream_plan) ? plan.stream_plan : [];
+  const realByStream = new Map();
+  (state.data?.current_work?.issues||[]).forEach(item=>{
+    const stream=String(item?.stream||'Live Requests').trim() || 'Live Requests';
+    const minutes=Math.max(0, Math.round((Number(item?.logged_seconds)||0)/60));
+    realByStream.set(stream,(realByStream.get(stream)||0)+minutes);
+  });
+  const meetingMinutes = Number(state.data?.current_calendar?.minutes||0);
+  const rows = DEFAULT_STREAMS.map(stream=>{
+    const found = sourceRows.find(r=>String(r?.stream||'').trim()===stream);
+    let realMinutes=realByStream.get(stream)||0;
+    let real=formatMinutes(realMinutes);
+    if(stream==='Communication'){
+      real=`${formatMinutes(realMinutes)} / ${formatMinutes(meetingMinutes)}`;
+    }
+    return {
+      stream,
+      planned: found ? normalizeTimeValue(found.hours) : '0h',
+      real,
+      comment: found ? String(found.comment||'') : ''
+    };
+  });
+  const total=rows.reduce((sum,r)=>sum+parsePlannedMinutes(r.planned),0);
+  box.innerHTML=`<div class="table-wrap"><table class="stream-plan-table reference-plan-table"><thead><tr><th>Stream</th><th>Planned</th><th>Real</th><th>Comment</th></tr></thead><tbody>${rows.map(r=>{ const realParts=String(r.real||'').split(' / '); const realHtml=realParts.length===2 ? `${escapeHtml(realParts[0])}<br><span>Cal: ${escapeHtml(realParts[1])}</span>` : escapeHtml(r.real); return `<tr><td>${streamBadge(r.stream)}</td><td><input class="hours-input" value="${escapeAttr(r.planned)}" disabled></td><td><div class="hours-value" style="text-align:center">${realHtml}</div></td><td><input value="${escapeAttr(r.comment)}" disabled></td></tr>`; }).join('')}</tbody></table></div>`;
+  $('previousTotal').textContent=`Всего: ${formatMinutes(total)}`;
+}
+
+function renderCalendar(){ return; }
+function meetingRowsHtml(items, editable){
+  return items.map((item,idx)=>{
+    const when=String(item.when||'');
+    const attrs=editable ? `data-manual-meeting-row="${idx}"` : 'disabled';
+    const whenField=editable
+      ? `<div class="meeting-date-wrap"><input type="date" ${attrs} data-meeting-prop="when" value="${escapeAttr(when)}"><button type="button" class="meeting-delete-btn" data-delete-meeting-row="${idx}" title="Удалить">Удалить</button></div>`
+      : `<input disabled data-meeting-prop="when" value="${escapeAttr(when)}">`;
+    return `<tr><td><input ${attrs} data-meeting-prop="summary" value="${escapeAttr(item.summary||'')}" placeholder="Название мита"></td><td><input class="hours-input" ${attrs} data-meeting-prop="minutes" value="${escapeAttr(minutesToInput(item.minutes))}" placeholder="0"></td><td class="meeting-time">${whenField}</td></tr>`;
+  }).join('');
+}
+function meetingTableHtml(items, editable){
+  return `<div class="table-wrap meeting-table-wrap"><table class="meeting-table"><thead><tr><th>Мит</th><th>Длит.</th><th>Когда</th></tr></thead><tbody>${meetingRowsHtml(items,editable)}</tbody></table></div>`;
+}
+function isMeetingNonEmpty(item){
+  return !!String(item?.summary||'').trim() || Number(item?.minutes||0)>0 || !!String(item?.when||'').trim();
+}
+function combinedMeetings(){
+  return [...(state.meetings||[]), ...(state.manualMeetings||[]).filter(isMeetingNonEmpty)];
+}
+function renderMeetings(){
+  const c=state.data?.calendar||{};
+  const note=$('meetingsNote'), calendarBox=$('meetingsTable'), manualBox=$('manualMeetingsTable');
+  const calendarItems=state.meetings||[];
+  if(c.url && c.error) note.textContent=c.error;
+  else if(!c.url && !calendarItems.length) note.textContent='Публичная ссылка на календарь не задана';
+  else note.textContent=`Всего встреч: ${combinedMeetings().length}`;
+
+  calendarBox.innerHTML=calendarItems.length ? meetingTableHtml(calendarItems,false) : '<div class="empty">На следующую неделю запланированных митингов в календаре нет.</div>';
+  if(!Array.isArray(state.manualMeetings)) state.manualMeetings=[];
+  manualBox.innerHTML=state.manualMeetings.length ? meetingTableHtml(state.manualMeetings,true) : '<div class="empty">Нет добавленных вручную митингов.</div>';
+  $('meetingsTotal').textContent=`Всего: ${formatMinutes(totalMeetingMinutes())}`;
+
+  manualBox.querySelectorAll('input[data-manual-meeting-row]').forEach(input=>{
+    input.addEventListener('input',e=>{
+      const row=state.manualMeetings[Number(e.target.dataset.manualMeetingRow)];
+      const prop=e.target.dataset.meetingProp;
+      if(prop==='minutes') row.minutes=parseMeetingMinutes(e.target.value); else row[prop]=e.target.value;
+      state.recalcAfterSave=true; state.revision++;
+      $('meetingsTotal').textContent=`Всего: ${formatMinutes(totalMeetingMinutes())}`;
+      queueAutoSave(false,'meetings');
+    });
+    input.addEventListener('change',e=>{
+      if(e.target.dataset.meetingProp==='minutes') e.target.value=normalizeTimeValue(e.target.value);
+    });
+  });
+  manualBox.querySelectorAll('[data-delete-meeting-row]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const idx=Number(btn.dataset.deleteMeetingRow);
+      state.manualMeetings.splice(idx,1);
+      renderMeetings();
+      queueAutoSave(false,'meetings');
+    });
+  });
+  enhanceCopyFields(manualBox);
+}
+function parseMeetingMinutes(value){
+  const v=String(value||'').trim().toLowerCase().replace(',','.');
+  if(!v) return 0;
+  const hm=v.match(/^(\d+(?:\.\d+)?)\s*h(?:\s*(\d+)\s*m)?$/);
+  if(hm) return Math.round(parseFloat(hm[1])*60)+Number(hm[2]||0);
+  const mm=v.match(/^(\d+(?:\.\d+)?)\s*m$/); if(mm) return Math.round(parseFloat(mm[1]));
+  const n=Number(v); return Number.isFinite(n)?Math.round(n*60):0;
+}
+function minutesToInput(minutes){ return formatMinutes(minutes); }
+function normalizeTimeValue(value){ return formatMinutes(parsePlannedMinutes(value)); }
+function totalMeetingMinutes(){ return combinedMeetings().reduce((sum,m)=>sum+(Number(m.minutes)||0),0); }
+function addMeeting(){
+  state.manualMeetings.push({summary:'',minutes:0,when:String(state.data?.next_week?.from||state.planWeekStart||'')});
+  state.revision++;
+  renderMeetings();
+}
+const DEFAULT_STREAMS=['Management','Defects','Live Requests','AI','Product contribution','Setup contribution','Training','Communication','Absence','Documentation','Bench','Setup Work'];
+function initStreamPlan(){
+  const saved=state.plan?.stream_plan;
+  if(Array.isArray(saved)&&saved.length){
+    const merged=[];
+    const index=new Map();
+    saved.forEach(r=>{
+      const stream=String(r?.stream||'').trim();
+      if(!stream || index.has(stream.toLocaleLowerCase())) return;
+      index.set(stream.toLocaleLowerCase(), merged.length);
+      merged.push({stream,hours:normalizeTimeValue(r.hours),comment:String(r.comment||'')});
+    });
+    const byStream=new Map(merged.map(r=>[r.stream.toLocaleLowerCase(),r]));
+    state.streamPlan=DEFAULT_STREAMS.map(stream=>byStream.get(stream.toLocaleLowerCase())||({stream,hours:'0h 0m',comment:''}));
+    return;
+  }
+  state.streamPlan=DEFAULT_STREAMS.map(stream=>({stream,hours:'0h 0m',comment:''}));
+}
+
+function enhanceCopyFields(root=document){
+  root.querySelectorAll('input, textarea').forEach(input=>{
+    if(input.closest('.copy-field-wrap')) return;
+    if(input.type==='checkbox' || input.type==='radio' || input.type==='button' || input.type==='submit') return;
+    const prop=input.dataset?.prop || '';
+    const meetingProp=input.dataset?.meetingProp || '';
+    const classes=String(input.className||'');
+    if(prop==='exact' || prop==='possible' || prop==='hours' || meetingProp==='minutes' || meetingProp==='when' || classes.includes('hours-input') || classes.includes('meeting-time')) return;
+    const wrap=document.createElement('div');
+    wrap.className='copy-field-wrap';
+    input.parentNode.insertBefore(wrap,input);
+    wrap.appendChild(input);
+    const btn=document.createElement('button');
+    btn.type='button';
+    btn.className='copy-btn';
+    btn.title='Скопировать';
+    btn.setAttribute('aria-label','Скопировать');
+    btn.textContent='⧉';
+    btn.addEventListener('click',async()=>{
+      const value=String(input.value||'');
+      try{
+        if(navigator.clipboard?.writeText) await navigator.clipboard.writeText(value);
+        else { input.focus(); input.select(); document.execCommand('copy'); }
+        btn.classList.add('copied');
+        const old=btn.textContent; btn.textContent='✓';
+        setTimeout(()=>{btn.classList.remove('copied');btn.textContent=old;},900);
+      }catch(_){
+        try{ input.focus(); input.select(); document.execCommand('copy'); }catch(__){}
+      }
+    });
+    wrap.appendChild(btn);
+  });
+}
+
+function renderTaskKeyLinks(comment){
+  return String(comment||'').split(',').map(x=>x.trim()).filter(Boolean).map(key=>{
+    if(/^[A-Z][A-Z0-9_]+-\d+$/.test(key)){
+      const url=`https://jira.softswiss.net/browse/${encodeURIComponent(key)}`;
+      return `<a href="${url}" target="_blank" rel="noopener noreferrer">${escapeHtml(key)}</a>`;
+    }
+    return escapeHtml(key);
+  }).join(', ');
+}
+function refreshStreamPlanInputs(){
+  const box=$('streamPlanTable');
+  (state.streamPlan||[]).forEach((r,i)=>{
+    const hours=box.querySelector(`input[data-stream-row="${i}"][data-stream-prop="hours"]`);
+    const comment=box.querySelector(`input[data-stream-row="${i}"][data-stream-prop="comment"]`);
+    if(hours && hours.value!==String(r.hours??'')) hours.value=String(r.hours??'');
+    if(comment && comment.value!==String(r.comment??'')) comment.value=String(r.comment??'');
+  });
+  renderStreamPlanTotal();
+}
+
+function renderStreamPlan(){
+  const box=$('streamPlanTable');
+  const rows=state.streamPlan||[];
+  box.innerHTML=`<div class="table-wrap"><table class="stream-plan-table editable-stream-plan-table"><thead><tr><th>Stream</th><th>Hours</th><th>Comment</th></tr></thead><tbody>${rows.map((r,i)=>`<tr><td>${streamBadge(r.stream)}</td><td><input class="hours-input" data-stream-row="${i}" data-stream-prop="hours" value="${escapeAttr(r.hours)}"></td><td><input data-stream-row="${i}" data-stream-prop="comment" value="${escapeAttr(r.comment)}"></td></tr>`).join('')}</tbody></table></div>`;
+  box.querySelectorAll('input[data-stream-row]').forEach(input=>{
+    input.addEventListener('input',e=>{const r=state.streamPlan[Number(e.target.dataset.streamRow)];r[e.target.dataset.streamProp]=e.target.value;queueAutoSave(false,'stream');renderStreamPlanTotal();});
+    input.addEventListener('change',e=>{
+      const r=state.streamPlan[Number(e.target.dataset.streamRow)];
+      const prop=e.target.dataset.streamProp;
+      if(prop==='hours'){ r.hours=normalizeTimeValue(e.target.value); e.target.value=r.hours; }
+      state.recalcAfterSave=false;
+      state.revision++;
+      queueAutoSave(false,'stream');
+      renderStreamPlanTotal();
+    });
+  });
+  renderStreamPlanTotal();
+  enhanceCopyFields(box);
+}
+
+function updateStreamHoursAfterTaskChange(stream, oldStreamTotal, newStreamTotal, oldValue){
+  const row=(state.streamPlan||[]).find(item=>String(item.stream||'').trim()===stream);
+  if(!row) return;
+  const currentHours=parsePlannedMinutes(row.hours);
+  if(currentHours===oldStreamTotal){
+    row.hours=formatMinutes(newStreamTotal);
+  }
+}
+
+function syncStreamPlanFromTasks(markDirty=true){
+  const rows=state.plan?.rows||[];
+  const totals=new Map();
+  const comments=new Map();
+  rows.forEach(r=>{
+    const stream=String(r.stream||'Live Requests').trim()||'Live Requests';
+    const minutes=parsePlannedMinutes(r.exact)+parsePlannedMinutes(r.possible);
+    totals.set(stream,(totals.get(stream)||0)+minutes);
+    const key=String(r.key||'').trim();
+    if(key){
+      const list=comments.get(stream)||[];
+      if(!list.includes(key)) list.push(key);
+      comments.set(stream,list);
+    }
+  });
+
+  const existing=state.streamPlan||[];
+  existing.forEach(r=>{
+    const stream=String(r.stream||'').trim();
+    if(!stream) return;
+    const mins=totals.get(stream)||0;
+    // Auto-calculated task hours may fill only an empty/zero Hours cell.
+    // Any non-zero value is treated as a manual override and is preserved.
+    if(parsePlannedMinutes(r.hours)===0) r.hours=formatMinutes(mins);
+    r.comment=(comments.get(stream)||[]).join(', ');
+    if(stream==='Communication'){
+      const meetingMinutes=totalMeetingMinutes();
+      if(parsePlannedMinutes(r.hours)===0) r.hours=formatMinutes(meetingMinutes);
+      r.comment=combinedMeetings().map(x=>String(x.summary||'Без названия').trim()).filter(Boolean).join(', ');
+    }
+  });
+
+  if(markDirty) queueAutoSave();
+  refreshStreamPlanInputs();
+  renderPlanTotal();
+  renderStreamPlanTotal();
+}
+
+function recalculateLinkedForms(){
+  state.recalcAfterSave=true;
+  state.dirty=true;
+  queueAutoSave(false,'tasks');
+}
+function renderStreamPlanTotal(){
+  const total=(state.streamPlan||[]).reduce((sum,r)=>sum+parsePlannedMinutes(r.hours),0);
+  const el=$('streamPlanTotal'); if(!el)return; el.textContent=`Всего: ${formatMinutes(total)} / 40h`; el.classList.toggle('total-alert', total!==2400);
+}
+function buildDoneStreamPlan(){
+  const rows = state.data?.current_work?.issues || [];
+  const totals = new Map();
+  const comments = new Map();
+  rows.forEach(r=>{
+    const stream=String(r.stream||'Live Requests').trim()||'Live Requests';
+    const minutes=Math.max(0, Math.round((Number(r.logged_seconds)||0)/60));
+    totals.set(stream,(totals.get(stream)||0)+minutes);
+    const key=String(r.key||'').trim();
+    if(key){ const list=comments.get(stream)||[]; if(!list.includes(key)) list.push(key); comments.set(stream,list); }
+  });
+  const communicationMinutes = ['PTF-30050','PTF-28936'].reduce((sum,key)=>{
+    const issue=(rows||[]).find(item=>String(item.key||'').toUpperCase()===key);
+    return sum + (Number(issue?.logged_seconds)||0)/60;
+  },0);
+  const communicationKeys = ['PTF-30050','PTF-28936'].filter(key=>(rows||[]).some(item=>String(item.key||'').toUpperCase()===key));
+  return DEFAULT_STREAMS.map(stream=>({
+    stream,
+    hours: formatMinutes(stream==='Communication' ? communicationMinutes : (totals.get(stream)||0)),
+    comment: stream==='Communication' ? communicationKeys.join(', ') : (comments.get(stream)||[]).join(', ')
+  }));
+}
+function renderDoneStreamPlan(){
+  state.doneStreamPlan=buildDoneStreamPlan();
+  const total=(state.doneStreamPlan||[]).reduce((sum,r)=>sum+parsePlannedMinutes(r.hours),0);
+  const box=$('doneStreamPlanTable');
+  box.innerHTML=`<div class="table-wrap"><table class="stream-plan-table done-stream-plan-table"><thead><tr><th>Stream</th><th>Hours</th><th>Comment</th></tr></thead><tbody>${state.doneStreamPlan.map(r=>`<tr><td>${escapeHtml(r.stream)}</td><td>${escapeHtml(r.hours)}</td><td>${escapeHtml(r.comment)}</td></tr>`).join('')}</tbody></table></div>`;
+  $('doneStreamPlanTotal').textContent=`Всего сделано: ${formatMinutes(total)}`;
+  const cw=state.data?.current_week||{};
+  $('doneStreamPlanNote').textContent=`${fmtDate(cw.from)} — ${fmtDate(cw.to)} · фактическая работа и миты`;
+}
+
+function renderPlan(){
+  const box=$('planTable'), plan=state.plan, custom=plan.custom_columns||[], rows=plan.rows||[];
+  $('nextNote').textContent=`${fmtDate(plan.week_start)} — ${fmtDate(plan.week_end)} · ${rows.length} задач в плане`;
+  if(!rows.length){box.innerHTML='<div class="empty">Нет задач. Добавьте строки в данных плана.</div>';return;}
+  box.innerHTML=`<div class="table-wrap"><table class="plan-table"><thead><tr><th class="task-col">Задача</th><th class="stream-col">Stream</th><th class="exact-col">Точно</th><th class="possible-col">Возможно</th>${custom.map(c=>`<th><div style="display:flex;align-items:center;justify-content:space-between;gap:6px"><span>${escapeHtml(c.title)}</span><button class="icon-btn" data-remove-field="${escapeHtml(c.id)}" title="Удалить поле">×</button></div></th>`).join('')}</tr></thead><tbody>${rows.map((r,idx)=>`<tr><td><div>${r.key?`<a class="task-link key" href="${escapeAttr(r.url || (r.key ? 'https://jira.softswiss.net/browse/'+r.key : '#'))}" target="_blank" rel="noopener noreferrer">${escapeHtml(r.key)}</a>`:''}${r.summary?' — '+escapeHtml(r.summary):''}</div>${r.status?statusBadge(r.status):''}</td><td>${streamBadge(r.stream||'Live Requests')}</td><td class="time-cell"><input data-row="${idx}" data-prop="exact" value="${escapeHtml(r.exact)}" placeholder="0"></td><td class="time-cell"><input data-row="${idx}" data-prop="possible" value="${escapeHtml(r.possible)}" placeholder="0"></td>${custom.map(c=>`<td class="custom-cell"><input data-row="${idx}" data-field="${escapeHtml(c.id)}" value="${escapeHtml((r.values||{})[c.id]||'')}"></td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+  const onPlanFieldInput = e => {
+    const r=plan.rows[Number(e.target.dataset.row)];
+    if(!r) return;
+    // Do not mutate state on input. The change handler must still have
+    // access to the previous value to calculate stream totals correctly.
+  };
+  const onPlanFieldChange = e => {
+    const rowIndex=Number(e.target.dataset.row);
+    const r=state.plan?.rows?.[rowIndex];
+    if(!r) return;
+    if(e.target.dataset.field){
+      r.values=r.values||{};
+      r.values[e.target.dataset.field]=e.target.value;
+    } else {
+      const prop=e.target.dataset.prop;
+      const stream=String(r.stream||'Live Requests').trim()||'Live Requests';
+      const rowsBefore=state.plan.rows||[];
+      const oldStreamTotal=Number(e.target.dataset.oldStreamTotal || 0);
+      const oldValue=e.target.dataset.oldValue ?? r[prop] ?? '';
+      const normalized=normalizeTimeValue(e.target.value);
+      r[prop]=normalized;
+      e.target.value=r[prop];
+      const newStreamTotal=(state.plan?.rows||[]).reduce((sum,item)=>{
+        if(String(item.stream||'Live Requests').trim()!==stream) return sum;
+        return sum + parsePlannedMinutes(item.exact) + parsePlannedMinutes(item.possible);
+      },0);
+      updateStreamHoursAfterTaskChange(stream, oldStreamTotal, newStreamTotal, oldValue);
+      renderStreamPlan();
+      renderTaskDistribution();
+      state.recalcAfterSave=false;
+      state.saveSource='tasks';
+    }
+    state.dirty=true;
+    state.revision++;
+    queueAutoSave(true,'tasks');
+  };
+  box.querySelectorAll('input[data-row]').forEach(input=>{
+    input.addEventListener('focus', e=>{
+      const idx=Number(e.target.dataset.row);
+      const row=state.plan?.rows?.[idx];
+      if(!row || e.target.dataset.field) return;
+      const stream=String(row.stream||'Live Requests').trim()||'Live Requests';
+      e.target.dataset.oldValue=String(row[e.target.dataset.prop]??'');
+      e.target.dataset.oldStreamTotal=String((state.plan?.rows||[]).reduce((sum,item)=>{
+        if(String(item.stream||'Live Requests').trim()!==stream) return sum;
+        return sum+parsePlannedMinutes(item.exact)+parsePlannedMinutes(item.possible);
+      },0));
+    });
+    input.addEventListener('input', onPlanFieldInput);
+    input.addEventListener('change', onPlanFieldChange);
+  });
+  box.querySelectorAll('[data-remove-field]').forEach(btn=>btn.addEventListener('click',()=>{
+    const id=btn.dataset.removeField;plan.custom_columns=(plan.custom_columns||[]).filter(c=>c.id!==id);plan.rows.forEach(r=>{if(r.values) delete r.values[id]});queueAutoSave(false,'tasks');renderPlan();
+  }));
+  enhanceCopyFields(box);
+  renderTaskDistribution();
+}
+function renderPlanTotal(){
+  const rows=state.plan?.rows||[];const exact=rows.reduce((s,r)=>s+parsePlannedMinutes(r.exact),0);const possible=rows.reduce((s,r)=>s+parsePlannedMinutes(r.possible),0);
+  $('planTotal').textContent=`Всего: ${formatMinutes(exact+possible)}`;
+}
+async function readJsonResponse(response){
+  const text=await response.text();
+  let payload=null;
+  try{payload=text?JSON.parse(text):null;}catch(_){
+    const preview=text.replace(/\s+/g,' ').slice(0,180);
+    throw new Error(`Сервер вернул не JSON (HTTP ${response.status}). ${preview||'Пустой ответ'}`);
+  }
+  if(!response.ok)throw new Error(payload?.error||`Ошибка HTTP ${response.status}`);
+  return payload;
+}
+async function loadProfile(){
+  try{
+    const r=await fetch('/api/planning/profile',{headers:{'Accept':'application/json'}});
+    const payload=await readJsonResponse(r);
+    const saved=(payload.profile?.email||'').trim().toLowerCase();
+    const calendar=(payload.profile?.calendar_url||payload.profile?.calendarUrl||'').trim();
+    if(saved){ state.email=saved; localStorage.setItem(EMAIL_KEY,saved); }
+    if(calendar){ state.calendarUrl=calendar; localStorage.setItem(CAL_KEY,calendar); }
+    else { state.calendarUrl=(state.calendarUrl||'').trim(); }
+    updateProfileBadge();
+    return state.email;
+  }catch(e){
+    // Backend profile storage is authoritative, but localStorage remains a fallback.
+    return state.email;
+  }
+}
+async function persistProfile(email,calendarUrl){
+  const r=await fetch('/api/planning/profile',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({email,calendar_url:calendarUrl||''})});
+  await readJsonResponse(r);
+}
+async function loadCalendar(){
+  const box=$('meetingsTable'), meetingNote=$('meetingsNote');
+  meetingNote.textContent='Загрузка календаря…'; box.innerHTML='<div class="empty">Загрузка…</div>'; if($('meetingsTotal')) $('meetingsTotal').textContent='Всего: 0h';
+  if(!state.calendarUrl){
+    if(state.data){
+      state.data.calendar={url:'',events:0,minutes:0,formatted:'0м',items:[]};
+      state.data.current_calendar={url:'',events:0,minutes:0,formatted:'0м',items:[]};
+    }
+    state.currentMeetings=[];
+    renderCalendar(); renderMeetings(); renderDoneStreamPlan(); return;
+  }
+  try{
+    const selectedStart=state.selectedWeekStart||state.data?.current_week?.from||'';
+    const planStart=state.data?.next_week?.from||addDaysIso(selectedStart,7);
+    const nextQs=`email=${encodeURIComponent(state.email)}&calendar_url=${encodeURIComponent(state.calendarUrl)}&week_start=${encodeURIComponent(planStart)}`;
+    const currentQs=`email=${encodeURIComponent(state.email)}&calendar_url=${encodeURIComponent(state.calendarUrl)}&week_start=${encodeURIComponent(selectedStart)}`;
+    const [nextResponse,currentResponse]=await Promise.all([
+      fetch(`/api/planning/calendar?period=current&${nextQs}`,{headers:{'Accept':'application/json'}}),
+      fetch(`/api/planning/calendar?period=current&${currentQs}`,{headers:{'Accept':'application/json'}})
+    ]);
+    const [nextPayload,currentPayload]=await Promise.all([readJsonResponse(nextResponse),readJsonResponse(currentResponse)]);
+    state.data.calendar=nextPayload.calendar||{url:state.calendarUrl,events:0,minutes:0,formatted:'0м',items:[]};
+    state.data.current_calendar=currentPayload.calendar||{url:state.calendarUrl,events:0,minutes:0,formatted:'0м',items:[]};
+    state.currentMeetings=(state.data.current_calendar.items||[]).map(item=>({summary:String(item.summary||'Без названия'),minutes:Number(item.minutes)||0,when:(()=>{const d=new Date(item.start);return d.toLocaleDateString('ru-RU',{weekday:'short',day:'2-digit',month:'2-digit'})+' '+d.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});})()}));
+    // Meetings are never restored from saved JSON: the calendar is the single source of truth.
+    state.meetings=(state.data.calendar.items||[]).map(item=>({summary:String(item.summary||'Без названия'),minutes:Number(item.minutes)||0,when:(()=>{const d=new Date(item.start);return d.toLocaleDateString('ru-RU',{weekday:'short',day:'2-digit',month:'2-digit'})+' '+d.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});})()}));
+  }catch(e){
+    state.data.calendar={url:state.calendarUrl,events:0,minutes:0,formatted:'0м',items:[],error:e.message};
+    state.data.current_calendar={url:state.calendarUrl,events:0,minutes:0,formatted:'0м',items:[],error:e.message};
+    state.currentMeetings=[];
+  }
+  renderCalendar(); renderMeetings(); renderDoneStreamPlan();
+  if(state.plan && !state.planLoadedFromFile){ syncStreamPlanFromTasks(false); }
+}
+
+function buildPageState(){
+  return {
+    profile: {email: state.email, calendar_url: state.calendarUrl},
+    weeks: {
+      current: state.data?.current_week || null,
+      next: state.data?.next_week || null,
+      previous: state.data?.previous_week || null,
+    },
+    current_work: state.data?.current_work || null,
+    previous_plan: state.data?.previous_plan || null,
+    stream_plan: state.streamPlan || [],
+    show_all_unclosed: !!state.showAllUnclosed,
+  };
+}
+async function savePlan(){
+  if(!state.email||!state.plan) return false;
+  if(autoSaveInFlight){autoSaveQueued=true;return false;}
+  autoSaveInFlight=true; const status=$('saveStatus'); const meetingsStatus=$('meetingsSaveStatus'); if(status)status.textContent='Автосохранение…'; if(state.saveSource==='meetings'&&meetingsStatus)meetingsStatus.textContent='Автосохранение…';
+  try{
+    const targetWeekStart=state.data?.next_week?.from||state.plan.week_start||'';
+    const snapshot={week_start:targetWeekStart,stream_plan:JSON.parse(JSON.stringify(state.streamPlan||[])),meetings:{calendar:(state.meetings||[]).filter(isMeetingNonEmpty),manual:(state.manualMeetings||[]).filter(isMeetingNonEmpty)}};
+    const r=await fetch('/api/planning/plan',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({email:state.email,week_start:targetWeekStart,plan:snapshot})});
+    const payload=await readJsonResponse(r); state.plan=payload.plan||snapshot; state.planWeekStart=targetWeekStart; state.dirty=false; if(status)status.textContent='Автосохранено'; if(state.saveSource==='meetings'&&meetingsStatus)meetingsStatus.textContent='Автосохранено'; return true;
+  }catch(e){state.dirty=true;showError(`Ошибка автосохранения: ${e.message}`);if(status)status.textContent='Не сохранено'; if(state.saveSource==='meetings'&&meetingsStatus)meetingsStatus.textContent='Не сохранено';return false;}
+  finally{autoSaveInFlight=false;if(autoSaveQueued){autoSaveQueued=false;queueAutoSave(true,'stream');}}
+}
+function queueAutoSave(immediate=false, source='stream'){
+  if(!state.email||!state.plan)return;
+  state.dirty=true; state.saveSource=source; const status=$('saveStatus'); const meetingsStatus=$('meetingsSaveStatus'); if(status)status.textContent='Есть изменения · автосохранение…'; if(source==='meetings'&&meetingsStatus)meetingsStatus.textContent='Есть изменения · автосохранение…';
+  if(autoSaveTimer)clearTimeout(autoSaveTimer);
+  if(immediate){savePlan();return;}
+  autoSaveTimer=setTimeout(()=>{autoSaveTimer=null;savePlan();},500);
+}
+
+function setSectionsLoading(isLoading, message='Загрузка данных…'){
+  document.querySelectorAll('.section').forEach(section=>{
+    const overlay=section.querySelector('.section-loading');
+    if(overlay){ overlay.querySelector('span').textContent=message; section.classList.toggle('loading-state', !!isLoading); }
+  });
+}
+
+async function loadData(){
+  hideError(); setSectionsLoading(true,'Загрузка данных…');
+  try{
+    const r=await fetch(`/api/planning/bootstrap?email=${encodeURIComponent(state.email)}&calendar_url=${encodeURIComponent(state.calendarUrl)}&include_worklog_user=${state.includeWorklogUser?'1':'0'}`,{headers:{'Accept':'application/json'}});
+    const payload=await readJsonResponse(r);
+    state.data=payload; state.streamColors=payload.stream_colors||{}; state.statusColors=payload.status_colors||{}; state.plan=JSON.parse(JSON.stringify(payload.plan||{})); state.planWeekStart=payload.next_week?.from||state.plan.week_start||''; state.streamPlan=Array.isArray(state.plan.stream_plan)?JSON.parse(JSON.stringify(state.plan.stream_plan)):[]; initStreamPlan(); state.manualMeetings=Array.isArray(state.plan?.meetings?.manual)?JSON.parse(JSON.stringify(state.plan.meetings.manual)):[]; state.meetings=(payload.calendar?.items||[]).map(item=>({summary:String(item.summary||'Без названия'),minutes:Number(item.minutes)||0,when:(()=>{const d=new Date(item.start);return d.toLocaleDateString('ru-RU',{weekday:'short',day:'2-digit',month:'2-digit'})+' '+d.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});})()})); state.dirty=false;
+    updateProfileBadge();
+    const ps=payload.next_week?.from||''; const pe=payload.next_week?.to||addDaysIso(ps,4);
+    if($('planningPeriod')) $('planningPeriod').textContent=ps ? `${fmtDate(ps)} — ${fmtDate(pe)}` : '';
+    renderTaskDistribution(); renderMeetings(); renderStreamPlan();
+    if(payload.config_required)showError(`Jira пока не настроена. Заполните username и password в ../config.ini. ${payload.config_error||''}`.trim());
+  }catch(e){showError(e.message);}
+  finally{setSectionsLoading(false);}
+}
+
+function currentPlanningJson(){ return {stream_plan:JSON.parse(JSON.stringify(state.streamPlan||[])),meetings:{calendar:(state.meetings||[]).filter(isMeetingNonEmpty),manual:(state.manualMeetings||[]).filter(isMeetingNonEmpty)}}; }
+async function submitSelectedPlan(){
+  const btn=$('submitPlan');
+  const otherBtn=$('loadPlan');
+  const status=$('submitPlanStatus');
+  btn.disabled=true; if(otherBtn) otherBtn.disabled=true;
+  btn.textContent='Сохранение…';
+  try{
+    if(state.dirty){
+      const ok=await savePlan();
+      if(!ok && state.dirty) throw new Error('Не удалось завершить автосохранение');
+    }
+    const targetWeekStart = state.planWeekStart || state.plan?.week_start || state.data?.next_week?.from;
+    if(!targetWeekStart) throw new Error('Не определена планируемая неделя');
+    const response=await fetch('/api/planning/github-save',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Accept':'application/json'},
+      body:JSON.stringify({email:state.email,week_start:targetWeekStart,plan:currentPlanningJson()}),
+    });
+    await readJsonResponse(response);
+    status.textContent='';
+  }catch(e){
+  }finally{
+    btn.disabled=false; if(otherBtn) otherBtn.disabled=false; btn.textContent='Сохранить';
+  }
+}
+
+async function loadSelectedPlanFromGithub(){
+  const btn=$('loadPlan');
+  const otherBtn=$('submitPlan');
+  btn.disabled=true; if(otherBtn) otherBtn.disabled=true;
+  const old=btn.textContent;
+  btn.textContent='Загрузка…';
+  try{
+    const targetWeekStart=state.planWeekStart||state.plan?.week_start||state.data?.next_week?.from;
+    if(!targetWeekStart) throw new Error('Не определена планируемая неделя');
+    const r=await fetch('/api/planning/github-load',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Accept':'application/json'},
+      body:JSON.stringify({email:state.email,week_start:targetWeekStart})
+    });
+    const payload=await readJsonResponse(r);
+    const loadedPlan=payload.plan||{};
+    state.plan={
+      ...(state.plan||{}),
+      week_start:targetWeekStart,
+      week_end:addDaysIso(targetWeekStart,4),
+      stream_plan:Array.isArray(loadedPlan.stream_plan)?loadedPlan.stream_plan:[]
+    };
+    state.streamPlan=JSON.parse(JSON.stringify(state.plan.stream_plan||[]));
+
+    const loadedMeetings=loadedPlan.meetings||{};
+    state.meetings=Array.isArray(loadedMeetings.calendar)?JSON.parse(JSON.stringify(loadedMeetings.calendar)):[];
+    state.manualMeetings=Array.isArray(loadedMeetings.manual)?JSON.parse(JSON.stringify(loadedMeetings.manual)):[];
+
+    state.dirty=false;
+    renderStreamPlan();
+    renderMeetings();
+    btn.textContent=old;
+  }catch(e){
+    console.error('GitHub load failed:',e);
+    btn.textContent='Ошибка';
+    setTimeout(()=>{btn.textContent=old;},1500);
+  }finally{
+    btn.disabled=false; if(otherBtn) otherBtn.disabled=false;
+  }
+}
+
+function addField(){
+  const title=prompt('Название нового поля:');
+  if(!title?.trim())return;
+  const id='field_'+Date.now();state.plan.custom_columns.push({id,title:title.trim()});state.plan.rows.forEach(r=>{r.values=r.values||{};r.values[id]=''});queueAutoSave(false,'tasks');renderPlan();renderPlanTotal();
+}
+function addDaysIso(iso, days){
+  if(!iso) return '';
+  const d=new Date(String(iso)+'T00:00:00Z');
+  if(Number.isNaN(d.getTime())) return '';
+  d.setUTCDate(d.getUTCDate() + Number(days||0));
+  return d.toISOString().slice(0,10);
+}
+function shiftWeekIso(iso, weeks){
+  if(!iso) return '';
+  const d=new Date(String(iso)+'T00:00:00Z');
+  if(Number.isNaN(d.getTime())) return '';
+  d.setUTCDate(d.getUTCDate() + (Number(weeks)||0)*7);
+  return d.toISOString().slice(0,10);
+}
+async function navigateWeek(direction){
+  if(!state.email) return;
+  const base=state.selectedWeekStart || state.data?.current_week?.from || '';
+  const target=shiftWeekIso(base, direction < 0 ? -1 : 1);
+  if(!target) return;
+  if(state.dirty){ await savePlan(); }
+  await loadData(target);
+}
+enhanceCopyFields(document);
+$('includeWorklogUser')?.addEventListener('change',async e=>{
+  state.includeWorklogUser=!!e.target.checked;
+  localStorage.setItem(WORKLOG_FILTER_KEY,state.includeWorklogUser?'1':'0');
+  await loadData();
+});
+$('changeEmail').addEventListener('click',openEmailModal);
+$('emailSave').addEventListener('click',saveEmail);
+$('emailInput').addEventListener('keydown',e=>{if(e.key==='Enter')saveEmail()});
+$('calendarInput').addEventListener('keydown',e=>{if(e.key==='Enter')saveEmail()});
+$('addMeeting').addEventListener('click',addMeeting);
+$('submitPlan').addEventListener('click',submitSelectedPlan);
+
+(async()=>{
+  state.email=(localStorage.getItem(EMAIL_KEY)||'').trim().toLowerCase();
+  const today=new Date(); today.setHours(0,0,0,0); today.setDate(today.getDate()-today.getDay()+1);
+  state.selectedWeekStart=(localStorage.getItem(WEEK_KEY)||'').trim() || today.toISOString().slice(0,10);
+  state.calendarUrl=(localStorage.getItem(CAL_KEY)||'').trim();
+  state.includeWorklogUser=localStorage.getItem(WORKLOG_FILTER_KEY)==='1';
+  if($('includeWorklogUser')) $('includeWorklogUser').checked=state.includeWorklogUser;
+  updateProfileBadge();
+  await loadProfile();
+  if(state.email){updateProfileBadge();await loadData();}else openEmailModal();
+})();
+
+</script></body></html>
+<script>document.addEventListener("DOMContentLoaded",()=>$("loadPlan")?.addEventListener("click",loadSelectedPlanFromGithub));</script>

@@ -1,3 +1,33 @@
-# Weekly Planner Reports
+# Weekly Planner Frontend 0.1.0
 
-Planning data and Weekly Planner web application.
+Статический HTML/JS-интерфейс для размещения на GitHub Pages.
+
+## Перед публикацией
+
+В `config.js` указать Google OAuth Client ID:
+
+```js
+GOOGLE_CLIENT_ID: "...apps.googleusercontent.com"
+```
+
+В Google Cloud Console добавить адрес GitHub Pages в Authorized JavaScript origins.
+
+API уже настроен на:
+
+```text
+https://home.namsilat.com/weekly-planner-api
+```
+
+## Текущие возможности
+
+- Google Sign-In;
+- вход только для email из серверного whitelist;
+- автоматическое определение роли `user` или `manager`;
+- загрузка доступных периодов;
+- рабочий интерфейс Planner 0.2.13;
+- рабочий интерфейс Manager 0.1.3;
+- чтение и сохранение собственного зашифрованного плана;
+- менеджерский список пользователей, общий план и распределение задач;
+- access token хранится только в памяти вкладки.
+
+Legacy HTML сохранён внутри проекта без серверной части. `planner.html` и `manager.html` загружают рабочие интерфейсы только после проверки API-сессии.

@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Weekly Planner</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="config.js"></script>
+  <script src="app.js" defer></script>
+  <script src="https://accounts.google.com/gsi/client" async defer onload="window.initGoogleSignIn?.()"></script>
+</head>
+<body>
+  <main class="shell gateway-shell">
+    <section id="authView" class="auth-card">
+      <div class="auth-icon">✓</div>
+      <div class="eyebrow">JIRA PLANNING</div>
+      <h1>Weekly Planner</h1>
+      <p>Войди через разрешённый Google-аккаунт.</p>
+      <div id="googleButton" class="google-button"></div>
+      <div id="authMessage" class="message" role="status"></div>
+    </section>
+
+    <section id="routeView" class="auth-card hidden">
+      <div class="eyebrow">ДОСТУП РАЗРЕШЁН</div>
+      <h2 id="welcomeTitle">Добро пожаловать</h2>
+      <p id="welcomeEmail"></p>
+      <div class="route-actions">
+        <a class="route-card" href="planner.html"><strong>Мой план</strong><span>Формирование плана на следующую неделю</span></a>
+        <a id="managerRoute" class="route-card hidden" href="manager.html"><strong>Менеджер</strong><span>Планы и распределение задач команды</span></a>
+      </div>
+      <button id="logoutBtn" class="button button-ghost" type="button">Выйти</button>
+    </section>
+  </main>
+</body>
+</html>
