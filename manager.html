@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Weekly Planner Manager</title><link rel="stylesheet" href="styles.css"><script src="config.js"></script><script src="auth-bridge.js"></script></head>
-<body class="embedded-page"><div id="page"></div><div id="loadError" class="message error"></div><div class="app-version">Интерфейс v0.2.0</div>
+<body class="embedded-page"><div id="page"></div><div id="loadError" class="message error"></div><div class="app-version">Интерфейс v0.2.1</div>
 <script>
 (async()=>{try{const response=await fetch('legacy_manager.html');if(!response.ok)throw new Error('Не удалось загрузить Manager');const html=await response.text();document.querySelector('#page').innerHTML=html;Array.from(document.querySelector('#page').querySelectorAll('script')).forEach(old=>{const script=document.createElement('script');script.textContent=old.textContent;old.replaceWith(script)});}catch(error){document.querySelector('#loadError').textContent=error.message;}})();
 </script></body></html>
