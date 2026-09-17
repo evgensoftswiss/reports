@@ -1,5 +1,5 @@
-<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="wp-build" content="0.2.4"><title>Weekly Planner Manager</title>
+<!doctype html><html lang="ru"><head><meta name="wp-build" content="0.2.5"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Weekly Planner Manager</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f4f6f8;color:#27313c;font-family:Arial,sans-serif}.wrap{width:100%;padding:22px}
 header{display:flex;align-items:center;gap:16px;margin-bottom:18px}h1{font-size:24px;margin:0}.period{font-size:13px;color:#74808c;margin-top:5px}.export-btn{background:#e8eef8;color:#245cae;border:1px solid #bfd0e8;padding:10px 16px}.export-btn:hover{background:#dce8f8}
@@ -119,7 +119,7 @@ function renderStreamPie(){
     const mid=(angle+end)/2, explodeX=(Math.cos(mid)*8).toFixed(2), explodeY=(Math.sin(mid)*8).toFixed(2);
     angle=end;
     const pct=Math.round(row.minutes/total*100), labelPoint=point(mid,58);
-    return `<path d="${path}" fill="${colors[i%colors.length]}" style="--explode-x:${explodeX}px;--explode-y:${explodeY}px" data-name="${esc(row.name)}" data-hours="${(row.minutes/60).toFixed(2)}" data-percent="${pct}"><meta name="wp-build" content="0.2.4"><title>${esc(row.name)} — ${pct}% — ${esc(row.hours)}</title></path>`;
+    return `<path d="${path}" fill="${colors[i%colors.length]}" style="--explode-x:${explodeX}px;--explode-y:${explodeY}px" data-name="${esc(row.name)}" data-hours="${(row.minutes/60).toFixed(2)}" data-percent="${pct}"><title>${esc(row.name)} — ${pct}% — ${esc(row.hours)}</title></path>`;
   }).join('');
   const legend=rows.map((row,i)=>`<div class="pie-legend-item"><span class="pie-legend-swatch" style="background:${colors[i%colors.length]}"></span><span>${esc(row.name)} — ${Math.round(row.minutes/total*100)}%</span></div>`).join('');
   box.innerHTML=`<div class="pie-chart-wrap"><svg class="stream-pie" viewBox="0 0 240 240" role="img" aria-label="Распределение часов по стримам"><circle cx="120" cy="120" r="38" fill="#fff" stroke="#fff" stroke-width="2"></circle>${slices}<circle cx="120" cy="120" r="38" fill="#fff" stroke="#fff" stroke-width="2"></circle></svg><div class="pie-legend">${legend}</div><div class="pie-tooltip" id="pieTooltip"></div></div>`;
