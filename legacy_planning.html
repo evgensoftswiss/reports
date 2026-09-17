@@ -7,7 +7,7 @@ button,input{font:inherit}
 button{border:0;border-radius:8px;padding:9px 14px;cursor:pointer;background:#1f6feb;color:#fff}
 button.secondary{background:#8cafe5;color:#fff}button.secondary:hover{background:#5f91dd}.profile-btn{background:#8dd8ff;color:#17364a}.section.blue-border{border-color:#58b9e8}.section.yellow-border{border-color:#f39a3c}
 button.danger{background:#f1d7d7;color:#8f1d1d}
-.zero-value{opacity:.5}.percent-col{background:#f4f5f6;border:1px solid #dfe3e7;border-radius:7px}
+.zero-value{opacity:.25}.percent-col{background:#f4f5f6;border:1px solid #dfe3e7;border-radius:7px}
 .percent-col{text-align:center;width:72px}.percent-badge{display:inline-block;min-width:48px;padding:7px 8px;background:#f4f5f6;border:1px solid #dfe3e7;border-radius:7px}
 button:disabled{opacity:.55;cursor:not-allowed}
 .wrap{width:100%;margin:0;padding:22px}
@@ -587,7 +587,7 @@ function renderStreamPlan(){
   const box=$('streamPlanTable');
   const rows=state.streamPlan||[];
   const total=rows.reduce((sum,r)=>sum+parsePlannedMinutes(r.hours),0);
-  box.innerHTML=`<div class="table-wrap"><table class="stream-plan-table editable-stream-plan-table"><thead><tr><th>Stream</th><th>Hours</th><th class="percent-col">%</th><th>Comment</th></tr></thead><tbody>${rows.map((r,i)=>{const pct=total?Math.round(parsePlannedMinutes(r.hours)/total*100):0;return `<tr><td>${streamBadge(r.stream)}</td><td><input class="hours-input" data-stream-row="${i}" data-stream-prop="hours" value="${escapeAttr(r.hours)}"></td><td class="percent-col" data-stream-percent="${i}">${pct}%</td><td><input data-stream-row="${i}" data-stream-prop="comment" value="${escapeAttr(r.comment)}"></td></tr>`}).join('')}</tbody></table></div>`;
+  box.innerHTML=`<div class="table-wrap"><table class="stream-plan-table editable-stream-plan-table"><thead><tr><th>Stream</th><th>Hours</th><th class="percent-col">%</th><th>Comment</th></tr></thead><tbody>${rows.map((r,i)=>{const mins=parsePlannedMinutes(r.hours),pct=total?Math.round(mins/total*100):0;return `<tr><td>${streamBadge(r.stream)}</td><td><input class="hours-input ${mins===0?'zero-value':''}" data-stream-row="${i}" data-stream-prop="hours" value="${escapeAttr(r.hours)}"></td><td class="percent-col ${pct===0?'zero-value':''}" data-stream-percent="${i}">${pct}%</td><td><input data-stream-row="${i}" data-stream-prop="comment" value="${escapeAttr(r.comment)}"></td></tr>`}).join('')}</tbody></table></div>`;
   box.querySelectorAll('input[data-stream-row]').forEach(input=>{
     input.addEventListener('input',e=>{const r=state.streamPlan[Number(e.target.dataset.streamRow)];r[e.target.dataset.streamProp]=e.target.value;queueAutoSave(false,'stream');renderStreamPlanTotal();refreshStreamPlanPercents();});
     input.addEventListener('change',e=>{
@@ -604,7 +604,7 @@ function renderStreamPlan(){
   renderStreamPlanTotal();
   enhanceCopyFields(box);
 }
-function refreshStreamPlanPercents(){const rows=state.streamPlan||[],total=rows.reduce((sum,r)=>sum+parsePlannedMinutes(r.hours),0);rows.forEach((r,i)=>{const cell=$(`streamPlanTable [data-stream-percent="${i}"]`);if(cell)cell.textContent=`${total?Math.round(parsePlannedMinutes(r.hours)/total*100):0}%`})}
+function refreshStreamPlanPercents(){const rows=state.streamPlan||[],total=rows.reduce((sum,r)=>sum+parsePlannedMinutes(r.hours),0);rows.forEach((r,i)=>{const cell=$(`streamPlanTable [data-stream-percent="${i}"]`);if(cell){const pct=total?Math.round(parsePlannedMinutes(r.hours)/total*100):0;cell.textContent=`${pct}%`;cell.classList.toggle('zero-value',pct===0)}})}
 
 function updateStreamHoursAfterTaskChange(stream, oldStreamTotal, newStreamTotal, oldValue){
   const row=(state.streamPlan||[]).find(item=>String(item.stream||'').trim()===stream);
