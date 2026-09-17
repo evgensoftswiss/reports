@@ -12,11 +12,6 @@ GOOGLE_CLIENT_ID: "...apps.googleusercontent.com"
 
 В Google Cloud Console добавить адрес GitHub Pages в Authorized JavaScript origins.
 
-API уже настроен на:
-
-```text
-https://home.namsilat.com/weekly-planner-api
-```
 
 ## Текущие возможности
 
