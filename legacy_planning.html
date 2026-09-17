@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ru"><head><meta name="wp-build" content="0.2.5"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Планирование следующей недели</title><style>
+<html lang="ru"><head><meta name="wp-build" content="0.2.6"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Планирование следующей недели</title><style>
 :root{font-family:Inter,Segoe UI,Arial,sans-serif;color:#202124;background:#f4f6f8;font-size:14px}
 *{box-sizing:border-box}
 body{margin:0}
@@ -575,7 +575,10 @@ function refreshStreamPlanInputs(){
   (state.streamPlan||[]).forEach((r,i)=>{
     const hours=box.querySelector(`input[data-stream-row="${i}"][data-stream-prop="hours"]`);
     const comment=box.querySelector(`input[data-stream-row="${i}"][data-stream-prop="comment"]`);
-    if(hours && hours.value!==String(r.hours??'')) hours.value=String(r.hours??'');
+    if(hours){
+      if(hours.value!==String(r.hours??'')) hours.value=String(r.hours??'');
+      hours.classList.toggle('zero-value',parsePlannedMinutes(r.hours)===0);
+    }
     if(comment && comment.value!==String(r.comment??'')) comment.value=String(r.comment??'');
   });
   renderStreamPlanTotal();
@@ -589,7 +592,7 @@ function renderStreamPlan(){
   const total=rows.reduce((sum,r)=>sum+parsePlannedMinutes(r.hours),0);
   box.innerHTML=`<div class="table-wrap"><table class="stream-plan-table editable-stream-plan-table"><thead><tr><th>Stream</th><th>Hours</th><th class="percent-col">%</th><th>Comment</th></tr></thead><tbody>${rows.map((r,i)=>{const mins=parsePlannedMinutes(r.hours),pct=total?Math.round(mins/total*100):0;return `<tr><td>${streamBadge(r.stream)}</td><td><input class="hours-input ${mins===0?'zero-value':''}" data-stream-row="${i}" data-stream-prop="hours" value="${escapeAttr(r.hours)}"></td><td class="percent-col ${pct===0?'zero-value':''}" data-stream-percent="${i}">${pct}%</td><td><input data-stream-row="${i}" data-stream-prop="comment" value="${escapeAttr(r.comment)}"></td></tr>`}).join('')}</tbody></table></div>`;
   box.querySelectorAll('input[data-stream-row]').forEach(input=>{
-    input.addEventListener('input',e=>{const r=state.streamPlan[Number(e.target.dataset.streamRow)];r[e.target.dataset.streamProp]=e.target.value;queueAutoSave(false,'stream');renderStreamPlanTotal();refreshStreamPlanPercents();});
+    input.addEventListener('input',e=>{const r=state.streamPlan[Number(e.target.dataset.streamRow)];r[e.target.dataset.streamProp]=e.target.value;if(e.target.dataset.streamProp==='hours')e.target.classList.toggle('zero-value',parsePlannedMinutes(e.target.value)===0);queueAutoSave(false,'stream');renderStreamPlanTotal();refreshStreamPlanPercents();});
     input.addEventListener('change',e=>{
       const r=state.streamPlan[Number(e.target.dataset.streamRow)];
       const prop=e.target.dataset.streamProp;
@@ -597,6 +600,7 @@ function renderStreamPlan(){
       state.recalcAfterSave=false;
       state.revision++;
       queueAutoSave(false,'stream');
+      if(prop==='hours')e.target.classList.toggle('zero-value',parsePlannedMinutes(r.hours)===0);
       renderStreamPlanTotal();
       refreshStreamPlanPercents();
     });
