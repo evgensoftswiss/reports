@@ -8,16 +8,15 @@ button{font:inherit;border:0;border-radius:10px;cursor:pointer;font-weight:700}.
 .table-wrap{width:100%;overflow-x:auto}table{width:100%;border-collapse:collapse;table-layout:fixed}th,td{padding:9px 10px;border-bottom:1px solid #edf0f4;text-align:left;vertical-align:middle}th{font-size:12px;color:#6b7785;background:#fafbfc}td{font-size:13px}.stream-col{width:160px}.hours-col{width:90px;text-align:center}.hours{text-align:center;background:#f4f5f6;border:1px solid #dfe3e7;border-radius:7px;padding:7px 8px}.stream{display:inline-block;padding:4px 10px 5px;border-radius:999px;background:#eef2f6;white-space:nowrap}.status{display:inline-block;padding:4px 12px 5px;border-radius:999px;background:#eef2f6;color:#56616d;font-size:12px;white-space:nowrap;margin-top:4px}.dist-table{width:100%;table-layout:fixed}.dist-table .task-col{width:30%}.dist-table .stream-col{width:13%}.dist-table .complexity-col{width:9%;text-align:center}.dist-table .days-col{width:48%;padding:0}.empty{padding:20px;color:#7a8693;text-align:center}
 .meetings th:nth-child(2),.meetings td:nth-child(2){width:100px;text-align:center}.meetings th:nth-child(3),.meetings td:nth-child(3){width:180px}
 .error{display:none;background:#ffe8e8;color:#a32929;border:1px solid #f3baba;border-radius:10px;padding:10px 14px;margin-bottom:14px}
-.grid{grid-template-columns:minmax(320px,1fr) minmax(320px,1fr)}header>div:first-child{margin-right:auto}.logout-btn{margin-left:0}.dist-table{width:99%;min-width:0}.dist-table .task-col{width:34%}.dist-table .stream-col{width:16%}.dist-table .complexity-col{width:12%}.dist-table .days-col{width:38%;overflow:hidden}#distribution .table-wrap{overflow:hidden}.dist-track{width:100%;margin:0;overflow:hidden;border-radius:7px}.dist-dot{left:0;transform:translateY(-50%)}.dist-dot2{left:100%;transform:translate(-100%,-50%)}
+.manager-actions{margin-left:auto;display:flex;align-items:center;gap:16px}.logout-btn{margin-left:0}
 .pie-legend{display:flex;flex-direction:column;gap:6px;margin-left:14px;min-width:150px}.pie-legend-item{display:flex;align-items:center;gap:7px;font-size:12px}.pie-legend-swatch{width:11px;height:11px;border-radius:3px;flex:0 0 auto}.pie-label{display:none}.zero-value{opacity:.25}
-.comment-collapse{border:1px solid #e1e5e9;border-radius:8px;background:#fafbfc;overflow:hidden}.comment-collapse summary{display:flex;align-items:center;gap:8px;cursor:pointer;color:#245cae;font-size:12px;font-weight:700;list-style:none;padding:8px 9px}.comment-collapse summary::-webkit-details-marker{display:none}.comment-preview{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}.comment-arrow{margin-left:auto;font-size:16px;line-height:1;color:#74808c}.comment-collapse[open] .comment-preview{display:none}.comment-collapse summary:hover{text-decoration:underline}.comment-collapse-body{padding:0 9px 9px;max-height:180px;overflow:auto;line-height:1.45;word-break:break-word}
-.percent-col{width:80px;text-align:center}.task-distribution-wrap{overflow-x:hidden}.task-distribution-wrap th,.task-distribution-wrap td{padding:7px 6px;overflow-wrap:anywhere}
+.comment-fold{position:relative;display:flex;align-items:flex-start;gap:8px;width:100%;min-height:34px;padding:8px 30px 8px 9px;border:1px solid #d7dde5;border-radius:7px;background:#fafbfc;cursor:pointer}.comment-fold-text{width:100%;max-height:1.4em;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;line-height:1.4;word-break:break-word}.comment-fold-arrow{position:absolute;right:10px;top:7px;color:#74808c;font-size:16px;line-height:1;transition:transform .16s ease}.comment-fold.open .comment-fold-text{max-height:180px;overflow:auto;white-space:normal;text-overflow:clip}.comment-fold.open .comment-fold-arrow{transform:rotate(180deg)}
+.percent-col{width:80px;text-align:center}.dist-table-wrap{overflow-x:hidden}
 .pie-label{font-size:7px;font-weight:700;fill:#27313c;pointer-events:none}.percent-badge{display:inline-block;min-width:48px;padding:7px 8px;text-align:center;background:#f4f5f6;border:1px solid #dfe3e7;border-radius:7px}.stream-plan-table th:nth-child(1),.stream-plan-table td:nth-child(1){width:25%}.stream-plan-table th:nth-child(2),.stream-plan-table td:nth-child(2){width:16%}.stream-plan-table th:nth-child(3),.stream-plan-table td:nth-child(3){width:12%}.stream-plan-table th:nth-child(4),.stream-plan-table td:nth-child(4){width:47%;overflow-wrap:anywhere}
-.dist-table{min-width:0;font-size:11px}.dist-table th,.dist-table td{padding:5px 3px;overflow-wrap:anywhere;word-break:break-word}.dist-table .days-col span{width:20px!important;font-size:10px}
 .pie-chart-wrap{display:flex;justify-content:center;align-items:center;min-height:260px;position:relative}.stream-pie{width:min(100%,280px);height:auto;overflow:visible}.stream-pie path,.stream-pie circle{stroke:#fff;stroke-width:2;cursor:pointer;transition:transform .18s ease,filter .18s ease}.stream-pie path:hover,.stream-pie circle:hover{filter:brightness(1.08);transform:translate(var(--explode-x),var(--explode-y))}.pie-tooltip{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);padding:7px 10px;border-radius:8px;background:#27313c;color:#fff;font-size:12px;line-height:1.35;text-align:center;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s ease}.pie-tooltip.visible{opacity:1}.pie-empty{color:#7a8693;text-align:center;padding:20px;font-size:13px}
 @media(max-width:900px){.grid{grid-template-columns:1fr}.right-stack{min-width:0}.users{grid-row:auto}.wrap{padding:12px}}
 .dist-track{height:40px;position:relative;width:100%;background:linear-gradient(to right,transparent 19.8%,#edf0f4 19.8%,#edf0f4 20.2%,transparent 20.2%,transparent 39.8%,#edf0f4 39.8%,#edf0f4 40.2%,transparent 40.2%,transparent 59.8%,#edf0f4 59.8%,#edf0f4 60.2%,transparent 60.2%,transparent 79.8%,#edf0f4 79.8%,#edf0f4 80.2%,transparent 80.2%)}.dist-line{position:absolute;top:21px;height:13px;background:#d9efff;z-index:1}.dist-dot{position:absolute;left:0;top:16px;width:10px;height:10px;border-radius:50%;background:#d9efff;z-index:10;transform:translateX(-50%)}.dist-dot2{left:100%;z-index:11}</style></head><body><div class="wrap">
-<header><div><h1>Weekly Planner Manager</h1><div id="period" class="period"></div></div><button id="load" class="load-btn">Загрузить</button><button id="export" class="export-btn" type="button">Экспорт</button><button id="logout" class="logout-btn" type="button">Выйти</button></header>
+<header><div><h1>Weekly Planner Manager</h1><div id="period" class="period"></div></div><div class="manager-actions"><button id="load" class="load-btn">Загрузить</button><button id="export" class="export-btn" type="button">Экспорт</button><button id="logout" class="logout-btn" type="button">Выйти</button></div></header>
 <div id="error" class="error"></div>
 <div class="grid">
 <div class="left-stack">
@@ -40,6 +39,20 @@ function logout(){sessionStorage.removeItem('weeklyPlanner.accessToken');session
 $('logout').addEventListener('click',logout);
 function exportPlan(){const rows=state.aggregatePlan||[];const text=['Stream\tHours\tPercent\tComment',...rows.map(r=>{const total=rows.reduce((s,x)=>s+parseHours(x.hours),0);const pct=total?Math.round(parseHours(r.hours)/total*100):0;return `${r.stream||''}\t${r.hours||''}\t${pct}%\t${String(r.comment||'').replace(/\s+/g,' ').trim()}`})].join('\n');navigator.clipboard?.writeText(text).then(()=>window.open('https://sheets.new','_blank')).catch(()=>alert('Не удалось скопировать данные'))}
 $('export').addEventListener('click',exportPlan);
+function toggleCommentFold(fold){
+  const isOpen=fold.classList.toggle('open');
+  fold.setAttribute('aria-expanded',String(isOpen));
+}
+document.addEventListener('click',event=>{
+  const fold=event.target.closest('.comment-fold');
+  if(fold)toggleCommentFold(fold);
+});
+document.addEventListener('keydown',event=>{
+  if((event.key==='Enter'||event.key===' ')&&event.target.classList.contains('comment-fold')){
+    event.preventDefault();
+    toggleCommentFold(event.target);
+  }
+});
 function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function error(msg=''){const e=$('error');e.textContent=msg;e.style.display=msg?'block':'none'}
 async function json(r){const t=await r.text();let p;try{p=JSON.parse(t)}catch{throw new Error(t||`HTTP ${r.status}`)}if(!r.ok)throw new Error(p.error||`HTTP ${r.status}`);return p}
@@ -61,9 +74,7 @@ function commentCell(row){
   if(String(row.stream||'').trim().toLocaleLowerCase()==='communication') comment=consolidateCommunicationComment(comment);
   if(!comment)return '';
   if(String(row.stream||'').trim().toLocaleLowerCase()!=='communication' || comment.length<40) return esc(comment);
-  const count=comment.split(/\s*,\s*/).filter(Boolean).length;
-  const preview=comment.length>90?comment.slice(0,90).replace(/\s+\S*$/,'')+'…':comment;
-  return `<details class="comment-collapse"><summary><span class="comment-preview">${esc(preview)}</span><span class="comment-arrow" aria-label="Развернуть">⌄</span></summary><div class="comment-collapse-body">${esc(comment)}</div></details>`;
+  return `<div class="comment-fold" role="button" tabindex="0" aria-expanded="false"><div class="comment-fold-text">${esc(comment)}</div><span class="comment-fold-arrow" aria-hidden="true">⌄</span></div>`;
 }
 function planHtml(rows){
   if(!rows?.length)return '<div class="empty">Нет данных</div>';
@@ -122,7 +133,7 @@ function distributionHtml(rows){
   if(!rows?.length)return '<div class="empty">Нет подходящих задач</div>';
   const days=['Пн','Вт','Ср','Чт','Пт'];
   const dayIdx=d=>{const x=new Date(d+'T00:00:00Z'); return x.getUTCDay()===0?6:x.getUTCDay()-1};
-  return `<div class="table-wrap"><table class="dist-table"><thead><tr><th class="task-col">Задача</th><th class="stream-col">Stream</th><th class="complexity-col">Complexity</th><th class="days-col">${days.map(x=>`<span style="display:inline-block;width:20%;text-align:center">${x}</span>`).join('')}</th></tr></thead><tbody>${rows.map(r=>{
+  return `<div class="table-wrap dist-table-wrap"><table class="dist-table"><thead><tr><th class="task-col">Задача</th><th class="stream-col">Stream</th><th class="complexity-col">Complexity</th><th class="days-col">${days.map(x=>`<span style="display:inline-block;width:20%;text-align:center">${x}</span>`).join('')}</th></tr></thead><tbody>${rows.map(r=>{
     const s=r.target_start?Math.max(0,dayIdx(r.target_start)):0;
     const e=r.target_end?Math.min(5,dayIdx(r.target_end)+1):5;
     const left=r.target_end?((e<=s)?0:`${s*20}%`):'0%';

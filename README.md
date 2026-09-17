@@ -1,4 +1,4 @@
-# Weekly Planner Frontend 0.2.1
+# Weekly Planner Frontend 0.2.2
 
 Статический HTML/JS-интерфейс для размещения на GitHub Pages.
 
