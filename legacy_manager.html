@@ -4,18 +4,18 @@
 *{box-sizing:border-box}body{margin:0;background:#f4f6f8;color:#27313c;font-family:Arial,sans-serif}.wrap{width:100%;padding:22px}
 header{display:flex;align-items:center;gap:16px;margin-bottom:18px}h1{font-size:24px;margin:0}.period{font-size:13px;color:#74808c;margin-top:5px}.export-btn{background:#e8eef8;color:#245cae;border:1px solid #bfd0e8;padding:10px 16px}.export-btn:hover{background:#dce8f8}
 button{font:inherit;border:0;border-radius:10px;cursor:pointer;font-weight:700}.logout-btn{margin-left:auto;background:#fff;color:#a32929;border:1px solid #efb8b8;padding:10px 16px}.logout-btn:hover{background:#fff1f1}.load-btn{background:#73b56c;color:#fff;padding:12px 30px;font-size:16px}.load-btn:hover{background:#5ea456}.load-btn:disabled{opacity:.6;cursor:default}
-.grid{display:grid;grid-template-columns:minmax(240px,25%) 1fr;gap:16px;align-items:start}.section{background:#fff;border:1px solid #cfcfcf;border-radius:14px;overflow:hidden}.section-head{padding:15px 18px;border-bottom:1px solid #edf0f4}.section-head h2{font-size:17px;margin:0}.pad{padding:14px 18px}.left-stack,.right-stack,.selected-user-content{display:flex;flex-direction:column;gap:16px}.right-stack{min-width:0}.selected-user-panel{min-width:0}.selected-user-head{padding:15px 18px;border-bottom:1px solid #edf0f4;background:#f8fafc}.selected-user-head h2{font-size:17px;margin:0}.selected-user-label{font-size:13px;color:#6f7b87;margin-top:4px}.selected-user-content{padding:16px}.inner-section{background:#fff;border:1px solid #e1e5e9;border-radius:12px;overflow:hidden}.subnote{font-size:12px;color:#74808c;margin-top:4px}.users{grid-row:auto}.user{width:100%;padding:10px 12px;border-radius:8px;background:transparent;text-align:left;color:#27313c;font-weight:500}.user:hover{background:#f2f5f8}.user.active{background:#e6f0ff;color:#245cae;font-weight:700}
+.grid{display:grid;grid-template-columns:minmax(320px,1fr) minmax(320px,1fr);gap:16px;align-items:start}.section{background:#fff;border:1px solid #cfcfcf;border-radius:14px;overflow:hidden}.section-head{padding:15px 18px;border-bottom:1px solid #edf0f4}.section-head h2{font-size:17px;margin:0}.pad{padding:14px 18px}.left-stack,.right-stack,.selected-user-content{display:flex;flex-direction:column;gap:16px}.right-stack{min-width:0}.selected-user-panel{min-width:0}.selected-user-head{padding:15px 18px;border-bottom:1px solid #edf0f4;background:#f8fafc}.selected-user-head h2{font-size:17px;margin:0}.selected-user-label{font-size:13px;color:#6f7b87;margin-top:4px}.selected-user-content{padding:16px}.inner-section{background:#fff;border:1px solid #e1e5e9;border-radius:12px;overflow:hidden}.subnote{font-size:12px;color:#74808c;margin-top:4px}.users{grid-row:auto}.user{width:100%;padding:10px 12px;border-radius:8px;background:transparent;text-align:left;color:#27313c;font-weight:500}.user:hover{background:#f2f5f8}.user.active{background:#e6f0ff;color:#245cae;font-weight:700}
 .table-wrap{width:100%;overflow-x:auto}table{width:100%;border-collapse:collapse;table-layout:fixed}th,td{padding:9px 10px;border-bottom:1px solid #edf0f4;text-align:left;vertical-align:middle}th{font-size:12px;color:#6b7785;background:#fafbfc}td{font-size:13px}.stream-col{width:160px}.hours-col{width:90px;text-align:center}.hours{text-align:center;background:#f4f5f6;border:1px solid #dfe3e7;border-radius:7px;padding:7px 8px}.stream{display:inline-block;padding:4px 10px 5px;border-radius:999px;background:#eef2f6;white-space:nowrap}.status{display:inline-block;padding:4px 12px 5px;border-radius:999px;background:#eef2f6;color:#56616d;font-size:12px;white-space:nowrap;margin-top:4px}.dist-table{width:100%;table-layout:fixed}.dist-table .task-col{width:30%}.dist-table .stream-col{width:13%}.dist-table .complexity-col{width:9%;text-align:center}.dist-table .days-col{width:48%;padding:0}.empty{padding:20px;color:#7a8693;text-align:center}
 .meetings th:nth-child(2),.meetings td:nth-child(2){width:100px;text-align:center}.meetings th:nth-child(3),.meetings td:nth-child(3){width:180px}
 .error{display:none;background:#ffe8e8;color:#a32929;border:1px solid #f3baba;border-radius:10px;padding:10px 14px;margin-bottom:14px}
 .manager-actions{margin-left:auto;display:flex;align-items:center;gap:16px}.logout-btn{margin-left:0}
 .pie-legend{display:flex;flex-direction:column;gap:6px;margin-left:14px;min-width:150px}.pie-legend-item{display:flex;align-items:center;gap:7px;font-size:12px}.pie-legend-swatch{width:11px;height:11px;border-radius:3px;flex:0 0 auto}.pie-label{display:none}.zero-value{opacity:.25}
-.comment-fold{position:relative;display:flex;align-items:flex-start;gap:8px;width:100%;min-height:34px;padding:8px 30px 8px 9px;border:1px solid #d7dde5;border-radius:7px;background:#fafbfc;cursor:pointer}.comment-fold-text{width:100%;max-height:1.4em;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;line-height:1.4;word-break:break-word}.comment-fold-arrow{position:absolute;right:10px;top:7px;color:#74808c;font-size:16px;line-height:1;transition:transform .16s ease}.comment-fold.open .comment-fold-text{max-height:180px;overflow:auto;white-space:normal;text-overflow:clip}.comment-fold.open .comment-fold-arrow{transform:rotate(180deg)}
+.comment-fold{position:relative;width:100%;padding-right:22px;cursor:pointer;line-height:1.4}.comment-fold:focus-visible{outline:2px solid #8fb8e8;outline-offset:2px;border-radius:3px}.comment-fold-text{display:block;width:100%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.comment-fold-arrow{position:absolute;right:2px;top:50%;color:#74808c;font-size:14px;line-height:1;transform:translateY(-50%);transition:transform .16s ease}.comment-fold.open .comment-fold-text{overflow:visible;white-space:normal;text-overflow:clip}.comment-fold.open .comment-fold-arrow{transform:translateY(-50%) rotate(180deg)}
 .percent-col{width:80px;text-align:center}.dist-table-wrap{overflow-x:hidden}
 .pie-label{font-size:7px;font-weight:700;fill:#27313c;pointer-events:none}.percent-badge{display:inline-block;min-width:48px;padding:7px 8px;text-align:center;background:#f4f5f6;border:1px solid #dfe3e7;border-radius:7px}.stream-plan-table th:nth-child(1),.stream-plan-table td:nth-child(1){width:25%}.stream-plan-table th:nth-child(2),.stream-plan-table td:nth-child(2){width:16%}.stream-plan-table th:nth-child(3),.stream-plan-table td:nth-child(3){width:12%}.stream-plan-table th:nth-child(4),.stream-plan-table td:nth-child(4){width:47%;overflow-wrap:anywhere}
 .pie-chart-wrap{display:flex;justify-content:center;align-items:center;min-height:260px;position:relative}.stream-pie{width:min(100%,280px);height:auto;overflow:visible}.stream-pie path,.stream-pie circle{stroke:#fff;stroke-width:2;cursor:pointer;transition:transform .18s ease,filter .18s ease}.stream-pie path:hover,.stream-pie circle:hover{filter:brightness(1.08);transform:translate(var(--explode-x),var(--explode-y))}.pie-tooltip{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);padding:7px 10px;border-radius:8px;background:#27313c;color:#fff;font-size:12px;line-height:1.35;text-align:center;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s ease}.pie-tooltip.visible{opacity:1}.pie-empty{color:#7a8693;text-align:center;padding:20px;font-size:13px}
 @media(max-width:900px){.grid{grid-template-columns:1fr}.right-stack{min-width:0}.users{grid-row:auto}.wrap{padding:12px}}
-.dist-track{height:40px;position:relative;width:100%;background:linear-gradient(to right,transparent 19.8%,#edf0f4 19.8%,#edf0f4 20.2%,transparent 20.2%,transparent 39.8%,#edf0f4 39.8%,#edf0f4 40.2%,transparent 40.2%,transparent 59.8%,#edf0f4 59.8%,#edf0f4 60.2%,transparent 60.2%,transparent 79.8%,#edf0f4 79.8%,#edf0f4 80.2%,transparent 80.2%)}.dist-line{position:absolute;top:21px;height:13px;background:#d9efff;z-index:1}.dist-dot{position:absolute;left:0;top:16px;width:10px;height:10px;border-radius:50%;background:#d9efff;z-index:10;transform:translateX(-50%)}.dist-dot2{left:100%;z-index:11}</style></head><body><div class="wrap">
+.dist-header{height:34px;display:grid;grid-template-columns:repeat(5,1fr);align-items:center}.dist-header span{height:34px;display:flex;align-items:center;justify-content:center;border-left:1px solid #edf0f4}.dist-header span:nth-child(even){background:#fafbfc}.dist-track{height:42px;position:relative;width:100%;overflow:hidden}.dist-day{position:absolute;top:0;bottom:0;width:20%;border-left:1px solid #edf0f4;background:#fff}.dist-day:nth-child(even){background:#fafbfc}.dist-day:nth-child(1){left:0}.dist-day:nth-child(2){left:20%}.dist-day:nth-child(3){left:40%}.dist-day:nth-child(4){left:60%}.dist-day:nth-child(5){left:80%}.dist-line{position:absolute;top:50%;height:13px;z-index:2;transform:translateY(-50%)}.dist-dot{position:absolute;top:50%;width:18px;height:18px;border-radius:50%;z-index:3;transform:translate(-50%,-50%)}.dist-line.green,.dist-dot.green{background:#58bf68}.dist-line.yellow,.dist-dot.yellow{background:#f0c700}.dist-line.red,.dist-dot.red{background:#ef5350}.dist-task-status{margin-top:5px}</style></head><body><div class="wrap">
 <header><div><h1>Weekly Planner Manager</h1><div id="period" class="period"></div></div><div class="manager-actions"><button id="load" class="load-btn">Загрузить</button><button id="export" class="export-btn" type="button">Экспорт</button><button id="logout" class="logout-btn" type="button">Выйти</button></div></header>
 <div id="error" class="error"></div>
 <div class="grid">
@@ -129,22 +129,66 @@ function statusStyle(name){
   };
   const c=palette[name]; return c?`style="background:${c[0]};color:${c[1]}"`:'';
 }
-function distributionHtml(rows){
+function distributionDayIndex(value,weekStart){
+  if(!value||value==='0'||!weekStart)return null;
+  const start=Date.parse(`${weekStart}T00:00:00Z`),date=Date.parse(`${value}T00:00:00Z`);
+  if(Number.isNaN(start)||Number.isNaN(date))return null;
+  const diff=Math.round((date-start)/86400000);
+  if(diff<0)return -1;
+  if(diff>4)return 5;
+  return diff;
+}
+function addDaysIso(value,days){
+  const date=new Date(`${value}T00:00:00Z`);
+  date.setUTCDate(date.getUTCDate()+days);
+  return date.toISOString().slice(0,10);
+}
+function businessDaysRemainingFrom(startDate,endDate){
+  if(!startDate||!endDate||startDate==='0'||endDate==='0')return 0;
+  const start=new Date(`${startDate}T00:00:00Z`),end=new Date(`${endDate}T00:00:00Z`);
+  if(Number.isNaN(start.getTime())||Number.isNaN(end.getTime())||end<=start)return 0;
+  let count=0,cursor=new Date(start);cursor.setUTCDate(cursor.getUTCDate()+1);
+  while(cursor<=end){const day=cursor.getUTCDay();if(day!==0&&day!==6)count++;cursor.setUTCDate(cursor.getUTCDate()+1)}
+  return count;
+}
+function distributionColor(dayDate,endDate){
+  if(!endDate||endDate==='0')return 'green';
+  const days=businessDaysRemainingFrom(dayDate,endDate);
+  return days<=1?'red':days<=3?'yellow':'green';
+}
+function distributionPointPercent(index){
+  if(index===null||index===-1)return 0;
+  if(index>=5)return 100;
+  return index*20+10;
+}
+function distributionHtml(rows,weekStart){
   if(!rows?.length)return '<div class="empty">Нет подходящих задач</div>';
   const days=['Пн','Вт','Ср','Чт','Пт'];
-  const dayIdx=d=>{const x=new Date(d+'T00:00:00Z'); return x.getUTCDay()===0?6:x.getUTCDay()-1};
-  return `<div class="table-wrap dist-table-wrap"><table class="dist-table"><thead><tr><th class="task-col">Задача</th><th class="stream-col">Stream</th><th class="complexity-col">Complexity</th><th class="days-col">${days.map(x=>`<span style="display:inline-block;width:20%;text-align:center">${x}</span>`).join('')}</th></tr></thead><tbody>${rows.map(r=>{
-    const s=r.target_start?Math.max(0,dayIdx(r.target_start)):0;
-    const e=r.target_end?Math.min(5,dayIdx(r.target_end)+1):5;
-    const left=r.target_end?((e<=s)?0:`${s*20}%`):'0%';
-    const right=r.target_end?((e<=s)?0:`${(5-e)*20}%`):'0%';
-    return `<tr><td><a href="${esc(r.url)}" target="_blank" rel="noopener noreferrer"><b>${esc(r.key)}</b></a>${r.summary?' — '+esc(r.summary):''}</td><td><span class="stream" ${streamStyle(r.stream)}>${esc(r.stream)}</span></td><td class="complexity-col">${esc(r.complexity)}</td><td class="days-col"><div class="dist-track"><div class="dist-line" style="left:${left};right:${right}"></div><span class="dist-dot"></span><span class="dist-dot dist-dot2"></span></div></td></tr>`}).join('')}</tbody></table></div>`;
+  const dates=days.map((_,index)=>addDaysIso(weekStart,index));
+  return `<div class="table-wrap dist-table-wrap"><table class="dist-table"><thead><tr><th class="task-col">Задача</th><th class="stream-col">Stream</th><th class="complexity-col">Complexity</th><th class="days-col"><div class="dist-header">${days.map(x=>`<span>${x}</span>`).join('')}</div></th></tr></thead><tbody>${rows.map(r=>{
+    const startValue=String(r.target_start||'0'),endValue=String(r.target_end||'0');
+    const startIndex=distributionDayIndex(startValue,weekStart),endIndex=distributionDayIndex(endValue,weekStart);
+    const lineStart=startValue==='0'||startIndex===null||startIndex===-1?0:distributionPointPercent(startIndex);
+    const lineEnd=endValue==='0'||endIndex===null?0:distributionPointPercent(endIndex);
+    const segments=[];
+    if(endValue!=='0'&&lineEnd>=lineStart){
+      for(let i=0;i<5;i++){
+        const segmentStart=Math.max(lineStart,i*20),segmentEnd=Math.min(lineEnd,(i+1)*20);
+        if(segmentEnd>segmentStart)segments.push(`<span class="dist-line ${distributionColor(dates[i],endValue)}" style="left:${segmentStart}%;width:${segmentEnd-segmentStart}%"></span>`);
+      }
+    }
+    const startPercent=startValue==='0'||startIndex===null||startIndex===-1?0:distributionPointPercent(startIndex);
+    const endPercent=endValue==='0'||endIndex===null?0:distributionPointPercent(endIndex);
+    const startColor=distributionColor(startValue!=='0'?startValue:weekStart,endValue);
+    const endColor=distributionColor(endValue!=='0'?endValue:weekStart,endValue);
+    const status=r.status?`<div class="dist-task-status"><span class="status" ${statusStyle(r.status)}>${esc(r.status)}</span></div>`:'';
+    return `<tr><td><div><a href="${esc(r.url)}" target="_blank" rel="noopener noreferrer"><b>${esc(r.key)}</b></a>${r.summary?' — '+esc(r.summary):''}</div>${status}</td><td><span class="stream" ${streamStyle(r.stream)}>${esc(r.stream)}</span></td><td class="complexity-col">${esc(r.complexity)}</td><td class="days-col"><div class="dist-track">${days.map(()=>'<span class="dist-day"></span>').join('')}${segments.join('')}<span class="dist-dot ${startColor}" style="left:${startPercent}%"></span><span class="dist-dot ${endColor}" style="left:${endPercent}%"></span></div></td></tr>`}).join('')}</tbody></table></div>`;
 }
 async function loadDistribution(email){
   try{
     const p=await json(await fetch('/api/distribution?email='+encodeURIComponent(email)));
     $('distributionPeriod').textContent=`${p.period.from} — ${p.period.to}`;
-    $('distribution').innerHTML=distributionHtml(p.tasks);
+    $('distribution').innerHTML=distributionHtml(p.tasks,p.period.from);
   }catch(e){$('distribution').innerHTML=`<div class="empty">${esc(e.message)}</div>`}
 }
 async function selectUser(i){state.selected=i;renderUsers();const u=state.users[i];$('selectedUserLabel').textContent=u.email;try{const p=await json(await fetch('/api/user?filename='+encodeURIComponent(u.filename)));$('plan').innerHTML=planHtml(p.plan.stream_plan);$('meetings').innerHTML=meetingsHtml(p.plan.meetings);loadDistribution(u.email)}catch(e){error(e.message)}}
