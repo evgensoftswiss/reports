@@ -1,4 +1,4 @@
-<!doctype html><html lang="ru"><head><meta name="wp-build" content="0.2.6"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<!doctype html><html lang="ru"><head><meta name="wp-build" content="0.2.7"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Weekly Planner Manager</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f4f6f8;color:#27313c;font-family:Arial,sans-serif}.wrap{width:100%;padding:22px}
@@ -51,7 +51,8 @@ button{font:inherit;border:0;border-radius:10px;cursor:pointer;font-weight:700}.
 const $=id=>document.getElementById(id);let state={users:[],selected:null,streamColors:{},aggregatePlan:[]};
 function logout(){sessionStorage.removeItem('weeklyPlanner.accessToken');sessionStorage.removeItem('weeklyPlanner.user');window.location.replace(new URL('index.html',window.location.href))}
 $('logout').addEventListener('click',logout);
-function exportPlan(){const rows=state.aggregatePlan||[];const text=['Stream\tHours\tPercent\tComment',...rows.map(r=>{const total=rows.reduce((s,x)=>s+parseHours(x.hours),0);const pct=total?Math.round(parseHours(r.hours)/total*100):0;return `${r.stream||''}\t${r.hours||''}\t${pct}%\t${String(r.comment||'').replace(/\s+/g,' ').trim()}`})].join('\n');navigator.clipboard?.writeText(text).then(()=>window.open('https://sheets.new','_blank')).catch(()=>alert('Не удалось скопировать данные'))}
+function formatPercent(value){return `${Number(value||0).toFixed(1)}%`}
+function exportPlan(){const rows=state.aggregatePlan||[];const text=['Stream\tHours\tPercent\tComment',...rows.map(r=>{const total=rows.reduce((s,x)=>s+parseHours(x.hours),0);const pct=total?parseHours(r.hours)/total*100:0;return `${r.stream||''}\t${r.hours||''}\t${formatPercent(pct)}\t${String(r.comment||'').replace(/\s+/g,' ').trim()}`})].join('\n');navigator.clipboard?.writeText(text).then(()=>window.open('https://sheets.new','_blank')).catch(()=>alert('Не удалось скопировать данные'))}
 $('export').addEventListener('click',exportPlan);
 function toggleCommentFold(fold){
   const isOpen=fold.classList.toggle('open');
@@ -93,7 +94,7 @@ function commentCell(row){
 function planHtml(rows){
   if(!rows?.length)return '<div class="empty">Нет данных</div>';
   const total=rows.reduce((sum,r)=>sum+parseHours(r.hours),0);
-  return `<div class="table-wrap"><table><thead><tr><th class="stream-col">Stream</th><th class="hours-col">Hours</th><th class="percent-col">%</th><th>Comment</th></tr></thead><tbody>${rows.map(r=>{const mins=parseHours(r.hours),pct=total?Math.round(mins/total*100):0;return `<tr><td><span class="stream" ${streamStyle(r.stream)}>${esc(r.stream)}</span></td><td><div class="hours ${mins===0?'zero-value':''}">${esc(r.hours)}</div></td><td class="percent-col"><span class="percent-badge ${pct===0?'zero-value':''}">${pct}%</span></td><td>${commentCell(r)}</td></tr>`}).join('')}</tbody></table></div>`;
+  return `<div class="table-wrap"><table><thead><tr><th class="stream-col">Stream</th><th class="hours-col">Hours</th><th class="percent-col">%</th><th>Comment</th></tr></thead><tbody>${rows.map(r=>{const mins=parseHours(r.hours),pct=total?mins/total*100:0;return `<tr><td><span class="stream" ${streamStyle(r.stream)}>${esc(r.stream)}</span></td><td><div class="hours ${mins===0?'zero-value':''}">${esc(r.hours)}</div></td><td class="percent-col"><span class="percent-badge ${mins===0?'zero-value':''}">${formatPercent(pct)}</span></td><td>${commentCell(r)}</td></tr>`}).join('')}</tbody></table></div>`;
 }
 function parseHours(value){
   const text=String(value??'').trim().toLowerCase().replace(',','.');
@@ -118,14 +119,14 @@ function renderStreamPie(){
     const path=`M ${cx} ${cy} L ${p1[0].toFixed(2)} ${p1[1].toFixed(2)} A ${radius} ${radius} 0 ${large} 1 ${p2[0].toFixed(2)} ${p2[1].toFixed(2)} Z`;
     const mid=(angle+end)/2, explodeX=(Math.cos(mid)*8).toFixed(2), explodeY=(Math.sin(mid)*8).toFixed(2);
     angle=end;
-    const pct=Math.round(row.minutes/total*100), labelPoint=point(mid,58);
+    const pct=row.minutes/total*100, labelPoint=point(mid,58);
     return `<path d="${path}" fill="${colors[i%colors.length]}" style="--explode-x:${explodeX}px;--explode-y:${explodeY}px" data-name="${esc(row.name)}" data-hours="${(row.minutes/60).toFixed(2)}" data-percent="${pct}"><title>${esc(row.name)} — ${pct}% — ${esc(row.hours)}</title></path>`;
   }).join('');
-  const legend=rows.map((row,i)=>`<div class="pie-legend-item"><span class="pie-legend-swatch" style="background:${colors[i%colors.length]}"></span><span>${esc(row.name)} — ${Math.round(row.minutes/total*100)}%</span></div>`).join('');
+  const legend=rows.map((row,i)=>`<div class="pie-legend-item"><span class="pie-legend-swatch" style="background:${colors[i%colors.length]}"></span><span>${esc(row.name)} — ${formatPercent(row.minutes/total*100)}</span></div>`).join('');
   box.innerHTML=`<div class="pie-chart-wrap"><svg class="stream-pie" viewBox="0 0 240 240" role="img" aria-label="Распределение часов по стримам"><circle cx="120" cy="120" r="38" fill="#fff" stroke="#fff" stroke-width="2"></circle>${slices}<circle cx="120" cy="120" r="38" fill="#fff" stroke="#fff" stroke-width="2"></circle></svg><div class="pie-legend">${legend}</div><div class="pie-tooltip" id="pieTooltip"></div></div>`;
   const tooltip=$('pieTooltip');
   box.querySelectorAll('.stream-pie path').forEach(slice=>{
-    const show=()=>{tooltip.textContent=`${slice.dataset.name}: ${slice.dataset.percent}% · ${slice.dataset.hours} ч`;tooltip.classList.add('visible');};
+    const show=()=>{tooltip.textContent=`${slice.dataset.name}: ${formatPercent(Number(slice.dataset.percent))} · ${slice.dataset.hours} ч`;tooltip.classList.add('visible');};
     slice.addEventListener('mouseenter',show); slice.addEventListener('focus',show);
     slice.addEventListener('mouseleave',()=>tooltip.classList.remove('visible')); slice.addEventListener('blur',()=>tooltip.classList.remove('visible'));
   });
