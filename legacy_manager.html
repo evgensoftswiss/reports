@@ -1,4 +1,4 @@
-<!doctype html><html lang="ru"><head><meta name="wp-build" content="0.2.9"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<!doctype html><html lang="ru"><head><meta name="wp-build" content="0.3.0"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Weekly Planner Manager</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f4f6f8;color:#27313c;font-family:Arial,sans-serif}.wrap{width:100%;padding:22px}
@@ -11,7 +11,7 @@ button{font:inherit;border:0;border-radius:10px;cursor:pointer;font-weight:700}.
 .manager-actions{margin-left:auto;display:flex;align-items:center;gap:16px}.logout-btn{margin-left:0}
 .pie-legend{display:flex;flex-direction:column;gap:6px;margin-left:14px;min-width:150px}.pie-legend-item{display:flex;align-items:center;gap:7px;font-size:12px}.pie-legend-swatch{width:11px;height:11px;border-radius:3px;flex:0 0 auto}.pie-label{display:none}.zero-value{opacity:.25}
 .comment-fold{position:relative;width:100%;padding-right:22px;cursor:pointer;line-height:1.4}.comment-fold:focus-visible{outline:2px solid #8fb8e8;outline-offset:2px;border-radius:3px}.comment-fold-text{display:block;width:100%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.comment-fold-arrow{position:absolute;right:2px;top:50%;color:#74808c;font-size:14px;line-height:1;transform:translateY(-50%);transition:transform .16s ease}.comment-fold.open .comment-fold-text{overflow:visible;white-space:normal;text-overflow:clip}.comment-fold.open .comment-fold-arrow{transform:translateY(-50%) rotate(180deg)}
-.percent-col{width:80px;text-align:center}.dist-table-wrap{overflow-x:hidden}
+.percent-col{width:80px;text-align:center}.dist-table-wrap{overflow-x:hidden}.plan-total-warning{color:#c62828}
 /* One text node; expanding changes the table row height, never adds a copy. */
 .comment-fold{display:block;min-width:0;min-height:32px;padding:6px 24px 6px 0}
 .comment-fold-text{min-width:0;overflow-wrap:anywhere}
@@ -41,7 +41,7 @@ button{font:inherit;border:0;border-radius:10px;cursor:pointer;font-weight:700}.
 <section class="section selected-user-panel">
   <div class="selected-user-head"><h2>Выбранный пользователь</h2><div id="selectedUserLabel" class="selected-user-label">Пользователь не выбран</div></div>
   <div class="selected-user-content">
-    <section class="inner-section"><div class="section-head"><h2 id="selectedPlanTitle">План на следующую неделю (0h/40h)</h2></div><div id="plan" class="pad"></div></section>
+    <section class="inner-section"><div class="section-head"><h2>План на следующую неделю <span id="selectedPlanTotal">(0h)</span></h2></div><div id="plan" class="pad"></div></section>
     <section class="inner-section"><div class="section-head"><h2>Распределение задач на следующую неделю</h2><div id="distributionPeriod" class="subnote"></div></div><div id="distribution" class="pad"></div></section>
     <section class="inner-section"><div class="section-head"><h2>Миты на следующую неделю</h2></div><div id="meetings" class="pad"></div></section>
   </div>
@@ -94,7 +94,7 @@ function commentCell(row){
 function formatPlanTime(minutes){const n=Math.max(0,Math.round(Number(minutes)||0)),h=Math.floor(n/60),m=n%60;return m?`${h}h ${m}m`:`${h}h`}
 function planHtml(rows){
   const total=(rows||[]).reduce((sum,r)=>sum+parseHours(r.hours),0);
-  const title=$('selectedPlanTitle');if(title)title.textContent=`План на следующую неделю (${formatPlanTime(total)}/40h)`;
+  const title=$('selectedPlanTotal');if(title){title.textContent=`(${formatPlanTime(total)})`;title.classList.toggle('plan-total-warning',total!==2400);}
   if(!rows?.length)return '<div class="empty">Нет данных</div>';
   return `<div class="table-wrap"><table><thead><tr><th class="stream-col">Stream</th><th class="hours-col">Hours</th><th class="percent-col">%</th><th>Comment</th></tr></thead><tbody>${rows.map(r=>{const mins=parseHours(r.hours),pct=total?mins/total*100:0;return `<tr><td><span class="stream" ${streamStyle(r.stream)}>${esc(r.stream)}</span></td><td><div class="hours ${mins===0?'zero-value':''}">${esc(r.hours)}</div></td><td class="percent-col"><span class="percent-badge ${mins===0?'zero-value':''}">${formatPercent(pct)}</span></td><td>${commentCell(r)}</td></tr>`}).join('')}</tbody></table></div>`;
 }
