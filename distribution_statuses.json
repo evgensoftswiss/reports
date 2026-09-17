@@ -1,0 +1,9 @@
+{
+  "statuses": [
+    "In Progress",
+    "Submitted",
+    "To Do",
+    "Design Review",
+    "Ready for Design Review"
+  ]
+}

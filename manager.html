@@ -1,6 +1,75 @@
-<!doctype html>
-<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Weekly Planner Manager</title><link rel="stylesheet" href="styles.css"><script src="config.js"></script><script src="auth-bridge.js"></script></head>
-<body class="embedded-page"><div id="page"></div><div id="loadError" class="message error"></div>
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Weekly Planner Manager</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f4f6f8;color:#27313c;font-family:Arial,sans-serif}.wrap{width:100%;padding:22px}
+header{display:flex;align-items:center;gap:16px;margin-bottom:18px}h1{font-size:24px;margin:0}.period{font-size:13px;color:#74808c;margin-top:5px}
+button{font:inherit;border:0;border-radius:10px;cursor:pointer;font-weight:700}.load-btn{margin-left:auto;background:#73b56c;color:#fff;padding:12px 30px;font-size:16px}.load-btn:hover{background:#5ea456}.load-btn:disabled{opacity:.6;cursor:default}
+.grid{display:grid;grid-template-columns:minmax(240px,25%) 1fr;gap:16px;align-items:start}.section{background:#fff;border:1px solid #cfcfcf;border-radius:14px;overflow:hidden}.section-head{padding:15px 18px;border-bottom:1px solid #edf0f4}.section-head h2{font-size:17px;margin:0}.pad{padding:14px 18px}.left-stack,.right-stack,.selected-user-content{display:flex;flex-direction:column;gap:16px}.right-stack{min-width:0}.selected-user-panel{min-width:0}.selected-user-head{padding:15px 18px;border-bottom:1px solid #edf0f4;background:#f8fafc}.selected-user-head h2{font-size:17px;margin:0}.selected-user-label{font-size:13px;color:#6f7b87;margin-top:4px}.selected-user-content{padding:16px}.inner-section{background:#fff;border:1px solid #e1e5e9;border-radius:12px;overflow:hidden}.subnote{font-size:12px;color:#74808c;margin-top:4px}.users{grid-row:auto}.user{width:100%;padding:10px 12px;border-radius:8px;background:transparent;text-align:left;color:#27313c;font-weight:500}.user:hover{background:#f2f5f8}.user.active{background:#e6f0ff;color:#245cae;font-weight:700}
+.table-wrap{width:100%;overflow-x:auto}table{width:100%;border-collapse:collapse;table-layout:fixed}th,td{padding:9px 10px;border-bottom:1px solid #edf0f4;text-align:left;vertical-align:middle}th{font-size:12px;color:#6b7785;background:#fafbfc}td{font-size:13px}.stream-col{width:160px}.hours-col{width:90px;text-align:center}.hours{text-align:center;background:#f4f5f6;border:1px solid #dfe3e7;border-radius:7px;padding:7px 8px}.stream{display:inline-block;padding:4px 10px 5px;border-radius:999px;background:#eef2f6;white-space:nowrap}.status{display:inline-block;padding:4px 12px 5px;border-radius:999px;background:#eef2f6;color:#56616d;font-size:12px;white-space:nowrap;margin-top:4px}.dist-table{width:100%;table-layout:fixed}.dist-table .task-col{width:30%}.dist-table .stream-col{width:13%}.dist-table .complexity-col{width:9%;text-align:center}.dist-table .days-col{width:48%;padding:0}.empty{padding:20px;color:#7a8693;text-align:center}
+.meetings th:nth-child(2),.meetings td:nth-child(2){width:100px;text-align:center}.meetings th:nth-child(3),.meetings td:nth-child(3){width:180px}
+.error{display:none;background:#ffe8e8;color:#a32929;border:1px solid #f3baba;border-radius:10px;padding:10px 14px;margin-bottom:14px}
+@media(max-width:900px){.grid{grid-template-columns:1fr}.right-stack{min-width:0}.users{grid-row:auto}.wrap{padding:12px}}
+.dist-track{height:40px;position:relative;width:100%;background:linear-gradient(to right,transparent 19.8%,#edf0f4 19.8%,#edf0f4 20.2%,transparent 20.2%,transparent 39.8%,#edf0f4 39.8%,#edf0f4 40.2%,transparent 40.2%,transparent 59.8%,#edf0f4 59.8%,#edf0f4 60.2%,transparent 60.2%,transparent 79.8%,#edf0f4 79.8%,#edf0f4 80.2%,transparent 80.2%)}.dist-line{position:absolute;top:21px;height:13px;background:#d9efff;z-index:1}.dist-dot{position:absolute;left:0;top:16px;width:10px;height:10px;border-radius:50%;background:#d9efff;z-index:10;transform:translateX(-50%)}.dist-dot2{left:100%;z-index:11}</style></head><body><div class="wrap">
+<header><div><h1>Weekly Planner Manager</h1><div id="period" class="period"></div></div><button id="load" class="load-btn">Загрузить</button></header>
+<div id="error" class="error"></div>
+<div class="grid">
+<div class="left-stack">
+<section class="section users"><div class="section-head"><h2>Пользователи</h2></div><div id="users" class="pad"></div></section>
+<section class="section"><div class="section-head"><h2>Общий план на следующую неделю</h2></div><div id="aggregate" class="pad"></div></section>
+</div>
+<section class="section selected-user-panel">
+  <div class="selected-user-head"><h2>Выбранный пользователь</h2><div id="selectedUserLabel" class="selected-user-label">Пользователь не выбран</div></div>
+  <div class="selected-user-content">
+    <section class="inner-section"><div class="section-head"><h2>План на следующую неделю</h2></div><div id="plan" class="pad"></div></section>
+    <section class="inner-section"><div class="section-head"><h2>Распределение задач на следующую неделю</h2><div id="distributionPeriod" class="subnote"></div></div><div id="distribution" class="pad"></div></section>
+    <section class="inner-section"><div class="section-head"><h2>Миты на следующую неделю</h2></div><div id="meetings" class="pad"></div></section>
+  </div>
+</section>
+</div></div>
 <script>
-(async()=>{try{const response=await fetch('legacy_manager.html');if(!response.ok)throw new Error('Не удалось загрузить Manager');const html=await response.text();document.querySelector('#page').innerHTML=html;Array.from(document.querySelector('#page').querySelectorAll('script')).forEach(old=>{const script=document.createElement('script');script.textContent=old.textContent;old.replaceWith(script)});}catch(error){document.querySelector('#loadError').textContent=error.message;}})();
+const $=id=>document.getElementById(id);let state={users:[],selected:null,streamColors:{},aggregatePlan:[]};
+function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function error(msg=''){const e=$('error');e.textContent=msg;e.style.display=msg?'block':'none'}
+async function json(r){const t=await r.text();let p;try{p=JSON.parse(t)}catch{throw new Error(t||`HTTP ${r.status}`)}if(!r.ok)throw new Error(p.error||`HTTP ${r.status}`);return p}
+function renderUsers(){const b=$('users');if(!state.users.length){b.innerHTML='<div class="empty">Нет загруженных отчетов</div>';return}b.innerHTML=state.users.map((u,i)=>`<button class="user ${state.selected===i?'active':''}" data-i="${i}">${esc(u.email)}</button>`).join('');b.querySelectorAll('.user').forEach(x=>x.onclick=()=>selectUser(Number(x.dataset.i)))}
+function streamStyle(name){const c=state.streamColors?.[name];return c?`style="background:${esc(c.background)};color:${esc(c.color)}"`:''}
+function planHtml(rows){
+  if(!rows?.length)return '<div class="empty">Нет данных</div>';
+  return `<div class="table-wrap"><table><thead><tr><th class="stream-col">Stream</th><th class="hours-col">Hours</th><th>Comment</th></tr></thead><tbody>${rows.map(r=>`<tr><td><span class="stream" ${streamStyle(r.stream)}>${esc(r.stream)}</span></td><td><div class="hours">${esc(r.hours)}</div></td><td>${esc(r.comment)}</td></tr>`).join('')}</tbody></table></div>`;
+}
+function renderAggregate(){ $('aggregate').innerHTML=planHtml(state.aggregatePlan); }
+function meetingRows(items){return (items||[]).map(m=>`<tr><td>${esc(m.summary)}</td><td>${esc(m.minutes?((m.minutes%60?Math.floor(m.minutes/60)+'h '+m.minutes%60+'m':m.minutes/60+'h')):'0h')}</td><td>${esc(m.when)}</td></tr>`).join('')}
+function meetingsHtml(m){const all=[...(m?.calendar||[]),...(m?.manual||[])];if(!all.length)return '<div class="empty">Нет данных</div>';return `<div class="table-wrap"><table class="meetings"><thead><tr><th>Мит</th><th>Длит.</th><th>Когда</th></tr></thead><tbody>${meetingRows(all)}</tbody></table></div>`}
+
+function statusStyle(name){
+  const palette={
+    'Done':['#dff4c7','#315d13'],'In Progress':['#d9efff','#155b8a'],
+    'Customer Design Review':['#fff0b8','#725600'],'Blocked':['#ffd6d6','#9f1d1d'],
+    'Submitted':['#fff0b8','#725600'],'To Do':['#eef2f6','#56616d'],
+    'Verification':['#f6d0a8','#8a4d00'],'Waiting for customer':['#f6d0a8','#8a4d00']
+  };
+  const c=palette[name]; return c?`style="background:${c[0]};color:${c[1]}"`:'';
+}
+function distributionHtml(rows){
+  if(!rows?.length)return '<div class="empty">Нет подходящих задач</div>';
+  const days=['Пн','Вт','Ср','Чт','Пт'];
+  const dayIdx=d=>{const x=new Date(d+'T00:00:00Z'); return x.getUTCDay()===0?6:x.getUTCDay()-1};
+  return `<div class="table-wrap"><table class="dist-table"><thead><tr><th class="task-col">Задача</th><th class="stream-col">Stream</th><th class="complexity-col">Complexity</th><th class="days-col">${days.map(x=>`<span style="display:inline-block;width:20%;text-align:center">${x}</span>`).join('')}</th></tr></thead><tbody>${rows.map(r=>{
+    const s=r.target_start?Math.max(0,dayIdx(r.target_start)):0;
+    const e=r.target_end?Math.min(5,dayIdx(r.target_end)+1):5;
+    const left=r.target_end?((e<=s)?0:`${s*20}%`):'0%';
+    const right=r.target_end?((e<=s)?0:`${(5-e)*20}%`):'0%';
+    return `<tr><td><a href="${esc(r.url)}" target="_blank" rel="noopener noreferrer"><b>${esc(r.key)}</b></a>${r.summary?' — '+esc(r.summary):''}</td><td><span class="stream" ${streamStyle(r.stream)}>${esc(r.stream)}</span></td><td class="complexity-col">${esc(r.complexity)}</td><td class="days-col"><div class="dist-track"><div class="dist-line" style="left:${left};right:${right}"></div><span class="dist-dot"></span><span class="dist-dot dist-dot2"></span></div></td></tr>`}).join('')}</tbody></table></div>`;
+}
+async function loadDistribution(email){
+  try{
+    const p=await json(await fetch('/api/distribution?email='+encodeURIComponent(email)));
+    $('distributionPeriod').textContent=`${p.period.from} — ${p.period.to}`;
+    $('distribution').innerHTML=distributionHtml(p.tasks);
+  }catch(e){$('distribution').innerHTML=`<div class="empty">${esc(e.message)}</div>`}
+}
+async function selectUser(i){state.selected=i;renderUsers();const u=state.users[i];$('selectedUserLabel').textContent=u.email;try{const p=await json(await fetch('/api/user?filename='+encodeURIComponent(u.filename)));$('plan').innerHTML=planHtml(p.plan.stream_plan);$('meetings').innerHTML=meetingsHtml(p.plan.meetings);loadDistribution(u.email)}catch(e){error(e.message)}}
+async function bootstrap(){try{const p=await json(await fetch('/api/bootstrap'));$('period').textContent=p.period.label;state.users=p.users||[];state.streamColors=p.stream_colors||{};state.aggregatePlan=p.aggregate_plan||[];renderAggregate();renderUsers();if(state.users.length)selectUser(0)}catch(e){error(e.message)}}
+$('load').onclick=async()=>{const b=$('load');b.disabled=true;b.textContent='Загрузка…';error('');try{const p=await json(await fetch('/api/load',{method:'POST'}));state.users=p.users||[];state.streamColors=p.stream_colors||state.streamColors;state.aggregatePlan=p.aggregate_plan||[];renderAggregate();state.selected=null;renderUsers();if(state.users.length)await selectUser(0)}catch(e){error(e.message)}finally{b.disabled=false;b.textContent='Загрузить'}};
+bootstrap();
 </script></body></html>
