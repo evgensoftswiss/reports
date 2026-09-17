@@ -5,8 +5,13 @@
   const apiBase = String(config.API_BASE_URL || "").replace(/\/$/, "");
   const token = sessionStorage.getItem("weeklyPlanner.accessToken");
   const user = JSON.parse(sessionStorage.getItem("weeklyPlanner.user") || "null");
+  const redirectToLogin = () => {
+    sessionStorage.removeItem("weeklyPlanner.accessToken");
+    sessionStorage.removeItem("weeklyPlanner.user");
+    window.location.replace(new URL("index.html", window.location.href));
+  };
   if (!apiBase || !token || !user?.email) {
-    window.top.location.replace("index.html");
+    redirectToLogin();
     return;
   }
 
@@ -24,6 +29,10 @@
     headers.set("Accept", "application/json");
     if (init.body && !headers.has("Content-Type")) headers.set("Content-Type", "application/json");
     const response = await originalFetch(`${apiBase}${path}`, { ...init, headers });
+    if (response.status === 401) {
+      redirectToLogin();
+      return response;
+    }
     if (response.ok) return response;
 
     try {

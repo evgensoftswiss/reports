@@ -462,6 +462,7 @@ function renderMeetings(){
   if(!Array.isArray(state.manualMeetings)) state.manualMeetings=[];
   manualBox.innerHTML=state.manualMeetings.length ? meetingTableHtml(state.manualMeetings,true) : '<div class="empty">Нет добавленных вручную митингов.</div>';
   $('meetingsTotal').textContent=`Всего: ${formatMinutes(totalMeetingMinutes())}`;
+  syncCommunicationFromMeetings();
 
   manualBox.querySelectorAll('input[data-manual-meeting-row]').forEach(input=>{
     input.addEventListener('input',e=>{
@@ -579,6 +580,8 @@ function refreshStreamPlanInputs(){
 }
 
 function renderStreamPlan(){
+  // Communication is always derived from the meetings block, never from a saved value.
+  syncCommunicationFromMeetings();
   const box=$('streamPlanTable');
   const rows=state.streamPlan||[];
   box.innerHTML=`<div class="table-wrap"><table class="stream-plan-table editable-stream-plan-table"><thead><tr><th>Stream</th><th>Hours</th><th>Comment</th></tr></thead><tbody>${rows.map((r,i)=>`<tr><td>${streamBadge(r.stream)}</td><td><input class="hours-input" data-stream-row="${i}" data-stream-prop="hours" value="${escapeAttr(r.hours)}"></td><td><input data-stream-row="${i}" data-stream-prop="comment" value="${escapeAttr(r.comment)}"></td></tr>`).join('')}</tbody></table></div>`;
@@ -835,6 +838,7 @@ async function savePlan(){
   if(autoSaveInFlight){autoSaveQueued=true;return false;}
   autoSaveInFlight=true; const status=$('saveStatus'); const meetingsStatus=$('meetingsSaveStatus'); if(status)status.textContent='Автосохранение…'; if(state.saveSource==='meetings'&&meetingsStatus)meetingsStatus.textContent='Автосохранение…';
   try{
+    syncCommunicationFromMeetings();
     const targetWeekStart=state.data?.next_week?.from||state.plan.week_start||'';
     const snapshot={week_start:targetWeekStart,stream_plan:JSON.parse(JSON.stringify(state.streamPlan||[])),meetings:{calendar:(state.meetings||[]).filter(isMeetingNonEmpty),manual:(state.manualMeetings||[]).filter(isMeetingNonEmpty)}};
     const r=await fetch('/api/planning/plan',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({email:state.email,week_start:targetWeekStart,plan:snapshot})});

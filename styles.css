@@ -60,6 +60,8 @@ select { min-width: 180px; padding: 10px 12px; border: 1px solid var(--line); bo
 .route-card span { color: var(--muted); font-size: 13px; }
 .embedded-page { background: var(--bg); }
 .embedded-page #page { width: 100%; }
+.app-version { margin: 18px auto 0; color: var(--muted); font-size: 11px; text-align: center; }
+.embedded-page .app-version { padding: 0 12px 18px; }
 @media (max-width: 700px) {
   .shell { width: min(100% - 24px, 1240px); padding-top: 18px; }
   .topbar, .panel-heading { align-items: flex-start; flex-direction: column; }
