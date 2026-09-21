@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ru"><head><meta name="wp-build" content="0.3.6"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Планирование следующей недели</title><style>
+<html lang="ru"><head><meta name="wp-build" content="0.3.7"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Планирование следующей недели</title><style>
 :root{font-family:Inter,Segoe UI,Arial,sans-serif;color:#202124;background:#f4f6f8;font-size:14px}
 *{box-sizing:border-box}
 body{margin:0}
@@ -18,7 +18,7 @@ h1{margin:0;font-size:25px}
 .section{position:relative;background:#fff;border:1px solid #dce2e8;border-radius:12px;margin-bottom:16px;overflow:hidden}.section.loading-state .section-loading{display:flex}.section-loading{display:none;position:absolute;inset:0;z-index:5;align-items:center;justify-content:center;background:rgba(244,246,248,.78);backdrop-filter:blur(1px);color:#3f4b57;font-size:15px;font-weight:700;pointer-events:all}.section-loading span{padding:10px 16px;border-radius:9px;background:rgba(255,255,255,.94);border:1px solid #d8dee5;box-shadow:0 6px 20px rgba(0,0,0,.08)}
 .section-head{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid #e6eaf0}
 .section-title{font-size:17px;font-weight:700}
-.section-note{color:#707a85;font-size:13px;margin-top:2px}.calendar-help{margin-top:7px;color:#7a848e;font-size:12px;line-height:1.4}.calendar-help code{background:#f1f3f5;padding:1px 4px;border-radius:4px}.meeting-table{width:100%;min-width:0;table-layout:fixed}.meeting-table th:nth-child(1),.meeting-table td:nth-child(1){width:auto}.meeting-table th:nth-child(2),.meeting-table td:nth-child(2){width:110px}.meeting-table th:nth-child(3),.meeting-table td:nth-child(3){width:180px}.meeting-table td{overflow-wrap:anywhere}.meeting-table input{width:100%;max-width:100%;box-sizing:border-box;min-width:0}.meeting-time{white-space:normal;color:#66717c}
+.section-note{color:#707a85;font-size:13px;margin-top:2px}.calendar-help{margin-top:7px;color:#7a848e;font-size:12px;line-height:1.4}.calendar-help code{background:#f1f3f5;padding:1px 4px;border-radius:4px}.meeting-table{width:100%;min-width:0;table-layout:fixed}.meeting-table th:nth-child(1),.meeting-table td:nth-child(1){width:auto;text-align:left}.meeting-table th:nth-child(2),.meeting-table td:nth-child(2){width:110px;text-align:right}.meeting-table th:nth-child(3),.meeting-table td:nth-child(3){width:180px;text-align:right}.meeting-table td{overflow-wrap:anywhere}.meeting-table input{width:100%;max-width:100%;box-sizing:border-box;min-width:0}.meeting-table td:nth-child(n+2) input,.meeting-table td:nth-child(n+2){text-align:right}.meeting-time{white-space:normal;color:#66717c}
 .pad{padding:14px 16px}
 .grid-two{display:grid;grid-template-columns:1.05fr 1.55fr;gap:16px}
 .section-pair{display:grid;grid-template-columns:1fr;gap:16px;margin-bottom:16px}.section-pair>.section{margin-bottom:0}@media (min-width:1300px){.section-pair{grid-template-columns:repeat(2,minmax(0,1fr))}}
@@ -70,10 +70,11 @@ th{font-size:12px;text-transform:uppercase;letter-spacing:.02em;color:#6b7580;ba
 /* Editable plan: readable Stream/Hours columns, Comment takes the remaining width. */
 .editable-stream-plan-table{table-layout:fixed}
 .editable-stream-plan-table th:nth-child(1),.editable-stream-plan-table td:nth-child(1){width:160px;min-width:160px;max-width:160px;white-space:nowrap;overflow:visible}
-.editable-stream-plan-table th:nth-child(2),.editable-stream-plan-table td:nth-child(2){width:90px;min-width:90px;max-width:90px;text-align:center;white-space:nowrap}
-.editable-stream-plan-table th:nth-child(3),.editable-stream-plan-table td:nth-child(3){width:auto;min-width:0}
-.editable-stream-plan-table td:nth-child(2){text-align:center}
-.editable-stream-plan-table td:nth-child(3) input{width:100%;min-width:0;box-sizing:border-box}
+.editable-stream-plan-table th:nth-child(2),.editable-stream-plan-table td:nth-child(2),.editable-stream-plan-table th:nth-child(3),.editable-stream-plan-table td:nth-child(3){width:90px;min-width:90px;max-width:90px;text-align:center;white-space:nowrap}
+.editable-stream-plan-table th:nth-child(4),.editable-stream-plan-table td:nth-child(4){width:72px;min-width:72px;max-width:72px;text-align:center;white-space:nowrap}
+.editable-stream-plan-table th:nth-child(5),.editable-stream-plan-table td:nth-child(5){width:auto;min-width:0}
+.editable-stream-plan-table td:nth-child(2),.editable-stream-plan-table td:nth-child(3),.editable-stream-plan-table td:nth-child(4){text-align:center}
+.editable-stream-plan-table td:nth-child(5) input{width:100%;min-width:0;box-sizing:border-box}
 /* Historical/reference plan. */
 .reference-plan-table th:nth-child(1),.reference-plan-table td:nth-child(1){width:160px;min-width:160px}
 .reference-plan-table th:nth-child(2),.reference-plan-table td:nth-child(2){width:95px;min-width:95px;text-align:center;vertical-align:middle}
@@ -172,7 +173,7 @@ const EMAIL_KEY = 'weeklyPlanner.email';
 const CAL_KEY = 'weeklyPlanner.calendarUrl';
 const WEEK_KEY = 'weeklyPlanner.selectedWeekStart';
 const WORKLOG_FILTER_KEY = 'weeklyPlanner.includeWorklogUser';
-const state = {email:'', calendarUrl:'', streamColors:{}, statusColors:{}, data:null, plan:null, streamPlan:[], taskTimeline:[], meetings:[], manualMeetings:[], currentMeetings:[], doneStreamPlan:[], dirty:false, showAllUnclosed:false, includeWorklogUser:false, recalcAfterSave:false, saveSource:'tasks', revision:0, selectedWeekStart:'', planLoadedFromFile:false, periods:[], selectedPeriod:'', readOnly:false};
+const state = {email:'', calendarUrl:'', streamColors:{}, statusColors:{}, data:null, plan:null, previousPlan:null, streamPlan:[], taskTimeline:[], meetings:[], manualMeetings:[], currentMeetings:[], doneStreamPlan:[], dirty:false, showAllUnclosed:false, includeWorklogUser:false, recalcAfterSave:false, saveSource:'tasks', revision:0, selectedWeekStart:'', planLoadedFromFile:false, periods:[], selectedPeriod:'', readOnly:false};
 let autoSaveTimer=null;
 let autoSaveInFlight=false;
 let autoSaveQueued=false;
@@ -589,16 +590,18 @@ function refreshStreamPlanInputs(){
 }
 
 function formatPercent(value){return `${Number(value||0).toFixed(1)}%`}
+function previousStreamHours(stream){const row=(state.previousPlan?.stream_plan||[]).find(item=>String(item?.stream||'').trim().toLocaleLowerCase()===String(stream||'').trim().toLocaleLowerCase());return row?String(row.hours||''):'';}
 function renderStreamPlan(){
   // Communication is always derived from the meetings block, never from a saved value.
   syncCommunicationFromMeetings();
   const box=$('streamPlanTable');
   const rows=state.streamPlan||[];
   const total=rows.reduce((sum,r)=>sum+parsePlannedMinutes(r.hours),0);
-  box.innerHTML=`<div class="table-wrap"><table class="stream-plan-table editable-stream-plan-table"><thead><tr><th>Stream</th><th>Hours</th><th class="percent-col">%</th><th>Comment</th></tr></thead><tbody>${rows.map((r,i)=>{const mins=parsePlannedMinutes(r.hours),pct=total?mins/total*100:0;return `<tr><td>${streamBadge(r.stream)}</td><td><input class="hours-input ${mins===0?'zero-value':''}" data-stream-row="${i}" data-stream-prop="hours" value="${escapeAttr(r.hours)}"></td><td class="percent-col ${mins===0?'zero-value':''}" data-stream-percent="${i}">${formatPercent(pct)}</td><td><input data-stream-row="${i}" data-stream-prop="comment" value="${escapeAttr(r.comment)}"></td></tr>`}).join('')}</tbody></table></div>`;
+  box.innerHTML=`<div class="table-wrap"><table class="stream-plan-table editable-stream-plan-table"><thead><tr><th>Stream</th><th>Prev</th><th>Hours</th><th class="percent-col">%</th><th>Comment</th></tr></thead><tbody>${rows.map((r,i)=>{const mins=parsePlannedMinutes(r.hours),pct=total?mins/total*100:0;const prev=previousStreamHours(r.stream);return `<tr><td>${streamBadge(r.stream)}</td><td><div class="hours-value ${parsePlannedMinutes(prev)===0?'zero-value':''}">${escapeHtml(prev)}</div></td><td><input class="hours-input ${mins===0?'zero-value':''}" data-stream-row="${i}" data-stream-prop="hours" value="${escapeAttr(r.hours)}"></td><td class="percent-col ${mins===0?'zero-value':''}" data-stream-percent="${i}">${formatPercent(pct)}</td><td><input data-stream-row="${i}" data-stream-prop="comment" value="${escapeAttr(r.comment)}"></td></tr>`}).join('')}</tbody></table></div>`;
   box.querySelectorAll('input[data-stream-row]').forEach(input=>{
     input.addEventListener('input',e=>{const r=state.streamPlan[Number(e.target.dataset.streamRow)];r[e.target.dataset.streamProp]=e.target.value;if(e.target.dataset.streamProp==='hours')e.target.classList.toggle('zero-value',parsePlannedMinutes(e.target.value)===0);queueAutoSave(false,'stream');renderStreamPlanTotal();refreshStreamPlanPercents();});
-    input.addEventListener('change',e=>{
+    input.addEventListener('focus',e=>{if(e.target.dataset.streamProp==='hours')setTimeout(()=>e.target.select(),0);});
+    input.addEventListener('blur',e=>{
       const r=state.streamPlan[Number(e.target.dataset.streamRow)];
       const prop=e.target.dataset.streamProp;
       if(prop==='hours'){ r.hours=normalizeTimeValue(e.target.value); e.target.value=r.hours; }
@@ -919,7 +922,7 @@ async function loadData(){
     const periodQuery=state.selectedPeriod?`&period=${encodeURIComponent(state.selectedPeriod)}`:'';
     const r=await fetch(`/api/planning/bootstrap?email=${encodeURIComponent(state.email)}&calendar_url=${encodeURIComponent(state.calendarUrl)}&include_worklog_user=${state.includeWorklogUser?'1':'0'}${periodQuery}`,{headers:{'Accept':'application/json'}});
     const payload=await readJsonResponse(r);
-    state.data=payload; state.readOnly=!!payload.read_only; state.selectedPeriod=state.readOnly?(payload.selected_period||state.selectedPeriod):state.selectedPeriod; state.streamColors=payload.stream_colors||{}; state.statusColors=payload.status_colors||{}; state.plan=JSON.parse(JSON.stringify(payload.plan||{})); state.planWeekStart=payload.next_week?.from||state.plan.week_start||''; state.streamPlan=Array.isArray(state.plan.stream_plan)?JSON.parse(JSON.stringify(state.plan.stream_plan)):[]; initStreamPlan(); state.manualMeetings=Array.isArray(state.plan?.meetings?.manual)?JSON.parse(JSON.stringify(state.plan.meetings.manual)):[]; const calendarSource=state.readOnly&&Array.isArray(state.plan?.meetings?.calendar)?state.plan.meetings.calendar:(payload.calendar?.items||[]); state.meetings=calendarSource.map(item=>({summary:String(item.summary||'Без названия'),minutes:Number(item.minutes)||0,when:String(item.when||(()=>{const d=new Date(item.start);return d.toLocaleDateString('ru-RU',{weekday:'short',day:'2-digit',month:'2-digit'})+' '+d.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});})())})); state.dirty=false;
+    state.data=payload; state.readOnly=!!payload.read_only; state.selectedPeriod=state.readOnly?(payload.selected_period||state.selectedPeriod):state.selectedPeriod; state.streamColors=payload.stream_colors||{}; state.statusColors=payload.status_colors||{}; state.plan=JSON.parse(JSON.stringify(payload.plan||{})); state.previousPlan=JSON.parse(JSON.stringify(payload.previous_plan||{})); state.planWeekStart=payload.next_week?.from||state.plan.week_start||''; state.streamPlan=Array.isArray(state.plan.stream_plan)?JSON.parse(JSON.stringify(state.plan.stream_plan)):[]; initStreamPlan(); state.manualMeetings=Array.isArray(state.plan?.meetings?.manual)?JSON.parse(JSON.stringify(state.plan.meetings.manual)):[]; const calendarSource=state.readOnly&&Array.isArray(state.plan?.meetings?.calendar)?state.plan.meetings.calendar:(payload.calendar?.items||[]); state.meetings=calendarSource.map(item=>({summary:String(item.summary||'Без названия'),minutes:Number(item.minutes)||0,when:String(item.when||(()=>{const d=new Date(item.start);return d.toLocaleDateString('ru-RU',{weekday:'short',day:'2-digit',month:'2-digit'})+' '+d.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});})())})); state.dirty=false;
     updateProfileBadge();
     const ps=payload.next_week?.from||''; const pe=payload.next_week?.to||addDaysIso(ps,4);
     if($('planningPeriod')) $('planningPeriod').textContent=ps ? `${fmtDate(ps)} — ${fmtDate(pe)}` : '';
