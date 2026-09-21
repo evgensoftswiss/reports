@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ru"><head><meta name="wp-build" content="0.3.2"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Планирование следующей недели</title><style>
+<html lang="ru"><head><meta name="wp-build" content="0.3.3"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Планирование следующей недели</title><style>
 :root{font-family:Inter,Segoe UI,Arial,sans-serif;color:#202124;background:#f4f6f8;font-size:14px}
 *{box-sizing:border-box}
 body{margin:0}
@@ -108,7 +108,7 @@ th{font-size:12px;text-transform:uppercase;letter-spacing:.02em;color:#6b7580;ba
 </style></head><body>
 <div class="wrap">
 <header>
-  <div style="flex:1"><h1>Планирование следующей недели</h1><select id="periodSelect" class="period-select" aria-label="Период"><option value="">Планирование следующей недели</option></select><div id="planningPeriod" class="section-note"></div></div>
+  <div style="flex:1"><h1 id="planningHome" style="cursor:pointer">Планирование следующей недели</h1><select id="periodSelect" class="period-select" aria-label="Период"><option value="">Планирование следующей недели</option></select><div id="planningPeriod" class="section-note"></div></div>
   <div class="userbox">
     <div id="userEmail" class="user-email">Email не задан</div>
     <div id="calendarBadge" class="calendar-badge">Календарь: не подключён</div>
@@ -1033,6 +1033,7 @@ $('includeWorklogUser')?.addEventListener('change',async e=>{
   await loadData();
 });
 $('changeEmail').addEventListener('click',openEmailModal);
+$('planningHome').addEventListener('click',()=>{window.location.href='https://evgensoftswiss.github.io/reports/'});
 $('emailSave').addEventListener('click',saveEmail);
 $('emailLogout').addEventListener('click',()=>{sessionStorage.removeItem('weeklyPlanner.accessToken');sessionStorage.removeItem('weeklyPlanner.user');window.location.replace(new URL('index.html',window.location.href))});
 $('emailInput').addEventListener('keydown',e=>{if(e.key==='Enter')saveEmail()});
