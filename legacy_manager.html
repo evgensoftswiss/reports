@@ -1,4 +1,4 @@
-<!doctype html><html lang="ru"><head><meta name="wp-build" content="0.3.7"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<!doctype html><html lang="ru"><head><meta name="wp-build" content="0.3.9"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Weekly Planner Manager</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f4f6f8;color:#27313c;font-family:Arial,sans-serif}.wrap{width:100%;padding:22px}
@@ -58,7 +58,7 @@ button{font:inherit;border:0;border-radius:10px;cursor:pointer;font-weight:700}.
   </section>
 </div>
 <script>
-const $=id=>document.getElementById(id);let state={users:[],selected:null,selectedPlan:null,previousPlan:null,streamColors:{},aggregatePlan:[],userTotals:{},period:'',periods:[]};let planSaveTimer=0;
+const $=id=>document.getElementById(id);let state={users:[],selected:null,selectedPlan:null,previousPlan:null,streamColors:{},aggregatePlan:[],userTotals:{},period:'',periods:[]};let planSaveTimer=0,planRevision=0;
 function logout(){sessionStorage.removeItem('weeklyPlanner.accessToken');sessionStorage.removeItem('weeklyPlanner.user');window.location.replace(new URL('index.html',window.location.href))}
 $('logout').addEventListener('click',logout);
 $('managerHome').addEventListener('click',()=>{window.location.href='https://evgensoftswiss.github.io/reports/'});
@@ -144,29 +144,33 @@ function editableMeetingsHtml(meetings){
   return groups.map(([group,label])=>{const rows=Array.isArray(meetings?.[group])?meetings[group]:[];return `<div><div class="subnote">${label}</div>${rows.length?`<div class="table-wrap"><table class="meetings"><thead><tr><th>Мит</th><th>Длит.</th><th>Когда</th><th></th></tr></thead><tbody>${rows.map((item,index)=>`<tr><td><input class="manager-edit" data-meeting-field="summary" data-meeting-group="${group}" data-meeting-index="${index}" value="${esc(item.summary)}"></td><td><input class="manager-edit hours-edit" data-meeting-field="minutes" data-meeting-group="${group}" data-meeting-index="${index}" value="${esc(item.minutes)}"></td><td><input class="manager-edit" data-meeting-field="when" data-meeting-group="${group}" data-meeting-index="${index}" value="${esc(item.when)}"></td><td><button class="remove-btn" type="button" data-remove-meeting="${group}:${index}">×</button></td></tr>`).join('')}</tbody></table></div>`:'<div class="subnote">Нет записей</div>'}</div>`}).join('')+`<div class="meeting-actions"><button class="small-btn" id="addManagerMeeting" type="button">+ Добавить мит</button></div>`;
 }
 function bindManagerEditors(){
-  document.querySelectorAll('[data-plan-hours]').forEach(input=>{input.addEventListener('focus',event=>setTimeout(()=>event.target.select(),0));input.addEventListener('input',event=>{const index=Number(event.target.dataset.planHours);state.selectedPlan.stream_plan[index].hours=event.target.value;refreshManagerPlanPercents();queueManagerSave();});input.addEventListener('blur',event=>{const index=Number(event.target.dataset.planHours),value=formatPlanTime(parseHours(event.target.value));event.target.value=value;state.selectedPlan.stream_plan[index].hours=value;refreshManagerPlanPercents();queueManagerSave();});});
+  document.querySelectorAll('[data-plan-hours]').forEach(input=>{input.addEventListener('focus',event=>setTimeout(()=>event.target.select(),0));input.addEventListener('input',event=>{const index=Number(event.target.dataset.planHours);state.selectedPlan.stream_plan[index].hours=event.target.value;refreshManagerPlanPercents();refreshSelectedUserTotal();queueManagerSave();});input.addEventListener('blur',event=>{const index=Number(event.target.dataset.planHours),value=formatPlanTime(parseHours(event.target.value));event.target.value=value;state.selectedPlan.stream_plan[index].hours=value;refreshManagerPlanPercents();refreshSelectedUserTotal();queueManagerSave();});});
   document.querySelectorAll('[data-plan-comment]').forEach(input=>input.addEventListener('input',event=>{state.selectedPlan.stream_plan[Number(event.target.dataset.planComment)].comment=event.target.value;queueManagerSave();}));
   document.querySelectorAll('[data-meeting-field]').forEach(input=>input.addEventListener('input',event=>{const target=event.target,group=target.dataset.meetingGroup,index=Number(target.dataset.meetingIndex),field=target.dataset.meetingField;let value=target.value;if(field==='minutes')value=Math.max(0,Number(value)||0);state.selectedPlan.meetings[group][index][field]=value;queueManagerSave();}));
   document.querySelectorAll('[data-remove-meeting]').forEach(button=>button.addEventListener('click',()=>{const [group,index]=button.dataset.removeMeeting.split(':');state.selectedPlan.meetings[group].splice(Number(index),1);renderSelectedPlan();queueManagerSave();}));
   $('addManagerMeeting')?.addEventListener('click',()=>{state.selectedPlan.meetings.manual.push({summary:'',minutes:0,when:''});renderSelectedPlan();queueManagerSave();});
 }
 function refreshManagerPlanPercents(){
-  const rows=state.selectedPlan?.stream_plan||[];const total=rows.reduce((sum,row)=>sum+parseHours(row.hours),0);
+  const rows=state.selectedPlan?.stream_plan||[];
+  const values=new Map([...document.querySelectorAll('[data-plan-hours]')].map(input=>[Number(input.dataset.planHours),parseHours(input.value)]));
+  const total=[...values.values()].reduce((sum,minutes)=>sum+minutes,0);
   const title=$('selectedPlanTotal');if(title){title.textContent=`(${formatPlanTime(total)})`;title.classList.toggle('plan-total-warning',total!==2400);}
-  document.querySelectorAll('[data-plan-percent]').forEach(node=>{const index=Number(node.dataset.planPercent),minutes=parseHours(rows[index]?.hours);node.textContent=formatPercent(total?minutes/total*100:0);node.classList.toggle('zero-value',minutes===0);});
+  document.querySelectorAll('[data-plan-percent]').forEach(node=>{const index=Number(node.dataset.planPercent),minutes=values.get(index)??parseHours(rows[index]?.hours);node.textContent=formatPercent(total?minutes/total*100:0);node.classList.toggle('zero-value',minutes===0);});
   document.querySelectorAll('[data-plan-hours]').forEach(node=>node.classList.toggle('zero-value',parseHours(node.value)===0));
 }
 function renderSelectedPlan(){
   const plan=state.selectedPlan||{stream_plan:[],meetings:{calendar:[],manual:[]}};
   if(!plan.meetings)plan.meetings={calendar:[],manual:[]};if(!Array.isArray(plan.meetings.calendar))plan.meetings.calendar=[];if(!Array.isArray(plan.meetings.manual))plan.meetings.manual=[];
-  $('plan').innerHTML=editablePlanHtml(plan.stream_plan||[]);$('meetings').innerHTML=editableMeetingsHtml(plan.meetings);bindManagerEditors();
+  $('plan').innerHTML=editablePlanHtml(plan.stream_plan||[]);$('meetings').innerHTML=editableMeetingsHtml(plan.meetings);bindManagerEditors();refreshManagerPlanPercents();
 }
 function queueManagerSave(){
-  clearTimeout(planSaveTimer);$('planSaveNote').textContent='Сохранение…';planSaveTimer=setTimeout(saveSelectedPlan,700);
+  planRevision++;const revision=planRevision;clearTimeout(planSaveTimer);$('planSaveNote').textContent='Сохранение…';planSaveTimer=setTimeout(()=>saveSelectedPlan(0,revision),700);
 }
-async function saveSelectedPlan(){
+function refreshSelectedUserTotal(){const user=state.users[state.selected];if(!user||!state.selectedPlan)return;cacheUserTotal(user,state.selectedPlan);renderUsers();}
+async function saveSelectedPlan(attempt=0,revision=planRevision){
   const user=state.users[state.selected];if(!user||!state.selectedPlan)return;
-  try{const result=await json(await fetch(`/api/manager/planning/${encodeURIComponent(state.period)}/${encodeURIComponent(user.email)}`,{method:'PUT',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({data:state.selectedPlan})}));state.selectedPlan=result.plan;cacheUserTotal(user,result.plan);$('planSaveNote').textContent='Сохранено';renderUsers();await refreshAggregate();}catch(e){$('planSaveNote').textContent=`Ошибка сохранения: ${e.message}`;error(`Не удалось сохранить план: ${e.message}`);}
+  const snapshot=JSON.parse(JSON.stringify(state.selectedPlan));
+  try{const result=await json(await fetch(`/api/manager/planning/${encodeURIComponent(state.period)}/${encodeURIComponent(user.email)}`,{method:'PUT',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({data:snapshot})}));if(revision===planRevision&&state.users[state.selected]?.email===user.email){state.selectedPlan=result.plan;cacheUserTotal(user,result.plan);$('planSaveNote').textContent='Сохранено';renderUsers();await refreshAggregate();}}catch(e){if(revision===planRevision&&attempt<2&&/failed to fetch|network|load failed/i.test(String(e.message||e))){$('planSaveNote').textContent='Повторяем сохранение…';planSaveTimer=setTimeout(()=>saveSelectedPlan(attempt+1,revision),1200*(attempt+1));return;}if(revision===planRevision){$('planSaveNote').textContent=`Ошибка сохранения: ${e.message}`;error(`Не удалось сохранить план: ${e.message}`);}}
 }
 async function refreshAggregate(){
   try{const payload=await json(await fetch('/api/bootstrap?period='+encodeURIComponent(state.period)));state.aggregatePlan=payload.aggregate_plan||[];state.streamColors=payload.stream_colors||state.streamColors;renderAggregate();}catch(e){error(e.message);}
