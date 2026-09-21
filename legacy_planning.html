@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ru"><head><meta name="wp-build" content="0.3.9"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Планирование следующей недели</title><style>
+<html lang="ru"><head><meta name="wp-build" content="0.3.11"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Планирование следующей недели</title><style>
 :root{font-family:Inter,Segoe UI,Arial,sans-serif;color:#202124;background:#f4f6f8;font-size:14px}
 *{box-sizing:border-box}
 body{margin:0}
@@ -11,7 +11,7 @@ button.danger{background:#f1d7d7;color:#8f1d1d}
 .percent-col{text-align:center;width:72px}.percent-badge{display:inline-block;min-width:48px;padding:7px 8px;background:#f4f5f6;border:1px solid #dfe3e7;border-radius:7px}
 button:disabled{opacity:.55;cursor:not-allowed}
 .wrap{width:100%;margin:0;padding:22px}
-header{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:18px}
+header{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:18px}
 h1{margin:0;font-size:25px}
 .subtitle{color:#66717c;margin-top:5px} .period-nav{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.period-arrow{width:18px;height:24px;padding:0 0 5px 0;border-radius:8px;background:#e9e9e9;color:#27313c;font-size:20px;line-height:1;margin-top:2px}.period-arrow:hover{background:#bfc3c7}.period-arrow:disabled{opacity:.45;cursor:not-allowed}.period-select{margin-top:6px;min-width:240px;padding:7px 30px 7px 10px;border:1px solid #cbd3dc;border-radius:8px;background:#fff;color:#27313c}.readonly-note{color:#a25a00}
 .userbox{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.user-email{font-weight:600;padding:9px 12px;background:transparent;border:0;border-radius:0}.calendar-badge{padding:9px 12px;background:#fff;border:1px solid #d8dee5;border-radius:8px;color:#56616d}.calendar-badge.connected{color:#58b957;font-weight:700}.calendar-badge.disconnected{color:#d64545;font-weight:700}
@@ -170,7 +170,6 @@ th{font-size:12px;text-transform:uppercase;letter-spacing:.02em;color:#6b7580;ba
 <script>
 
 const EMAIL_KEY = 'weeklyPlanner.email';
-const CAL_KEY = 'weeklyPlanner.calendarUrl';
 const WEEK_KEY = 'weeklyPlanner.selectedWeekStart';
 const WORKLOG_FILTER_KEY = 'weeklyPlanner.includeWorklogUser';
 const state = {email:'', calendarUrl:'', streamColors:{}, statusColors:{}, data:null, plan:null, previousPlan:null, streamPlan:[], taskTimeline:[], meetings:[], manualMeetings:[], currentMeetings:[], doneStreamPlan:[], dirty:false, showAllUnclosed:false, includeWorklogUser:false, recalcAfterSave:false, saveSource:'tasks', revision:0, selectedWeekStart:'', planLoadedFromFile:false, periods:[], selectedPeriod:'', readOnly:false};
@@ -195,11 +194,11 @@ async function saveEmail(){
   const calendarUrl=$('calendarInput').value.trim();
   if(!email || !email.includes('@')){ showError('Введите корректный email.'); return; }
   if(calendarUrl && !/^https?:\/\//i.test(calendarUrl)){ showError('Ссылка на календарь должна начинаться с http:// или https://'); return; }
-  state.email=email; state.calendarUrl=calendarUrl;
+  state.email=email;
   localStorage.setItem(EMAIL_KEY,email);
-  localStorage.setItem(CAL_KEY,calendarUrl);
   try{
-    await persistProfile(email,calendarUrl);
+    const payload=await persistProfile(email,calendarUrl);
+    state.calendarUrl=(payload?.profile?.calendar_url||payload?.profile?.calendarUrl||calendarUrl||'').trim();
     $('emailModal').classList.remove('open');
     updateProfileBadge();
     state.selectedPeriod='';
@@ -800,18 +799,19 @@ async function loadProfile(){
     const saved=(payload.profile?.email||'').trim().toLowerCase();
     const calendar=(payload.profile?.calendar_url||payload.profile?.calendarUrl||'').trim();
     if(saved){ state.email=saved; localStorage.setItem(EMAIL_KEY,saved); }
-    if(calendar){ state.calendarUrl=calendar; localStorage.setItem(CAL_KEY,calendar); }
-    else { state.calendarUrl=(state.calendarUrl||'').trim(); }
+    // Calendar URL is stored on the server; never restore it from localStorage.
+    state.calendarUrl=calendar;
     updateProfileBadge();
     return state.email;
   }catch(e){
-    // Backend profile storage is authoritative, but localStorage remains a fallback.
+    // The backend profile is authoritative. Do not fall back to localStorage for the calendar URL.
+    state.calendarUrl='';
     return state.email;
   }
 }
 async function persistProfile(email,calendarUrl){
   const r=await fetch('/api/planning/profile',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({email,calendar_url:calendarUrl||''})});
-  await readJsonResponse(r);
+  return await readJsonResponse(r);
 }
 function periodLabel(period){
   const [from,to]=String(period||'').split('_');
@@ -1054,7 +1054,8 @@ $('periodSelect')?.addEventListener('change',async event=>{
   state.email=(localStorage.getItem(EMAIL_KEY)||'').trim().toLowerCase();
   const today=new Date(); today.setHours(0,0,0,0); today.setDate(today.getDate()-today.getDay()+1);
   state.selectedWeekStart=(localStorage.getItem(WEEK_KEY)||'').trim() || today.toISOString().slice(0,10);
-  state.calendarUrl=(localStorage.getItem(CAL_KEY)||'').trim();
+  state.calendarUrl='';
+  localStorage.removeItem('weeklyPlanner.calendarUrl');
   state.includeWorklogUser=localStorage.getItem(WORKLOG_FILTER_KEY)==='1';
   if($('includeWorklogUser')) $('includeWorklogUser').checked=state.includeWorklogUser;
   updateProfileBadge();
