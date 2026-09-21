@@ -1,4 +1,4 @@
-<!doctype html><html lang="ru"><head><meta name="wp-build" content="0.3.11"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<!doctype html><html lang="ru"><head><meta name="wp-build" content="0.3.13"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Weekly Planner Manager</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f4f6f8;color:#27313c;font-family:Arial,sans-serif}.wrap{width:100%;padding:22px}
@@ -7,6 +7,8 @@ button{font:inherit;border:0;border-radius:10px;cursor:pointer;font-weight:700}.
 .grid{display:grid;grid-template-columns:minmax(320px,1fr) minmax(320px,1fr);gap:16px;align-items:start}.section{background:#fff;border:1px solid #cfcfcf;border-radius:14px;overflow:hidden}.section-head{padding:15px 18px;border-bottom:1px solid #edf0f4}.section-head h2{font-size:17px;margin:0}.pad{padding:14px 18px}.left-stack,.right-stack,.selected-user-content{display:flex;flex-direction:column;gap:16px}.right-stack{min-width:0}.selected-user-panel{min-width:0}.selected-user-head{padding:15px 18px;border-bottom:1px solid #edf0f4;background:#f8fafc}.selected-user-head h2{font-size:17px;margin:0}.selected-user-label{font-size:13px;color:#6f7b87;margin-top:4px}.selected-user-content{padding:16px}.inner-section{background:#fff;border:1px solid #e1e5e9;border-radius:12px;overflow:hidden}.subnote{font-size:12px;color:#74808c;margin-top:4px}.users{grid-row:auto}.user{width:100%;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;background:transparent;text-align:left;color:#27313c;font-weight:500}.user:hover{background:#f2f5f8}.user.active{background:#e6f0ff;color:#245cae;font-weight:700}.user-time{flex:0 0 auto;color:#526170;font-size:12px;font-weight:600;white-space:nowrap}.user-time.warning{color:#c62828}
 .table-wrap{width:100%;overflow-x:auto}table{width:100%;border-collapse:collapse;table-layout:fixed}th,td{padding:9px 10px;border-bottom:1px solid #edf0f4;text-align:left;vertical-align:middle}th{font-size:12px;color:#6b7785;background:#fafbfc}td{font-size:13px}.stream-col{width:160px}.hours-col{width:90px;text-align:center}.hours{text-align:center;background:#f4f5f6;border:1px solid #dfe3e7;border-radius:7px;padding:7px 8px}.stream{display:inline-block;padding:4px 10px 5px;border-radius:999px;background:#eef2f6;white-space:nowrap}.status{display:inline-block;padding:4px 12px 5px;border-radius:999px;background:#eef2f6;color:#56616d;font-size:12px;white-space:nowrap;margin-top:4px}.dist-table{width:100%;table-layout:fixed}.dist-table .task-col{width:30%}.dist-table .stream-col{width:13%}.dist-table .complexity-col{width:9%;text-align:center}.dist-table .days-col{width:48%;padding:0}.empty{padding:20px;color:#7a8693;text-align:center}
 .meetings{table-layout:fixed}.meetings th:first-child,.meetings td:first-child{width:auto;text-align:left}.meetings th:nth-child(2),.meetings td:nth-child(2){width:100px;text-align:right}.meetings th:nth-child(3),.meetings td:nth-child(3){width:180px;text-align:right}.meetings th:nth-child(4),.meetings td:nth-child(4){width:48px;text-align:right}.meetings td:nth-child(n+2) .manager-edit{text-align:right}
+.meeting-table{width:100%;min-width:0;table-layout:fixed}.meeting-table th:nth-child(1),.meeting-table td:nth-child(1){width:auto;text-align:left}.meeting-table th:nth-child(2),.meeting-table td:nth-child(2){width:110px;text-align:right}.meeting-table th:nth-child(3),.meeting-table td:nth-child(3){width:180px;text-align:right}.meeting-table th:nth-child(4),.meeting-table td:nth-child(4){width:64px;text-align:right}.meeting-table td{overflow-wrap:anywhere}.meeting-table input{width:100%;max-width:100%;box-sizing:border-box;min-width:0}.meeting-table td:nth-child(n+2) input,.meeting-table td:nth-child(n+2){text-align:right}.meeting-table input:disabled{background:#f2f4f6;color:#5f6872;border-color:#dfe3e9;opacity:1;cursor:default}.meeting-date-wrap{display:flex;align-items:center;gap:6px}.meeting-date-wrap input[type=date]{min-width:0}.meeting-delete-btn{flex:0 0 auto;border:0;background:transparent;color:#d34a4a;padding:4px 6px;cursor:pointer;font-size:12px}.meeting-delete-btn:hover{color:#a82222;background:transparent}.meeting-table-wrap{overflow-x:hidden}
+.meetings-divider{height:1px;background:#dfe4e9;margin:18px 0}
 .error{display:none;background:#ffe8e8;color:#a32929;border:1px solid #f3baba;border-radius:10px;padding:10px 14px;margin-bottom:14px}
 .manager-actions{margin-left:auto;display:flex;align-items:center;gap:16px}.logout-btn{margin-left:0}
 .pie-legend{display:flex;flex-direction:column;gap:6px;margin-left:14px;min-width:150px}.pie-legend-item{display:flex;align-items:center;gap:7px;font-size:12px}.pie-legend-swatch{width:11px;height:11px;border-radius:3px;flex:0 0 auto}.pie-label{display:none}.zero-value{opacity:.25}
@@ -33,7 +35,7 @@ button{font:inherit;border:0;border-radius:10px;cursor:pointer;font-weight:700}.
 .user-row{display:flex;align-items:center;gap:4px}.user-row .user{min-width:0}.user-edit-btn{flex:0 0 auto;width:31px;height:31px;padding:0;border:1px solid currentColor;border-radius:8px;background:#fff;color:#c62828;font-size:18px;line-height:1}.user-edit-btn.profile-complete{color:#2f7d32}.user-edit-btn:hover{background:#f3f6f8}.profile-modal-backdrop{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(25,37,51,.4)}.profile-modal-backdrop[hidden]{display:none}.profile-modal{width:min(100%,540px);background:#fff;border-radius:14px;box-shadow:0 18px 48px rgba(25,37,51,.28);overflow:hidden}.profile-modal-head{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid #edf0f4}.profile-modal-head h2{margin:0;font-size:18px}.profile-modal-close{width:30px;height:30px;padding:0;background:transparent;color:#586775;font-size:24px}.profile-modal-body{padding:18px}.profile-modal-body label{display:block;margin:0 0 6px;font-size:13px;font-weight:700;color:#526170}.profile-modal-body input{width:100%;margin:0 0 15px;padding:9px 10px;border:1px solid #cbd3dc;border-radius:8px;font:inherit}.profile-modal-email{font-size:13px;color:#6f7b87;margin:-4px 0 16px}.profile-modal-actions{display:flex;justify-content:flex-end;padding:14px 18px;border-top:1px solid #edf0f4}.profile-modal-save{background:#73b56c;color:#fff;padding:10px 16px}.profile-modal-save:disabled{opacity:.6;cursor:default}.manager-plan-table th:nth-child(1),.manager-plan-table td:nth-child(1){width:25%}.manager-plan-table th:nth-child(2),.manager-plan-table td:nth-child(2),.manager-plan-table th:nth-child(3),.manager-plan-table td:nth-child(3){width:92px;text-align:center}.manager-plan-table th:nth-child(4),.manager-plan-table td:nth-child(4){width:80px;text-align:center}.manager-plan-table th:nth-child(5),.manager-plan-table td:nth-child(5){width:auto}
 @media(max-width:900px){.grid{grid-template-columns:1fr}.right-stack{min-width:0}.users{grid-row:auto}.wrap{padding:12px}}
 .dist-header{height:34px;display:grid;grid-template-columns:repeat(5,1fr);align-items:center}.dist-header span{height:34px;display:flex;align-items:center;justify-content:center;border-left:1px solid #edf0f4}.dist-header span:nth-child(even){background:#fafbfc}.dist-track{height:42px;position:relative;width:100%;overflow:hidden}.dist-day{position:absolute;top:0;bottom:0;width:20%;border-left:1px solid #edf0f4;background:#fff}.dist-day:nth-child(even){background:#fafbfc}.dist-day:nth-child(1){left:0}.dist-day:nth-child(2){left:20%}.dist-day:nth-child(3){left:40%}.dist-day:nth-child(4){left:60%}.dist-day:nth-child(5){left:80%}.dist-line{position:absolute;top:50%;height:13px;z-index:2;transform:translateY(-50%)}.dist-dot{position:absolute;top:50%;width:18px;height:18px;border-radius:50%;z-index:3;transform:translate(-50%,-50%)}.dist-line.green,.dist-dot.green{background:#58bf68}.dist-line.yellow,.dist-dot.yellow{background:#f0c700}.dist-line.red,.dist-dot.red{background:#ef5350}.dist-task-status{margin-top:5px}</style></head><body><div class="wrap">
-<header><div><h1 id="managerHome">Weekly Planner Manager</h1><select id="managerPeriodSelect" class="period-select" aria-label="Период"></select><div id="period" class="period"></div></div><div class="manager-actions"><button id="generateReports" class="generate-btn" type="button">Создать отчёты для всех</button><button id="load" class="load-btn">Обновить</button><button id="export" class="export-btn" type="button">Экспорт</button><button id="logout" class="logout-btn" type="button">Выйти</button></div></header>
+<header><div><h1 id="managerHome">Weekly Planner Manager</h1><select id="managerPeriodSelect" class="period-select" aria-label="Период"></select><div id="period" class="period"></div></div><div class="manager-actions"><button id="generateReports" class="generate-btn" type="button">Создать отчёты для всех</button><button id="load" class="load-btn">Обновить</button><button id="export" class="export-btn" type="button">Экспорт</button></div></header>
 <div id="error" class="error"></div>
 <div class="grid">
 <div class="left-stack">
@@ -59,8 +61,6 @@ button{font:inherit;border:0;border-radius:10px;cursor:pointer;font-weight:700}.
 </div>
 <script>
 const $=id=>document.getElementById(id);let state={users:[],selected:null,selectedPlan:null,previousPlan:null,streamColors:{},aggregatePlan:[],userTotals:{},period:'',periods:[]};let planSaveTimer=0,planRevision=0;
-function logout(){sessionStorage.removeItem('weeklyPlanner.accessToken');sessionStorage.removeItem('weeklyPlanner.user');window.location.replace(new URL('index.html',window.location.href))}
-$('logout').addEventListener('click',logout);
 $('managerHome').addEventListener('click',()=>{window.location.href='https://evgensoftswiss.github.io/reports/'});
 function formatPercent(value){return `${Number(value||0).toFixed(1)}%`}
 function exportPlan(){const rows=state.aggregatePlan||[];const text=['Stream\tHours\tPercent\tComment',...rows.map(r=>{const total=rows.reduce((s,x)=>s+parseHours(x.hours),0);const pct=total?parseHours(r.hours)/total*100:0;return `${r.stream||''}\t${r.hours||''}\t${formatPercent(pct)}\t${String(r.comment||'').replace(/\s+/g,' ').trim()}`})].join('\n');navigator.clipboard?.writeText(text).then(()=>window.open('https://sheets.new','_blank')).catch(()=>alert('Не удалось скопировать данные'))}
@@ -126,6 +126,27 @@ function commentCell(row){
   return `<div class="comment-fold" role="button" tabindex="0" aria-expanded="false"><div class="comment-fold-text">${esc(comment)}</div><span class="comment-fold-arrow" aria-hidden="true">⌄</span></div>`;
 }
 function formatPlanTime(minutes){const n=Math.max(0,Math.round(Number(minutes)||0)),h=Math.floor(n/60),m=n%60;return m?`${h}h ${m}m`:`${h}h`}
+function managerMeetingComment(meetings){
+  return [...(meetings?.calendar||[]),...(meetings?.manual||[])]
+    .filter(item=>String(item?.summary||'').trim()||Number(item?.minutes||0)>0)
+    .map(item=>`${String(item.summary||'Без названия').trim()||'Без названия'} (${Number(((Number(item.minutes)||0)/60).toFixed(2))})`)
+    .join(', ');
+}
+function syncManagerCommunicationFromMeetings(){
+  const meetings=state.selectedPlan?.meetings||{};
+  const row=(state.selectedPlan?.stream_plan||[]).find(item=>String(item.stream||'').trim().toLocaleLowerCase()==='communication');
+  if(!row)return;
+  const minutes=[...(meetings.calendar||[]),...(meetings.manual||[])].reduce((sum,item)=>sum+Math.max(0,Number(item.minutes)||0),0);
+  row.hours=formatPlanTime(minutes);
+  row.comment=managerMeetingComment(meetings);
+  const index=(state.selectedPlan.stream_plan||[]).indexOf(row);
+  const hoursInput=document.querySelector(`[data-plan-hours="${index}"]`);
+  const commentInput=document.querySelector(`[data-plan-comment="${index}"]`);
+  if(hoursInput)hoursInput.value=row.hours;
+  if(commentInput)commentInput.value=row.comment;
+  refreshManagerPlanPercents();
+  refreshSelectedUserTotal();
+}
 function planHtml(rows){
   const total=(rows||[]).reduce((sum,r)=>sum+parseHours(r.hours),0);
   const title=$('selectedPlanTotal');if(title){title.textContent=`(${formatPlanTime(total)})`;title.classList.toggle('plan-total-warning',total!==2400);}
@@ -139,20 +160,35 @@ function editablePlanHtml(rows){
   if(!rows?.length)return '<div class="empty">Нет данных</div>';
   return `<div class="table-wrap"><table class="manager-plan-table"><thead><tr><th class="stream-col">Stream</th><th>Prev</th><th class="hours-col">Hours</th><th class="percent-col">%</th><th>Comment</th></tr></thead><tbody>${rows.map((row,index)=>{const minutes=parseHours(row.hours),percent=total?minutes/total*100:0;const prev=previousHours(row.stream);return `<tr><td><span class="stream" ${streamStyle(row.stream)}>${esc(row.stream)}</span></td><td><div class="hours ${parseHours(prev)===0?'zero-value':''}">${esc(prev)}</div></td><td><input class="manager-edit hours-edit ${minutes===0?'zero-value':''}" data-plan-hours="${index}" value="${esc(row.hours)}"></td><td class="percent-col"><span class="percent-badge ${minutes===0?'zero-value':''}" data-plan-percent="${index}">${formatPercent(percent)}</span></td><td><textarea class="manager-edit comment-edit" data-plan-comment="${index}">${esc(row.comment)}</textarea></td></tr>`;}).join('')}</tbody></table></div>`;
 }
+function managerMeetingRowsHtml(items, group, editable){
+  return (items||[]).map((item,index)=>{
+    const attrs=editable ? `data-meeting-field="summary" data-meeting-group="${group}" data-meeting-index="${index}"` : 'disabled';
+    const summary=`<input class="manager-edit" ${attrs} value="${esc(item.summary||'')}" placeholder="Название мита">`;
+    const minutes=`<input class="manager-edit hours-edit" ${editable?`data-meeting-field="minutes" data-meeting-group="${group}" data-meeting-index="${index}"`:''} ${editable?'':'disabled'} value="${esc(formatPlanTime(item.minutes))}" placeholder="0">`;
+    const when=editable
+      ? `<div class="meeting-date-wrap"><input class="manager-edit" type="date" data-meeting-field="when" data-meeting-group="${group}" data-meeting-index="${index}" value="${esc(item.when||'')}"><button class="meeting-delete-btn" type="button" data-remove-meeting="${group}:${index}" title="Удалить">Удалить</button></div>`
+      : `<input class="manager-edit" disabled value="${esc(item.when||'')}">`;
+    return `<tr><td>${summary}</td><td>${minutes}</td><td>${when}</td></tr>`;
+  }).join('');
+}
+function managerMeetingTableHtml(items, group, editable){
+  return `<div class="table-wrap meeting-table-wrap"><table class="meeting-table"><thead><tr><th>Мит</th><th>Длит.</th><th>Когда</th></tr></thead><tbody>${managerMeetingRowsHtml(items,group,editable)}</tbody></table></div>`;
+}
 function editableMeetingsHtml(meetings){
-  const groups=[['calendar','Из календаря'],['manual','Добавлено вручную']];
-  return groups.map(([group,label])=>{const rows=Array.isArray(meetings?.[group])?meetings[group]:[];return `<div><div class="subnote">${label}</div>${rows.length?`<div class="table-wrap"><table class="meetings"><thead><tr><th>Мит</th><th>Длит.</th><th>Когда</th><th></th></tr></thead><tbody>${rows.map((item,index)=>`<tr><td><input class="manager-edit" data-meeting-field="summary" data-meeting-group="${group}" data-meeting-index="${index}" value="${esc(item.summary)}"></td><td><input class="manager-edit hours-edit" data-meeting-field="minutes" data-meeting-group="${group}" data-meeting-index="${index}" value="${esc(formatPlanTime(item.minutes))}"></td><td><input class="manager-edit" data-meeting-field="when" data-meeting-group="${group}" data-meeting-index="${index}" value="${esc(item.when)}"></td><td><button class="remove-btn" type="button" data-remove-meeting="${group}:${index}">×</button></td></tr>`).join('')}</tbody></table></div>`:'<div class="subnote">Нет записей</div>'}</div>`}).join('')+`<div class="meeting-actions"><button class="small-btn" id="addManagerMeeting" type="button">+ Добавить мит</button></div>`;
+  const calendar=Array.isArray(meetings?.calendar)?meetings.calendar:[];
+  const manual=Array.isArray(meetings?.manual)?meetings.manual:[];
+  return `<div><div class="subnote">Из календаря</div>${calendar.length?managerMeetingTableHtml(calendar,'calendar',false):'<div class="empty">На следующую неделю запланированных митингов в календаре нет.</div>'}</div><div class="meetings-divider"></div><div><div class="subnote">Добавлено вручную</div>${manual.length?managerMeetingTableHtml(manual,'manual',true):'<div class="empty">Нет добавленных вручную митингов.</div>'}</div><div class="meeting-actions"><button class="small-btn" id="addManagerMeeting" type="button">+ Добавить мит</button></div>`;
 }
 function bindManagerEditors(){
   document.querySelectorAll('[data-plan-hours]').forEach(input=>{input.addEventListener('focus',event=>setTimeout(()=>event.target.select(),0));input.addEventListener('input',event=>{const index=Number(event.target.dataset.planHours);state.selectedPlan.stream_plan[index].hours=event.target.value;refreshManagerPlanPercents();refreshSelectedUserTotal();queueManagerSave();});input.addEventListener('blur',event=>{const index=Number(event.target.dataset.planHours),value=formatPlanTime(parseHours(event.target.value));event.target.value=value;state.selectedPlan.stream_plan[index].hours=value;refreshManagerPlanPercents();refreshSelectedUserTotal();queueManagerSave();});});
   document.querySelectorAll('[data-plan-comment]').forEach(input=>input.addEventListener('input',event=>{state.selectedPlan.stream_plan[Number(event.target.dataset.planComment)].comment=event.target.value;queueManagerSave();}));
   document.querySelectorAll('[data-meeting-field]').forEach(input=>{
     input.addEventListener('focus',event=>{if(event.target.dataset.meetingField==='minutes')setTimeout(()=>event.target.select(),0);});
-    input.addEventListener('input',event=>{const target=event.target,group=target.dataset.meetingGroup,index=Number(target.dataset.meetingIndex),field=target.dataset.meetingField;let value=target.value;if(field==='minutes')value=parseHours(value);state.selectedPlan.meetings[group][index][field]=value;queueManagerSave();});
-    input.addEventListener('blur',event=>{if(event.target.dataset.meetingField!=='minutes')return;const target=event.target,group=target.dataset.meetingGroup,index=Number(target.dataset.meetingIndex),value=formatPlanTime(parseHours(target.value));target.value=value;state.selectedPlan.meetings[group][index].minutes=parseHours(value);queueManagerSave();});
+    input.addEventListener('input',event=>{const target=event.target,group=target.dataset.meetingGroup,index=Number(target.dataset.meetingIndex),field=target.dataset.meetingField;let value=target.value;if(field==='minutes')value=parseHours(value);state.selectedPlan.meetings[group][index][field]=value;syncManagerCommunicationFromMeetings();queueManagerSave();});
+    input.addEventListener('blur',event=>{if(event.target.dataset.meetingField!=='minutes')return;const target=event.target,group=target.dataset.meetingGroup,index=Number(target.dataset.meetingIndex),value=formatPlanTime(parseHours(target.value));target.value=value;state.selectedPlan.meetings[group][index].minutes=parseHours(value);syncManagerCommunicationFromMeetings();queueManagerSave();});
   });
-  document.querySelectorAll('[data-remove-meeting]').forEach(button=>button.addEventListener('click',()=>{const [group,index]=button.dataset.removeMeeting.split(':');state.selectedPlan.meetings[group].splice(Number(index),1);renderSelectedPlan();queueManagerSave();}));
-  $('addManagerMeeting')?.addEventListener('click',()=>{state.selectedPlan.meetings.manual.push({summary:'',minutes:0,when:''});renderSelectedPlan();queueManagerSave();});
+  document.querySelectorAll('[data-remove-meeting]').forEach(button=>button.addEventListener('click',()=>{const [group,index]=button.dataset.removeMeeting.split(':');if(group!=='manual')return;state.selectedPlan.meetings[group].splice(Number(index),1);renderSelectedPlan();syncManagerCommunicationFromMeetings();queueManagerSave();}));
+  $('addManagerMeeting')?.addEventListener('click',()=>{state.selectedPlan.meetings.manual.push({summary:'',minutes:0,when:''});renderSelectedPlan();syncManagerCommunicationFromMeetings();queueManagerSave();});
 }
 function refreshManagerPlanPercents(){
   const rows=state.selectedPlan?.stream_plan||[];
@@ -165,7 +201,7 @@ function refreshManagerPlanPercents(){
 function renderSelectedPlan(){
   const plan=state.selectedPlan||{stream_plan:[],meetings:{calendar:[],manual:[]}};
   if(!plan.meetings)plan.meetings={calendar:[],manual:[]};if(!Array.isArray(plan.meetings.calendar))plan.meetings.calendar=[];if(!Array.isArray(plan.meetings.manual))plan.meetings.manual=[];
-  $('plan').innerHTML=editablePlanHtml(plan.stream_plan||[]);$('meetings').innerHTML=editableMeetingsHtml(plan.meetings);bindManagerEditors();refreshManagerPlanPercents();
+  $('plan').innerHTML=editablePlanHtml(plan.stream_plan||[]);$('meetings').innerHTML=editableMeetingsHtml(plan.meetings);bindManagerEditors();syncManagerCommunicationFromMeetings();
 }
 function queueManagerSave(){
   planRevision++;const revision=planRevision;clearTimeout(planSaveTimer);$('planSaveNote').textContent='Сохранение…';planSaveTimer=setTimeout(()=>saveSelectedPlan(0,revision),700);
