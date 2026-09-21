@@ -1,4 +1,4 @@
-# Weekly Planner Frontend 0.3.1
+# Weekly Planner Frontend 0.3.2
 
 Статический HTML/JS-интерфейс для размещения на GitHub Pages.
 
@@ -8,14 +8,6 @@
 
 ```js
 GOOGLE_CLIENT_ID: "...apps.googleusercontent.com"
-```
-
-В Google Cloud Console добавить адрес GitHub Pages в Authorized JavaScript origins.
-
-API уже настроен на:
-
-```text
-https://home.namsilat.com/weekly-planner-api
 ```
 
 ## Текущие возможности

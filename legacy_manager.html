@@ -1,4 +1,4 @@
-<!doctype html><html lang="ru"><head><meta name="wp-build" content="0.3.1"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<!doctype html><html lang="ru"><head><meta name="wp-build" content="0.3.2"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Weekly Planner Manager</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f4f6f8;color:#27313c;font-family:Arial,sans-serif}.wrap{width:100%;padding:22px}
@@ -28,9 +28,10 @@ button{font:inherit;border:0;border-radius:10px;cursor:pointer;font-weight:700}.
 .dist-table .dist-header{margin:0 9px}
 .pie-label{font-size:7px;font-weight:700;fill:#27313c;pointer-events:none}.percent-badge{display:inline-block;min-width:48px;padding:7px 8px;text-align:center;background:#f4f5f6;border:1px solid #dfe3e7;border-radius:7px}.stream-plan-table th:nth-child(1),.stream-plan-table td:nth-child(1){width:25%}.stream-plan-table th:nth-child(2),.stream-plan-table td:nth-child(2){width:16%}.stream-plan-table th:nth-child(3),.stream-plan-table td:nth-child(3){width:12%}.stream-plan-table th:nth-child(4),.stream-plan-table td:nth-child(4){width:47%;overflow-wrap:anywhere}
 .pie-chart-wrap{display:flex;justify-content:center;align-items:center;min-height:260px;position:relative}.stream-pie{width:min(100%,280px);height:auto;overflow:visible}.stream-pie path,.stream-pie circle{stroke:#fff;stroke-width:2;cursor:pointer;transition:transform .18s ease,filter .18s ease}.stream-pie path:hover,.stream-pie circle:hover{filter:brightness(1.08);transform:translate(var(--explode-x),var(--explode-y))}.pie-tooltip{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);padding:7px 10px;border-radius:8px;background:#27313c;color:#fff;font-size:12px;line-height:1.35;text-align:center;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s ease}.pie-tooltip.visible{opacity:1}.pie-empty{color:#7a8693;text-align:center;padding:20px;font-size:13px}
+.period-select{margin-top:7px;min-width:240px;padding:7px 30px 7px 10px;border:1px solid #cbd3dc;border-radius:8px;background:#fff;color:#27313c}.user-row{padding:10px 12px;border-radius:8px}.user-name-input{width:100%;padding:5px 7px;margin-bottom:4px;border:1px solid #d7dde5;border-radius:6px;background:#fff}.user-name-input:focus{outline:2px solid #9ec1ee;border-color:#75a4dd}.user-details{display:flex;align-items:baseline;gap:5px;min-width:0}.user-email-label{font-size:14px;color:#526170;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.user-time{font-size:14px;font-weight:500}
 @media(max-width:900px){.grid{grid-template-columns:1fr}.right-stack{min-width:0}.users{grid-row:auto}.wrap{padding:12px}}
 .dist-header{height:34px;display:grid;grid-template-columns:repeat(5,1fr);align-items:center}.dist-header span{height:34px;display:flex;align-items:center;justify-content:center;border-left:1px solid #edf0f4}.dist-header span:nth-child(even){background:#fafbfc}.dist-track{height:42px;position:relative;width:100%;overflow:hidden}.dist-day{position:absolute;top:0;bottom:0;width:20%;border-left:1px solid #edf0f4;background:#fff}.dist-day:nth-child(even){background:#fafbfc}.dist-day:nth-child(1){left:0}.dist-day:nth-child(2){left:20%}.dist-day:nth-child(3){left:40%}.dist-day:nth-child(4){left:60%}.dist-day:nth-child(5){left:80%}.dist-line{position:absolute;top:50%;height:13px;z-index:2;transform:translateY(-50%)}.dist-dot{position:absolute;top:50%;width:18px;height:18px;border-radius:50%;z-index:3;transform:translate(-50%,-50%)}.dist-line.green,.dist-dot.green{background:#58bf68}.dist-line.yellow,.dist-dot.yellow{background:#f0c700}.dist-line.red,.dist-dot.red{background:#ef5350}.dist-task-status{margin-top:5px}</style></head><body><div class="wrap">
-<header><div><h1>Weekly Planner Manager</h1><div id="period" class="period"></div></div><div class="manager-actions"><button id="load" class="load-btn">Загрузить</button><button id="export" class="export-btn" type="button">Экспорт</button><button id="logout" class="logout-btn" type="button">Выйти</button></div></header>
+<header><div><h1>Weekly Planner Manager</h1><select id="managerPeriodSelect" class="period-select" aria-label="Период"></select><div id="period" class="period"></div></div><div class="manager-actions"><button id="load" class="load-btn">Загрузить</button><button id="export" class="export-btn" type="button">Экспорт</button><button id="logout" class="logout-btn" type="button">Выйти</button></div></header>
 <div id="error" class="error"></div>
 <div class="grid">
 <div class="left-stack">
@@ -48,7 +49,7 @@ button{font:inherit;border:0;border-radius:10px;cursor:pointer;font-weight:700}.
 </section>
 </div></div>
 <script>
-const $=id=>document.getElementById(id);let state={users:[],selected:null,streamColors:{},aggregatePlan:[],userTotals:{}};
+const $=id=>document.getElementById(id);let state={users:[],selected:null,streamColors:{},aggregatePlan:[],userTotals:{},period:'',periods:[]};
 function logout(){sessionStorage.removeItem('weeklyPlanner.accessToken');sessionStorage.removeItem('weeklyPlanner.user');window.location.replace(new URL('index.html',window.location.href))}
 $('logout').addEventListener('click',logout);
 function formatPercent(value){return `${Number(value||0).toFixed(1)}%`}
@@ -71,9 +72,25 @@ document.addEventListener('keydown',event=>{
 function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function error(msg=''){const e=$('error');e.textContent=msg;e.style.display=msg?'block':'none'}
 async function json(r){const t=await r.text();let p;try{p=JSON.parse(t)}catch{throw new Error(t||`HTTP ${r.status}`)}if(!r.ok)throw new Error(p.error||`HTTP ${r.status}`);return p}
-function renderUsers(){const b=$('users');if(!state.users.length){b.innerHTML='<div class="empty">Нет загруженных отчетов</div>';return}b.innerHTML=state.users.map((u,i)=>{const minutes=state.userTotals[u.filename]??state.userTotals[u.email]??null;const label=minutes===null?'…':formatPlanTime(minutes);const warning=minutes!==null&&minutes!==2400?' warning':'';return `<button class="user ${state.selected===i?'active':''}" data-i="${i}"><span>${esc(u.email)}</span><span class="user-time${warning}">(${label})</span></button>`}).join('');b.querySelectorAll('.user').forEach(x=>x.onclick=()=>selectUser(Number(x.dataset.i)))}
+function periodLabel(period){
+  const [from,to]=String(period||'').split('_');
+  return from&&to?`${from} — ${to}`:String(period||'');
+}
+function renderPeriodSelector(){
+  const select=$('managerPeriodSelect'); if(!select)return;
+  const values=Array.from(new Set([state.period,...(state.periods||[])]).values()).filter(Boolean);
+  select.innerHTML=values.map(period=>`<option value="${esc(period)}"${period===state.period?' selected':''}>${esc(periodLabel(period))}</option>`).join('');
+}
+async function loadPeriods(){
+  const payload=await json(await fetch('/api/manager/periods'));
+  state.periods=payload.periods||[];
+  renderPeriodSelector();
+}
+function renderUsers(){const b=$('users');if(!state.users.length){b.innerHTML='<div class="empty">Нет загруженных отчетов</div>';return}b.innerHTML=state.users.map((u,i)=>{const minutes=state.userTotals[u.filename]??state.userTotals[u.email]??null;const label=minutes===null?'…':formatPlanTime(minutes);const warning=minutes!==null&&minutes!==2400?' warning':'';const name=String(u.display_name||'').trim();return `<div class="user-row ${state.selected===i?'active':''}"><input class="user-name-input" data-name-i="${i}" value="${esc(name)}" placeholder="Имя пользователя"><button class="user" data-i="${i}"><span class="user-details"><span>${esc(name||'Без имени')}</span><span class="user-email-label">(${esc(u.email)})</span></span><span class="user-time${warning}">${label}</span></button></div>`}).join('');b.querySelectorAll('.user').forEach(x=>x.onclick=()=>selectUser(Number(x.dataset.i)));b.querySelectorAll('[data-name-i]').forEach(input=>{input.onclick=e=>e.stopPropagation();input.addEventListener('change',()=>saveDisplayName(Number(input.dataset.nameI),input.value));})}
 function cacheUserTotal(user,plan){const minutes=(plan?.stream_plan||[]).reduce((sum,row)=>sum+parseHours(row.hours),0);state.userTotals[user.filename]=minutes;state.userTotals[user.email]=minutes;}
-async function loadUserTotals(){await Promise.all(state.users.map(async user=>{try{const payload=await json(await fetch('/api/user?filename='+encodeURIComponent(user.filename)));cacheUserTotal(user,payload.plan); }catch(_){}}));renderUsers();}
+async function loadUserTotals(){await Promise.all(state.users.map(async user=>{try{const payload=await json(await fetch('/api/user?filename='+encodeURIComponent(user.filename)+'&period='+encodeURIComponent(state.period)));cacheUserTotal(user,payload.plan); }catch(_){}}));renderUsers();}
+
+async function saveDisplayName(index,value){const user=state.users[index];if(!user)return;try{const payload=await json(await fetch('/api/manager/users/display-name',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({email:user.email,display_name:value.trim()})}));user.display_name=payload.display_name||'';await bootstrap();}catch(e){error(`Не удалось сохранить имя: ${e.message}`);renderUsers();}}
 function streamStyle(name){const c=state.streamColors?.[name];return c?`style="background:${esc(c.background)};color:${esc(c.color)}"`:''}
 function consolidateCommunicationComment(comment){
   const totals=new Map();
@@ -205,13 +222,14 @@ function distributionHtml(rows,weekStart){
 }
 async function loadDistribution(email){
   try{
-    const p=await json(await fetch('/api/distribution?email='+encodeURIComponent(email)));
+    const p=await json(await fetch('/api/distribution?email='+encodeURIComponent(email)+'&period='+encodeURIComponent(state.period)));
     $('distributionPeriod').textContent=`${p.period.from} — ${p.period.to}`;
     $('distribution').innerHTML=distributionHtml(p.tasks,p.period.from);
   }catch(e){$('distribution').innerHTML=`<div class="empty">${esc(e.message)}</div>`}
 }
-async function selectUser(i){state.selected=i;renderUsers();const u=state.users[i];$('selectedUserLabel').textContent=u.email;try{const p=await json(await fetch('/api/user?filename='+encodeURIComponent(u.filename)));cacheUserTotal(u,p.plan);renderUsers();$('plan').innerHTML=planHtml(p.plan.stream_plan);$('meetings').innerHTML=meetingsHtml(p.plan.meetings);loadDistribution(u.email)}catch(e){error(e.message)}}
-async function bootstrap(){try{const p=await json(await fetch('/api/bootstrap'));$('period').textContent=p.period.label;state.users=p.users||[];state.streamColors=p.stream_colors||{};state.aggregatePlan=p.aggregate_plan||[];renderAggregate();renderUsers();loadUserTotals();if(state.users.length)selectUser(0)}catch(e){error(e.message)}}
-$('load').onclick=async()=>{const b=$('load');b.disabled=true;b.textContent='Загрузка…';error('');try{const p=await json(await fetch('/api/load',{method:'POST'}));state.users=p.users||[];state.streamColors=p.stream_colors||state.streamColors;state.aggregatePlan=p.aggregate_plan||[];renderAggregate();state.selected=null;renderUsers();if(state.users.length)await selectUser(0)}catch(e){error(e.message)}finally{b.disabled=false;b.textContent='Загрузить'}};
-bootstrap();
+async function selectUser(i){state.selected=i;renderUsers();const u=state.users[i];const name=String(u.display_name||'').trim();$('selectedUserLabel').textContent=name?`${name} (${u.email})`:u.email;try{const p=await json(await fetch('/api/user?filename='+encodeURIComponent(u.filename)+'&period='+encodeURIComponent(state.period)));cacheUserTotal(u,p.plan);renderUsers();$('plan').innerHTML=planHtml(p.plan.stream_plan);$('meetings').innerHTML=meetingsHtml(p.plan.meetings);loadDistribution(u.email)}catch(e){error(e.message)}}
+async function bootstrap(){try{const query=state.period?`?period=${encodeURIComponent(state.period)}`:'';const p=await json(await fetch('/api/bootstrap'+query));state.period=p.period?.folder||state.period;$('period').textContent=p.period.label;state.users=p.users||[];state.streamColors=p.stream_colors||{};state.aggregatePlan=p.aggregate_plan||[];renderAggregate();renderUsers();await loadUserTotals();if(state.users.length)selectUser(0);else{$('selectedUserLabel').textContent='';$('plan').innerHTML='<div class="empty">Нет данных</div>';$('meetings').innerHTML='';$('distribution').innerHTML='';}}catch(e){error(e.message)}}
+$('load').onclick=async()=>{const b=$('load');b.disabled=true;b.textContent='Загрузка…';error('');try{const p=await json(await fetch('/api/load',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({period:state.period})}));state.period=p.period?.folder||state.period;state.users=p.users||[];state.streamColors=p.stream_colors||state.streamColors;state.aggregatePlan=p.aggregate_plan||[];renderAggregate();state.selected=null;renderUsers();await loadUserTotals();if(state.users.length)await selectUser(0)}catch(e){error(e.message)}finally{b.disabled=false;b.textContent='Загрузить'}};
+$('managerPeriodSelect').addEventListener('change',async event=>{state.period=event.target.value;state.selected=null;error('');await bootstrap();renderPeriodSelector();});
+(async()=>{try{await loadPeriods();await bootstrap();renderPeriodSelector();}catch(e){error(e.message)}})();
 </script></body></html>
