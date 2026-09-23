@@ -71,7 +71,7 @@ select { min-width: 180px; padding: 10px 12px; border: 1px solid var(--line); bo
   select { width: 100%; }
 }
 
-.workload-shell { width: min(1560px, calc(100% - 32px)); margin: 0 auto; padding: 24px 0 40px; }
+.workload-shell { width: min(1560px, calc(100% - 40px)); margin: 0 auto; padding: 28px 0 48px; }
 .workload-topbar { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; margin-bottom: 18px; }
 .workload-topbar h1 { margin-top: 4px; font-size: 25px; letter-spacing: 0; }
 .workload-title-link { color: inherit; text-decoration: none; }
