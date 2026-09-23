@@ -1,6 +1,6 @@
-# Weekly Planner Frontend 0.4.6
+# Weekly Planner Frontend 0.4.7
 
-## Изменения 0.4.6
+## Изменения 0.4.7
 
 Отчёт встраивается в страницу через API HTML-фрагмента, без iframe.
 
