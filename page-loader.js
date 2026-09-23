@@ -15,7 +15,7 @@
       script.textContent = source.textContent;
       document.body.append(script);
     });
-    document.querySelector(".app-version").textContent = "Интерфейс v" + version;
+    await window.updateVersionFooter?.();
   } catch (error) {
     document.getElementById("loadError").textContent = error.message;
     document.getElementById("loadError").style.display = "block";
