@@ -51,9 +51,22 @@ async function readResponse(response) {
   return payload;
 }
 
+async function fetchWithTimeout(url, options = {}, timeoutMs = 60000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await fetch(url, {...options, signal: controller.signal});
+  } catch (error) {
+    if (error?.name === "AbortError") throw new Error("Сервер слишком долго не отвечает");
+    throw error;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 async function waitForJob(jobId) {
   for (;;) {
-    const job = await readResponse(await fetch(`/api/workload/jobs/${encodeURIComponent(jobId)}`, {cache: "no-store"}));
+    const job = await readResponse(await fetchWithTimeout(`/api/workload/jobs/${encodeURIComponent(jobId)}`, {cache: "no-store"}, 20000));
     setStatus(job.message || "Формирование…", job.progress || 0, job.status === "failed");
     if (job.status === "completed") return job;
     if (job.status === "failed") throw new Error(job.error || job.message || "Не удалось сформировать отчёт");
@@ -61,14 +74,15 @@ async function waitForJob(jobId) {
   }
 }
 
-async function showReport() {
+async function showReport({notFoundIsEmpty = false} = {}) {
   const payload = requestPayload();
-  const response = await fetch("/api/workload/report/html", {
+  const response = await fetchWithTimeout("/api/workload/report/html", {
     method: "POST",
     headers: {"Content-Type": "application/json"},
     body: JSON.stringify(payload),
     cache: "no-store"
-  });
+  }, 120000);
+  if (notFoundIsEmpty && response.status === 404) return false;
   if (!response.ok) {
     const error = await response.json().catch(() => ({}));
     throw new Error(error.error || error.detail || `HTTP ${response.status}`);
@@ -77,6 +91,34 @@ async function showReport() {
   reportUrl = URL.createObjectURL(await response.blob());
   $("reportFrame").src = reportUrl;
   $("reportPanel").classList.remove("hidden");
+  return true;
+}
+
+async function showLatestReport() {
+  setBusy(true);
+  setStatus("Загружаю последний отчёт…", 15);
+  try {
+    const response = await fetchWithTimeout("/api/workload/report/latest", {cache: "no-store"}, 30000);
+    if (response.status === 404) {
+      const restored = await showReport({notFoundIsEmpty: true});
+      setStatus(restored ? "Показан последний отчёт выбранного периода" : "Готово к формированию", restored ? 100 : 0);
+      return;
+    }
+    const latest = await readResponse(response);
+    const period = latest.period || {};
+    if (period.from && period.to) {
+      $("dateFrom").value = period.from;
+      $("dateTo").value = period.to;
+      saveSettings();
+    }
+    setStatus("Открываю последний отчёт…", 70);
+    await showReport();
+    setStatus("Показан последний сформированный отчёт", 100);
+  } catch (error) {
+    setStatus(error.message, 0, true);
+  } finally {
+    setBusy(false);
+  }
 }
 
 async function start(mode) {
@@ -86,11 +128,11 @@ async function start(mode) {
   setBusy(true);
   setStatus("Запускаю формирование…", 2);
   try {
-    const job = await readResponse(await fetch("/api/workload/jobs", {
+    const job = await readResponse(await fetchWithTimeout("/api/workload/jobs", {
       method: "POST",
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({...payload, mode})
-    }));
+    }, 30000));
     await waitForJob(job.job_id);
     setStatus("Строю таблицу…", 100);
     await showReport();
@@ -108,6 +150,7 @@ document.addEventListener("DOMContentLoaded", () => {
   $("dateTo").value = settings.dateTo;
   document.querySelectorAll(".report-button").forEach(button => button.addEventListener("click", () => start(button.dataset.mode)));
   ["dateFrom", "dateTo"].forEach(id => $(id).addEventListener("change", saveSettings));
+  showLatestReport();
 });
 
 window.addEventListener("beforeunload", () => { if (reportUrl) URL.revokeObjectURL(reportUrl); });
