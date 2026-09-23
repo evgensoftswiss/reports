@@ -2,7 +2,6 @@
 
 const STORAGE_KEY = "jiraWorkload.settings.v1";
 const $ = (id) => document.getElementById(id);
-let reportUrl = "";
 
 function isoDate(value) {
   const date = new Date(value);
@@ -81,7 +80,7 @@ async function waitForJob(jobId) {
 
 async function showReport({notFoundIsEmpty = false} = {}) {
   const payload = requestPayload();
-  const response = await fetchWithTimeout("/api/workload/report/html", {
+  const response = await fetchWithTimeout("/api/workload/report/fragment", {
     method: "POST",
     headers: {"Content-Type": "application/json"},
     body: JSON.stringify(payload),
@@ -92,11 +91,22 @@ async function showReport({notFoundIsEmpty = false} = {}) {
     const error = await response.json().catch(() => ({}));
     throw new Error(error.error || error.detail || `HTTP ${response.status}`);
   }
-  if (reportUrl) URL.revokeObjectURL(reportUrl);
-  reportUrl = URL.createObjectURL(await response.blob());
-  $("reportFrame").src = reportUrl;
+  mountReportFragment(await response.text());
   $("reportPanel").classList.remove("hidden");
   return true;
+}
+
+function mountReportFragment(fragment) {
+  const mount = $("reportMount");
+  mount.innerHTML = fragment;
+  // Скрипты, добавленные через innerHTML, браузер не запускает. Создаём их
+  // заново после вставки фрагмента; JSON-данные отчёта остаются inert-скриптом.
+  for (const inertScript of [...mount.querySelectorAll("script")]) {
+    const script = document.createElement("script");
+    for (const attribute of inertScript.attributes) script.setAttribute(attribute.name, attribute.value);
+    script.textContent = inertScript.textContent;
+    inertScript.replaceWith(script);
+  }
 }
 
 async function showLatestReport() {
@@ -157,5 +167,3 @@ document.addEventListener("DOMContentLoaded", () => {
   ["dateFrom", "dateTo"].forEach(id => $(id).addEventListener("change", saveSettings));
   showLatestReport();
 });
-
-window.addEventListener("beforeunload", () => { if (reportUrl) URL.revokeObjectURL(reportUrl); });

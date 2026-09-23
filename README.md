@@ -1,4 +1,8 @@
-# Weekly Planner Frontend 0.4.5
+# Weekly Planner Frontend 0.4.6
+
+## Изменения 0.4.6
+
+Отчёт встраивается в страницу через API HTML-фрагмента, без iframe.
 
 Статический HTML/JS-интерфейс для размещения на GitHub Pages.
 
