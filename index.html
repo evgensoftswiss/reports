@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Weekly Planner</title>
-  <link rel="stylesheet" href="styles.css">
-  <script src="config.js"></script>
-  <script src="app.js" defer></script>
+  <link rel="stylesheet" href="styles.css?v=0.4.0">
+  <script src="config.js?v=0.4.0"></script>
+  <script src="app.js?v=0.4.0" defer></script>
   <script src="https://accounts.google.com/gsi/client" async defer onload="window.initGoogleSignIn?.()"></script>
 </head>
 <body>
@@ -27,10 +27,11 @@
       <div class="route-actions">
         <a class="route-card" href="planner.html"><strong>Мой план</strong><span>Формирование плана на следующую неделю</span></a>
         <a id="managerRoute" class="route-card hidden" href="manager.html"><strong>Менеджер</strong><span>Планы и распределение задач команды</span></a>
+        <a id="workloadRoute" class="route-card hidden" href="workload.html"><strong>Загруженность команды</strong><span>JIRA-отчёт с защищённым серверным кешем</span></a>
       </div>
       <button id="logoutBtn" class="button button-ghost" type="button">Выйти</button>
     </section>
   </main>
-  <div class="app-version">Интерфейс v0.3.14</div>
+  <div class="app-version">Интерфейс v0.4.0</div>
 </body>
 </html>

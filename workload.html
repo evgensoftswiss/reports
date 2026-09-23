@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>JIRA Workload Report</title>
+  <link rel="stylesheet" href="styles.css?v=0.4.0">
+  <script src="config.js?v=0.4.0"></script>
+  <script src="auth-bridge.js?v=0.4.0"></script>
+  <script src="workload.js?v=0.4.0" defer></script>
+</head>
+<body>
+  <main class="workload-shell">
+    <header class="workload-topbar">
+      <div>
+        <div class="eyebrow">JIRA PLANNING</div>
+        <h1>Отчёт по загруженности</h1>
+      </div>
+      <a class="button button-ghost" href="index.html">На главную</a>
+    </header>
+
+    <section class="workload-controls">
+      <div class="workload-fields">
+        <label>Название отчёта<input id="reportName" value="Отчёт по загруженности"></label>
+        <label>Дата начала<input id="dateFrom" type="date"></label>
+        <label>Дата окончания<input id="dateTo" type="date"></label>
+        <label class="workload-emails">Emails, по одному в строке<textarea id="emails" rows="6" spellcheck="false"></textarea></label>
+      </div>
+      <div class="workload-actions">
+        <button type="button" class="button report-button" data-mode="cache">Сформировать отчёт</button>
+        <button type="button" class="button report-button today" data-mode="today">Сформировать с обновлением за сегодня</button>
+        <button type="button" class="button report-button force" data-mode="force">Сформировать с полным обновлением (--force)</button>
+        <a id="openReport" class="button button-ghost hidden" target="_blank" rel="noopener">Открыть отчёт</a>
+      </div>
+      <div class="job-status" aria-live="polite">
+        <div class="progress-track"><div id="progressBar" class="progress-bar"></div></div>
+        <div id="statusText" class="message">Готово к формированию</div>
+      </div>
+    </section>
+
+    <section id="reportPanel" class="report-panel hidden">
+      <iframe id="reportFrame" title="Отчёт по загруженности" sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"></iframe>
+    </section>
+  </main>
+  <div class="app-version">Интерфейс v0.4.0</div>
+</body>
+</html>
