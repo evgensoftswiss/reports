@@ -4,17 +4,17 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>JIRA Workload Report</title>
-  <link rel="stylesheet" href="styles.css?v=0.4.1">
-  <script src="config.js?v=0.4.1"></script>
-  <script src="auth-bridge.js?v=0.4.1"></script>
-  <script src="workload.js?v=0.4.1" defer></script>
+  <link rel="stylesheet" href="styles.css?v=0.4.2">
+  <script src="config.js?v=0.4.2"></script>
+  <script src="auth-bridge.js?v=0.4.2"></script>
+  <script src="workload.js?v=0.4.2" defer></script>
 </head>
 <body>
   <main class="workload-shell">
     <header class="workload-topbar">
       <div>
-        <div class="eyebrow">JIRA PLANNING</div>
-        <h1>Отчёт по загруженности</h1>
+        <div class="eyebrow">PLANNING</div>
+        <h1><a class="workload-title-link" href="https://evgensoftswiss.github.io/reports">Отчёт по загруженности</a></h1>
       </div>
       <a class="button button-ghost" href="index.html">На главную</a>
     </header>
@@ -30,7 +30,6 @@
         <button type="button" class="button report-button" data-mode="cache">Сформировать отчёт</button>
         <button type="button" class="button report-button today" data-mode="today">Сформировать с обновлением за сегодня</button>
         <button type="button" class="button report-button force" data-mode="force">Сформировать с полным обновлением (--force)</button>
-        <a id="openReport" class="button button-ghost hidden" target="_blank" rel="noopener">Открыть отчёт</a>
       </div>
       <div class="job-status" aria-live="polite">
         <div class="progress-track"><div id="progressBar" class="progress-bar"></div></div>
@@ -42,6 +41,6 @@
       <iframe id="reportFrame" title="Отчёт по загруженности" sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"></iframe>
     </section>
   </main>
-  <div class="app-version">Интерфейс v0.4.1</div>
+  <div class="app-version">Интерфейс v0.4.2</div>
 </body>
 </html>

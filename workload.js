@@ -82,8 +82,6 @@ async function showReport() {
   if (reportUrl) URL.revokeObjectURL(reportUrl);
   reportUrl = URL.createObjectURL(await response.blob());
   $("reportFrame").src = reportUrl;
-  $("openReport").href = reportUrl;
-  $("openReport").classList.remove("hidden");
   $("reportPanel").classList.remove("hidden");
 }
 
