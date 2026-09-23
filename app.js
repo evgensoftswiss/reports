@@ -26,7 +26,7 @@ async function authenticate(credential) {
 }
 
 function renderRoutes(user) {
-  document.querySelector("#welcomeTitle").textContent = user.role === "manager" ? "Панель менеджера" : "Добро пожаловать";
+  document.querySelector("#welcomeTitle").textContent = user.role === "manager" ? "Планирование" : "Добро пожаловать";
   document.querySelector("#welcomeEmail").textContent = user.email;
   document.querySelector("#routeView").classList.remove("hidden");
   document.querySelector("#authView").classList.add("hidden");
