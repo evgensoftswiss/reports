@@ -1,4 +1,4 @@
-<!doctype html><html lang="ru"><head><meta name="wp-build" content="0.4.4"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<!doctype html><html lang="ru"><head><meta name="wp-build" content="0.4.5"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Weekly Planner Manager</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f4f6f8;color:#27313c;font-family:Arial,sans-serif}.wrap{width:100%;padding:22px}
@@ -286,8 +286,10 @@ function businessDaysRemainingFrom(startDate,endDate){
   if(!startDate||!endDate||startDate==='0'||endDate==='0')return 0;
   const start=new Date(`${startDate}T00:00:00Z`),end=new Date(`${endDate}T00:00:00Z`);
   if(Number.isNaN(start.getTime())||Number.isNaN(end.getTime())||end<=start)return 0;
-  let count=0,cursor=new Date(start);cursor.setUTCDate(cursor.getUTCDate()+1);
-  while(cursor<=end){const day=cursor.getUTCDay();if(day!==0&&day!==6)count++;cursor.setUTCDate(cursor.getUTCDate()+1)}
+  const from=new Date(start);from.setUTCDate(from.getUTCDate()+1);
+  const totalDays=Math.floor((end-from)/86400000)+1,fullWeeks=Math.floor(totalDays/7);
+  let count=fullWeeks*5;
+  for(let i=0;i<totalDays%7;i++){const day=(from.getUTCDay()+i)%7;if(day!==0&&day!==6)count++;}
   return count;
 }
 function distributionColor(dayDate,endDate){

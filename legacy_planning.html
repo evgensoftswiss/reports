@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ru"><head><meta name="wp-build" content="0.4.4"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Планирование следующей недели</title><style>
+<html lang="ru"><head><meta name="wp-build" content="0.4.5"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Планирование следующей недели</title><style>
 :root{font-family:Inter,Segoe UI,Arial,sans-serif;color:#202124;background:#f4f6f8;font-size:14px}
 *{box-sizing:border-box}
 body{margin:0}
@@ -263,25 +263,28 @@ function distributionDayIndex(dateValue, weekStart){
 }
 function businessDaysRemaining(endDate){
   if(!endDate || endDate==='0') return 0;
-  const today=new Date(); today.setHours(0,0,0,0);
-  const end=new Date(String(endDate)+'T00:00:00'); if(Number.isNaN(end.getTime())) return 0;
+  const now=new Date();
+  const today=new Date(Date.UTC(now.getFullYear(),now.getMonth(),now.getDate()));
+  const end=new Date(String(endDate)+'T00:00:00Z'); if(Number.isNaN(end.getTime())) return 0;
   if(end<=today) return 0;
-  let count=0, cursor=new Date(today); cursor.setDate(cursor.getDate()+1);
-  while(cursor<=end){ const day=cursor.getDay(); if(day!==0 && day!==6) count++; cursor.setDate(cursor.getDate()+1); }
+  const from=new Date(today);from.setUTCDate(from.getUTCDate()+1);
+  return businessDaysInclusive(from,end);
+}
+function businessDaysInclusive(from,to){
+  if(to<from)return 0;
+  const totalDays=Math.floor((to-from)/86400000)+1;
+  const fullWeeks=Math.floor(totalDays/7);
+  let count=fullWeeks*5;
+  const remainder=totalDays%7;
+  for(let i=0;i<remainder;i++){const day=(from.getUTCDay()+i)%7;if(day!==0&&day!==6)count++;}
   return count;
 }
 function businessDaysBetweenInclusive(fromDate,toDate){
   if(!fromDate || !toDate || fromDate==='0' || toDate==='0') return 0;
-  const from=new Date(String(fromDate)+'T00:00:00');
-  const to=new Date(String(toDate)+'T00:00:00');
+  const from=new Date(String(fromDate)+'T00:00:00Z');
+  const to=new Date(String(toDate)+'T00:00:00Z');
   if(Number.isNaN(from.getTime()) || Number.isNaN(to.getTime()) || from>to) return 0;
-  let count=0, cursor=new Date(from);
-  while(cursor<=to){
-    const day=cursor.getDay();
-    if(day!==0 && day!==6) count++;
-    cursor.setDate(cursor.getDate()+1);
-  }
-  return count;
+  return businessDaysInclusive(from,to);
 }
 function distributionColor(endDate,referenceDate=null){
   if(!endDate || endDate==='0') return 'green';
@@ -293,16 +296,11 @@ function distributionColor(endDate,referenceDate=null){
 }
 function businessDaysRemainingFrom(startDate,endDate){
   if(!startDate || !endDate || startDate==='0' || endDate==='0') return 0;
-  const start=new Date(String(startDate)+'T00:00:00');
-  const end=new Date(String(endDate)+'T00:00:00');
+  const start=new Date(String(startDate)+'T00:00:00Z');
+  const end=new Date(String(endDate)+'T00:00:00Z');
   if(Number.isNaN(start.getTime()) || Number.isNaN(end.getTime()) || end<=start) return 0;
-  let count=0, cursor=new Date(start); cursor.setDate(cursor.getDate()+1);
-  while(cursor<=end){
-    const day=cursor.getDay();
-    if(day!==0 && day!==6) count++;
-    cursor.setDate(cursor.getDate()+1);
-  }
-  return count;
+  const from=new Date(start);from.setUTCDate(from.getUTCDate()+1);
+  return businessDaysInclusive(from,end);
 }
 function distributionSegmentColor(dayDate,endDate){
   if(!endDate || endDate==='0') return 'green';

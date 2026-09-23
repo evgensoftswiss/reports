@@ -65,7 +65,12 @@ async function fetchWithTimeout(url, options = {}, timeoutMs = 60000) {
 }
 
 async function waitForJob(jobId) {
+  const startedAt = Date.now();
+  const maxWaitMs = 30 * 60 * 1000;
   for (;;) {
+    if (Date.now() - startedAt > maxWaitMs) {
+      throw new Error("Формирование длится более 30 минут. Проверьте журнал API и повторите запрос");
+    }
     const job = await readResponse(await fetchWithTimeout(`/api/workload/jobs/${encodeURIComponent(jobId)}`, {cache: "no-store"}, 20000));
     setStatus(job.message || "Формирование…", job.progress || 0, job.status === "failed");
     if (job.status === "completed") return job;
