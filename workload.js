@@ -24,20 +24,14 @@ function readSettings() {
   catch (_) { return defaults; }
 }
 
-function emails() {
-  return [...new Set($("emails").value.split(/[\n,;]+/).map(value => value.trim().toLowerCase()).filter(Boolean))];
-}
-
 function requestPayload() {
-  return {date_from: $("dateFrom").value, date_to: $("dateTo").value, emails: emails()};
+  return {date_from: $("dateFrom").value, date_to: $("dateTo").value};
 }
 
 function saveSettings() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify({
-    reportName: $("reportName").value,
     dateFrom: $("dateFrom").value,
-    dateTo: $("dateTo").value,
-    emails: $("emails").value
+    dateTo: $("dateTo").value
   }));
 }
 
@@ -68,7 +62,7 @@ async function waitForJob(jobId) {
 }
 
 async function showReport() {
-  const payload = {...requestPayload(), report_name: $("reportName").value.trim() || "Отчёт по загруженности"};
+  const payload = requestPayload();
   const response = await fetch("/api/workload/report/html", {
     method: "POST",
     headers: {"Content-Type": "application/json"},
@@ -88,7 +82,6 @@ async function showReport() {
 async function start(mode) {
   const payload = requestPayload();
   if (!payload.date_from || !payload.date_to) return setStatus("Укажите даты периода", 0, true);
-  if (!payload.emails.length) return setStatus("Добавьте хотя бы один email", 0, true);
   saveSettings();
   setBusy(true);
   setStatus("Запускаю формирование…", 2);
@@ -109,24 +102,12 @@ async function start(mode) {
   }
 }
 
-document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener("DOMContentLoaded", () => {
   const settings = readSettings();
-  $("reportName").value = settings.reportName || "Отчёт по загруженности";
   $("dateFrom").value = settings.dateFrom;
   $("dateTo").value = settings.dateTo;
-  $("emails").value = settings.emails || "";
   document.querySelectorAll(".report-button").forEach(button => button.addEventListener("click", () => start(button.dataset.mode)));
-  ["reportName", "dateFrom", "dateTo", "emails"].forEach(id => $(id).addEventListener("change", saveSettings));
-  if (!$("emails").value.trim()) {
-    try {
-      const defaults = await readResponse(await fetch("/api/workload/settings", {cache: "no-store"}));
-      $("emails").value = (defaults.emails || []).join("\n");
-      if (!settings.reportName && defaults.report_name) $("reportName").value = defaults.report_name;
-      saveSettings();
-    } catch (error) {
-      setStatus(error.message, 0, true);
-    }
-  }
+  ["dateFrom", "dateTo"].forEach(id => $(id).addEventListener("change", saveSettings));
 });
 
 window.addEventListener("beforeunload", () => { if (reportUrl) URL.revokeObjectURL(reportUrl); });
