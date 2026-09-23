@@ -54,7 +54,7 @@ th{font-size:12px;text-transform:uppercase;letter-spacing:.02em;color:#6b7580;ba
 .modal-card h2{margin:0 0 7px}
 .modal-card p{margin:0 0 15px;color:#68727c}
 .modal-card input,.modal-card textarea{width:100%;padding:10px;border:1px solid #cbd3dc;border-radius:8px}.reference-modal-card{width:min(760px,calc(100vw - 32px))}.reference-modal-card textarea{resize:vertical;font:13px ui-monospace,SFMono-Regular,Consolas,monospace;line-height:1.45}
-.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}
+.modal-actions{display:flex;justify-content:flex-start;align-items:center;gap:8px;margin-top:14px}.modal-actions #emailSave{margin-left:auto}.modal-actions #emailCancel{background:#eef1f5;color:#425466}.modal-actions #emailCancel:hover{background:#dfe5eb}
 .ref-row{background:#fafbfc}
 .ref-row td{color:#59636d}
 .add-field{display:inline-flex;gap:6px;align-items:center}
@@ -164,7 +164,7 @@ th{font-size:12px;text-transform:uppercase;letter-spacing:.02em;color:#6b7580;ba
     <input id="emailInput" type="email" placeholder="name@softswiss.com" autocomplete="email">
     <input id="calendarInput" type="url" placeholder="https://calendar.google.com/calendar/ical/.../public/basic.ics" style="margin-top:10px">
     <div class="calendar-help">Как получить ссылку: Google Calendar → Настройки → нужный календарь → «Интегрировать календарь» → «Публичный адрес в формате iCal». Скопируйте ссылку вида <code>.../public/basic.ics</code>.</div>
-    <div class="modal-actions"><button id="emailLogout" class="danger" type="button">Выйти</button><button id="emailSave">Обновить</button></div>
+    <div class="modal-actions"><button id="emailLogout" class="danger" type="button">Выйти</button><button id="emailCancel" type="button">Отмена</button><button id="emailSave">Обновить</button></div>
   </div>
 </div>
 <script>
@@ -1038,6 +1038,7 @@ $('includeWorklogUser')?.addEventListener('change',async e=>{
 $('changeEmail').addEventListener('click',openEmailModal);
 $('planningHome').addEventListener('click',()=>{window.location.href='https://evgensoftswiss.github.io/reports/'});
 $('emailSave').addEventListener('click',saveEmail);
+$('emailCancel').addEventListener('click',()=>{$('emailModal').classList.remove('open');hideError();});
 $('emailLogout').addEventListener('click',()=>{sessionStorage.removeItem('weeklyPlanner.accessToken');sessionStorage.removeItem('weeklyPlanner.user');window.location.replace(new URL('index.html',window.location.href))});
 $('emailInput').addEventListener('keydown',e=>{if(e.key==='Enter')saveEmail()});
 $('calendarInput').addEventListener('keydown',e=>{if(e.key==='Enter')saveEmail()});
