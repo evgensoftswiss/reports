@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ru"><head><meta name="wp-build" content="0.3.17"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Планирование следующей недели</title><style>
+<html lang="ru"><head><meta name="wp-build" content="0.3.18"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Планирование следующей недели</title><style>
 :root{font-family:Inter,Segoe UI,Arial,sans-serif;color:#202124;background:#f4f6f8;font-size:14px}
 *{box-sizing:border-box}
 body{margin:0}
@@ -23,7 +23,7 @@ h1{margin:0;font-size:25px}
 .grid-two{display:grid;grid-template-columns:1.05fr 1.55fr;gap:16px}
 .section-pair{display:grid;grid-template-columns:1fr;gap:16px;margin-bottom:16px}.section-pair>.section{margin-bottom:0}@media (min-width:1300px){.section-pair{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .table-wrap{overflow:auto}.meeting-table-wrap{overflow-x:hidden}
-.meetings-divider{height:1px;background:#dfe4e9;margin:18px 0}.meeting-add-wrap{display:flex;justify-content:center;margin-top:14px}.meeting-table input:disabled{background:#f2f4f6;color:#5f6872;border-color:#dfe4e9;opacity:1;cursor:default}.meeting-date-wrap{display:flex;align-items:center;gap:6px}.meeting-delete-btn{flex:0 0 auto;border:0;background:transparent;color:#d34a4a;padding:4px 6px;cursor:pointer;font-size:12px}.meeting-delete-btn:hover{color:#a82222;background:transparent}.meeting-visibility-btn{flex:0 0 auto;width:30px;height:30px;padding:4px;border:1px solid #cbd3dc;border-radius:7px;background:#fff;color:#596570;display:inline-flex;align-items:center;justify-content:center}.meeting-visibility-btn:hover{background:#eef3f8;color:#2f67b1}.meeting-visibility-btn svg{width:17px;height:17px;display:block;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.meeting-row-hidden td{opacity:.55}.meeting-row-hidden input{text-decoration:line-through}
+.meetings-divider{height:1px;background:#dfe4e9;margin:18px 0}.meeting-add-wrap{display:flex;justify-content:center;margin-top:14px}.meeting-table input:disabled{background:#f2f4f6;color:#5f6872;border-color:#dfe4e9;opacity:1;cursor:default}.meeting-date-wrap{display:flex;align-items:center;gap:6px}.meeting-delete-btn{flex:0 0 auto;width:30px;height:30px;padding:4px;border:1px solid #efb8b8;border-radius:7px;background:#fff;color:#d34a4a;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}.meeting-delete-btn:hover{color:#a82222;background:#fff5f5}.meeting-delete-btn svg{width:17px;height:17px;display:block;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.meeting-visibility-btn{flex:0 0 auto;width:30px;height:30px;padding:4px;border:1px solid #cbd3dc;border-radius:7px;background:#fff;color:#596570;display:inline-flex;align-items:center;justify-content:center}.meeting-visibility-btn:hover{background:#eef3f8;color:#2f67b1}.meeting-visibility-btn svg{width:17px;height:17px;display:block;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.meeting-row-hidden td{opacity:.55}.meeting-row-hidden input{text-decoration:line-through}
 table{width:100%;border-collapse:collapse;min-width:720px}
 th,td{padding:9px 10px;border-bottom:1px solid #edf0f4;text-align:left;vertical-align:middle}
 th{font-size:12px;text-transform:uppercase;letter-spacing:.02em;color:#6b7580;background:#fafbfc;position:sticky;top:0;z-index:1}
@@ -135,7 +135,7 @@ th{font-size:12px;text-transform:uppercase;letter-spacing:.02em;color:#6b7580;ba
   <div class="section-loading"><span>Загрузка данных…</span></div>
   <div class="section-head">
     <div><div class="section-title">Миты на следующую неделю</div><div id="meetingsNote" class="section-note">Загрузка календаря…</div></div>
-    <div class="actions"><span id="meetingsSaveStatus" class="save-status"></span><div id="meetingsTotal" class="total stream-plan-total-inline">Всего: 0h</div></div>
+    <div class="actions"><span id="meetingsSaveStatus" class="save-status"></span><div id="meetingsTotal" class="total stream-plan-total-inline">Всего: 0h</div><button id="refreshCalendar" class="secondary" type="button">Обновить</button></div>
   </div>
   <div class="pad">
     <div id="meetingsTable"></div>
@@ -439,7 +439,7 @@ function meetingRowsHtml(items, editable){
     const when=String(item.when||'');
     const attrs=editable ? `data-manual-meeting-row="${idx}"` : 'disabled';
     const whenField=editable
-      ? `<div class="meeting-date-wrap"><input type="date" ${attrs} data-meeting-prop="when" value="${escapeAttr(when)}"><button type="button" class="meeting-delete-btn" data-delete-meeting-row="${idx}" title="Удалить">Удалить</button></div>`
+      ? `<div class="meeting-date-wrap"><input type="date" ${attrs} data-meeting-prop="when" value="${escapeAttr(when)}"><button type="button" class="meeting-delete-btn" data-delete-meeting-row="${idx}" title="Удалить" aria-label="Удалить мит"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M7 7l1 13h8l1-13"/><path d="M10 11v5M14 11v5"/></svg></button></div>`
       : `<input disabled data-meeting-prop="when" value="${escapeAttr(when)}">`;
     const group=editable?'manual':'calendar';
     return `<tr class="${item.hidden?'meeting-row-hidden':''}"><td><input ${attrs} data-meeting-prop="summary" value="${escapeAttr(item.summary||'')}" placeholder="Название мита"></td><td><input class="hours-input" ${attrs} data-meeting-prop="minutes" value="${escapeAttr(minutesToInput(item.minutes))}" placeholder="0"></td><td class="meeting-time"><div class="meeting-date-wrap">${whenField}${meetingVisibilityButton(item,group,idx)}</div></td></tr>`;
@@ -867,12 +867,14 @@ function applyReadOnly(){
   const locked=!!state.readOnly;
   document.querySelectorAll('#streamPlanTable input,#manualMeetingsTable input,#taskDistributionTable input,#planTable input').forEach(input=>input.disabled=locked);
   document.querySelectorAll('[data-delete-meeting-row],[data-remove-field]').forEach(button=>button.disabled=locked);
-  ['addMeeting','submitPlan','includeWorklogUser'].forEach(id=>{const node=$(id);if(node)node.disabled=locked;});
+  ['addMeeting','submitPlan','includeWorklogUser','refreshCalendar'].forEach(id=>{const node=$(id);if(node)node.disabled=locked;});
   const note=$('planningPeriod');
   if(note&&state.data?.next_week){note.textContent=`${fmtDate(state.data.next_week.from)} — ${fmtDate(state.data.next_week.to)}${locked?' · только чтение':''}`;note.classList.toggle('readonly-note',locked);}
 }
-async function loadCalendar(){
+async function loadCalendar(persistRefresh=false){
   const box=$('meetingsTable'), meetingNote=$('meetingsNote');
+  const previousMeetings=JSON.parse(JSON.stringify(state.meetings||[]));
+  let calendarRefreshSucceeded=false;
   meetingNote.textContent='Загрузка календаря…'; box.innerHTML='<div class="empty">Загрузка…</div>'; if($('meetingsTotal')) $('meetingsTotal').textContent='Всего: 0h';
   if(!state.calendarUrl){
     if(state.data){
@@ -880,7 +882,11 @@ async function loadCalendar(){
       state.data.current_calendar={url:'',events:0,minutes:0,formatted:'0м',items:[]};
     }
     state.currentMeetings=[];
-    renderCalendar(); renderMeetings(); renderDoneStreamPlan(); return;
+    state.meetings=[];
+    calendarRefreshSucceeded=true;
+    renderCalendar(); renderMeetings(); renderDoneStreamPlan();
+    if(persistRefresh&&!state.readOnly){state.recalcAfterSave=true;queueAutoSave(false,'meetings');}
+    return;
   }
   try{
     const selectedStart=state.selectedWeekStart||state.data?.current_week?.from||'';
@@ -894,16 +900,22 @@ async function loadCalendar(){
     const [nextPayload,currentPayload]=await Promise.all([readJsonResponse(nextResponse),readJsonResponse(currentResponse)]);
     state.data.calendar=nextPayload.calendar||{url:state.calendarUrl,events:0,minutes:0,formatted:'0м',items:[]};
     state.data.current_calendar=currentPayload.calendar||{url:state.calendarUrl,events:0,minutes:0,formatted:'0м',items:[]};
+    calendarRefreshSucceeded=!state.data.calendar.error&&!state.data.current_calendar.error;
     state.currentMeetings=mapCalendarMeetings(state.data.current_calendar.items||[]);
     const savedCalendar=Array.isArray(state.plan?.meetings?.calendar)?state.plan.meetings.calendar:[];
-    state.meetings=mapCalendarMeetings(state.data.calendar.items||[],savedCalendar);
+    state.meetings=calendarRefreshSucceeded?mapCalendarMeetings(state.data.calendar.items||[],savedCalendar):previousMeetings;
   }catch(e){
     state.data.calendar={url:state.calendarUrl,events:0,minutes:0,formatted:'0м',items:[],error:e.message};
     state.data.current_calendar={url:state.calendarUrl,events:0,minutes:0,formatted:'0м',items:[],error:e.message};
     state.currentMeetings=[];
+    state.meetings=previousMeetings;
   }
   renderCalendar(); renderMeetings(); renderDoneStreamPlan();
   if(state.plan){ syncStreamPlanFromTasks(false); }
+  if(persistRefresh&&calendarRefreshSucceeded&&!state.readOnly){
+    state.recalcAfterSave=true;
+    queueAutoSave(false,'meetings');
+  }
 }
 
 function buildPageState(){
@@ -1075,6 +1087,12 @@ $('emailLogout').addEventListener('click',()=>{sessionStorage.removeItem('weekly
 $('emailInput').addEventListener('keydown',e=>{if(e.key==='Enter')saveEmail()});
 $('calendarInput').addEventListener('keydown',e=>{if(e.key==='Enter')saveEmail()});
 $('addMeeting').addEventListener('click',addMeeting);
+$('refreshCalendar').addEventListener('click',async()=>{
+  const button=$('refreshCalendar');
+  if(state.readOnly)return;
+  button.disabled=true; button.textContent='Обновление…';
+  try{await loadCalendar(true);}finally{button.disabled=false;button.textContent='Обновить';applyReadOnly();}
+});
 $('submitPlan').addEventListener('click',submitSelectedPlan);
 $('periodSelect')?.addEventListener('change',async event=>{
   if(state.dirty&&!state.readOnly)await savePlan();
