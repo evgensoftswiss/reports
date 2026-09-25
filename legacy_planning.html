@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ru"><head><meta name="wp-build" content="0.3.18"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Планирование следующей недели</title><style>
+<html lang="ru"><head><meta name="wp-build" content="0.4.11"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Планирование следующей недели</title><style>
 :root{font-family:Inter,Segoe UI,Arial,sans-serif;color:#202124;background:#f4f6f8;font-size:14px}
 *{box-sizing:border-box}
 body{margin:0}
@@ -12,7 +12,7 @@ button.danger{background:#f1d7d7;color:#8f1d1d}
 button:disabled{opacity:.55;cursor:not-allowed}
 .wrap{width:100%;margin:0;padding:22px}
 header{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:18px}
-h1{margin:0;font-size:25px}
+.eyebrow{color:#3878d8;font-size:11px;font-weight:800;letter-spacing:.12em;margin-bottom:4px}h1{margin:0;font-size:25px;letter-spacing:0}
 .subtitle{color:#66717c;margin-top:5px} .period-nav{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.period-arrow{width:18px;height:24px;padding:0 0 5px 0;border-radius:8px;background:#e9e9e9;color:#27313c;font-size:20px;line-height:1;margin-top:2px}.period-arrow:hover{background:#bfc3c7}.period-arrow:disabled{opacity:.45;cursor:not-allowed}.period-select{margin-top:6px;min-width:240px;padding:7px 30px 7px 10px;border:1px solid #cbd3dc;border-radius:8px;background:#fff;color:#27313c}.readonly-note{color:#a25a00}
 .userbox{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.user-email{font-weight:600;padding:9px 12px;background:transparent;border:0;border-radius:0}.calendar-badge{padding:9px 12px;background:#fff;border:1px solid #d8dee5;border-radius:8px;color:#56616d}.calendar-badge.connected{color:#58b957;font-weight:700}.calendar-badge.disconnected{color:#d64545;font-weight:700}
 .section{position:relative;background:#fff;border:1px solid #dce2e8;border-radius:12px;margin-bottom:16px;overflow:hidden}.section.loading-state .section-loading{display:flex}.section-loading{display:none;position:absolute;inset:0;z-index:5;align-items:center;justify-content:center;background:rgba(244,246,248,.78);backdrop-filter:blur(1px);color:#3f4b57;font-size:15px;font-weight:700;pointer-events:all}.section-loading span{padding:10px 16px;border-radius:9px;background:rgba(255,255,255,.94);border:1px solid #d8dee5;box-shadow:0 6px 20px rgba(0,0,0,.08)}
@@ -23,7 +23,7 @@ h1{margin:0;font-size:25px}
 .grid-two{display:grid;grid-template-columns:1.05fr 1.55fr;gap:16px}
 .section-pair{display:grid;grid-template-columns:1fr;gap:16px;margin-bottom:16px}.section-pair>.section{margin-bottom:0}@media (min-width:1300px){.section-pair{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .table-wrap{overflow:auto}.meeting-table-wrap{overflow-x:hidden}
-.meetings-divider{height:1px;background:#dfe4e9;margin:18px 0}.meeting-add-wrap{display:flex;justify-content:center;margin-top:14px}.meeting-table input:disabled{background:#f2f4f6;color:#5f6872;border-color:#dfe4e9;opacity:1;cursor:default}.meeting-date-wrap{display:flex;align-items:center;gap:6px}.meeting-delete-btn{flex:0 0 auto;width:30px;height:30px;padding:4px;border:1px solid #efb8b8;border-radius:7px;background:#fff;color:#d34a4a;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}.meeting-delete-btn:hover{color:#a82222;background:#fff5f5}.meeting-delete-btn svg{width:17px;height:17px;display:block;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.meeting-visibility-btn{flex:0 0 auto;width:30px;height:30px;padding:4px;border:1px solid #cbd3dc;border-radius:7px;background:#fff;color:#596570;display:inline-flex;align-items:center;justify-content:center}.meeting-visibility-btn:hover{background:#eef3f8;color:#2f67b1}.meeting-visibility-btn svg{width:17px;height:17px;display:block;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.meeting-row-hidden td{opacity:.55}.meeting-row-hidden input{text-decoration:line-through}
+.meetings-divider{height:1px;background:#dfe4e9;margin:18px 0}.meeting-add-wrap{display:flex;justify-content:center;margin-top:14px}.meeting-table input:disabled{background:#f2f4f6;color:#5f6872;border-color:#dfe4e9;opacity:1;cursor:default}.meeting-date-wrap{display:flex;align-items:center;gap:6px}.meeting-date-wrap input[type=date]{min-width:0}.meeting-delete-btn{flex:0 0 auto;width:30px;height:30px;padding:4px;border:1px solid #efb8b8;border-radius:7px;background:#fff;color:#d34a4a;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}.meeting-delete-btn:hover{color:#a82222;background:#fff5f5}.meeting-delete-btn svg,.meeting-visibility-btn svg{width:17px;height:17px;display:block;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.meeting-visibility-btn{flex:0 0 auto;width:30px;height:30px;padding:4px;border:1px solid #cbd3dc;border-radius:7px;background:#fff;color:#596570;display:inline-flex;align-items:center;justify-content:center}.meeting-visibility-btn:hover{background:#eef3f8;color:#2f67b1}.meeting-row-hidden td{opacity:.55}.meeting-row-hidden input{text-decoration:line-through}
 table{width:100%;border-collapse:collapse;min-width:720px}
 th,td{padding:9px 10px;border-bottom:1px solid #edf0f4;text-align:left;vertical-align:middle}
 th{font-size:12px;text-transform:uppercase;letter-spacing:.02em;color:#6b7580;background:#fafbfc;position:sticky;top:0;z-index:1}
@@ -109,7 +109,7 @@ th{font-size:12px;text-transform:uppercase;letter-spacing:.02em;color:#6b7580;ba
 </style></head><body>
 <div class="wrap">
 <header>
-  <div style="flex:1"><h1 id="planningHome" style="cursor:pointer">Планирование следующей недели</h1><select id="periodSelect" class="period-select" aria-label="Период"><option value="">Планирование следующей недели</option></select><div id="planningPeriod" class="section-note"></div></div>
+  <div style="flex:1"><div class="eyebrow">PLANNING</div><h1 id="planningHome" style="cursor:pointer">Планирование следующей недели</h1><select id="periodSelect" class="period-select" aria-label="Период"><option value="">Планирование следующей недели</option></select><div id="planningPeriod" class="section-note"></div></div>
   <div class="userbox">
     <div id="userEmail" class="user-email">Email не задан</div>
     <div id="calendarBadge" class="calendar-badge">Календарь: не подключён</div>
@@ -263,25 +263,28 @@ function distributionDayIndex(dateValue, weekStart){
 }
 function businessDaysRemaining(endDate){
   if(!endDate || endDate==='0') return 0;
-  const today=new Date(); today.setHours(0,0,0,0);
-  const end=new Date(String(endDate)+'T00:00:00'); if(Number.isNaN(end.getTime())) return 0;
+  const now=new Date();
+  const today=new Date(Date.UTC(now.getFullYear(),now.getMonth(),now.getDate()));
+  const end=new Date(String(endDate)+'T00:00:00Z'); if(Number.isNaN(end.getTime())) return 0;
   if(end<=today) return 0;
-  let count=0, cursor=new Date(today); cursor.setDate(cursor.getDate()+1);
-  while(cursor<=end){ const day=cursor.getDay(); if(day!==0 && day!==6) count++; cursor.setDate(cursor.getDate()+1); }
+  const from=new Date(today);from.setUTCDate(from.getUTCDate()+1);
+  return businessDaysInclusive(from,end);
+}
+function businessDaysInclusive(from,to){
+  if(to<from)return 0;
+  const totalDays=Math.floor((to-from)/86400000)+1;
+  const fullWeeks=Math.floor(totalDays/7);
+  let count=fullWeeks*5;
+  const remainder=totalDays%7;
+  for(let i=0;i<remainder;i++){const day=(from.getUTCDay()+i)%7;if(day!==0&&day!==6)count++;}
   return count;
 }
 function businessDaysBetweenInclusive(fromDate,toDate){
   if(!fromDate || !toDate || fromDate==='0' || toDate==='0') return 0;
-  const from=new Date(String(fromDate)+'T00:00:00');
-  const to=new Date(String(toDate)+'T00:00:00');
+  const from=new Date(String(fromDate)+'T00:00:00Z');
+  const to=new Date(String(toDate)+'T00:00:00Z');
   if(Number.isNaN(from.getTime()) || Number.isNaN(to.getTime()) || from>to) return 0;
-  let count=0, cursor=new Date(from);
-  while(cursor<=to){
-    const day=cursor.getDay();
-    if(day!==0 && day!==6) count++;
-    cursor.setDate(cursor.getDate()+1);
-  }
-  return count;
+  return businessDaysInclusive(from,to);
 }
 function distributionColor(endDate,referenceDate=null){
   if(!endDate || endDate==='0') return 'green';
@@ -293,16 +296,11 @@ function distributionColor(endDate,referenceDate=null){
 }
 function businessDaysRemainingFrom(startDate,endDate){
   if(!startDate || !endDate || startDate==='0' || endDate==='0') return 0;
-  const start=new Date(String(startDate)+'T00:00:00');
-  const end=new Date(String(endDate)+'T00:00:00');
+  const start=new Date(String(startDate)+'T00:00:00Z');
+  const end=new Date(String(endDate)+'T00:00:00Z');
   if(Number.isNaN(start.getTime()) || Number.isNaN(end.getTime()) || end<=start) return 0;
-  let count=0, cursor=new Date(start); cursor.setDate(cursor.getDate()+1);
-  while(cursor<=end){
-    const day=cursor.getDay();
-    if(day!==0 && day!==6) count++;
-    cursor.setDate(cursor.getDate()+1);
-  }
-  return count;
+  const from=new Date(start);from.setUTCDate(from.getUTCDate()+1);
+  return businessDaysInclusive(from,end);
 }
 function distributionSegmentColor(dayDate,endDate){
   if(!endDate || endDate==='0') return 'green';
@@ -422,15 +420,21 @@ function calendarMeetingWhen(item){
 }
 function meetingIdentity(item){return `${String(item?.summary||'Без названия').trim()}|${Number(item?.minutes)||0}|${calendarMeetingWhen(item)}`;}
 function mapCalendarMeetings(items,savedItems=[]){
-  const hiddenKeys=new Set((savedItems||[]).filter(item=>item?.hidden).map(meetingIdentity));
-  return (items||[]).map(item=>({summary:String(item.summary||'Без названия'),minutes:Number(item.minutes)||0,when:calendarMeetingWhen(item),hidden:hiddenKeys.has(meetingIdentity(item))}));
+  const saved=Array.isArray(savedItems)?savedItems:[];
+  return (items||[]).map(item=>{
+    const normalized={summary:String(item.summary||'Без названия'),minutes:Number(item.minutes)||0,when:calendarMeetingWhen(item)};
+    const exact=saved.find(previous=>meetingIdentity(previous)===meetingIdentity(normalized));
+    const sameTitle=saved.filter(previous=>String(previous?.summary||'').trim()===normalized.summary.trim());
+    normalized.hidden=!!(exact||sameTitle.length===1&&sameTitle[0])?.hidden;
+    return normalized;
+  });
 }
 function meetingVisibilityIcon(hidden){
   return hidden
     ? '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3l18 18"/><path d="M10.6 10.6a2 2 0 0 0 2.8 2.8"/><path d="M9.9 5.2A11.8 11.8 0 0 1 12 5c5.2 0 8.8 4.3 9.8 7-.4 1.1-1.1 2.3-2.1 3.3"/><path d="M6.2 6.2C4.5 7.4 3.3 9 2.2 12c1 2.7 4.6 7 9.8 7 1 0 2-.2 2.9-.5"/></svg>'
     : '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.2 12s3.6-7 9.8-7 9.8 7 9.8 7-3.6 7-9.8 7-9.8-7-9.8-7Z"/><circle cx="12" cy="12" r="2.8"/></svg>';
 }
-function meetingVisibilityButton(item, group, idx){
+function meetingVisibilityButton(item,group,idx){
   const hidden=!!item.hidden;
   return `<button type="button" class="meeting-visibility-btn" data-toggle-meeting-visibility="${group}:${idx}" title="${hidden?'Показать мит':'Скрыть мит'}" aria-label="${hidden?'Показать мит':'Скрыть мит'}">${meetingVisibilityIcon(hidden)}</button>`;
 }
@@ -442,7 +446,8 @@ function meetingRowsHtml(items, editable){
       ? `<div class="meeting-date-wrap"><input type="date" ${attrs} data-meeting-prop="when" value="${escapeAttr(when)}"><button type="button" class="meeting-delete-btn" data-delete-meeting-row="${idx}" title="Удалить" aria-label="Удалить мит"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M7 7l1 13h8l1-13"/><path d="M10 11v5M14 11v5"/></svg></button></div>`
       : `<input disabled data-meeting-prop="when" value="${escapeAttr(when)}">`;
     const group=editable?'manual':'calendar';
-    return `<tr class="${item.hidden?'meeting-row-hidden':''}"><td><input ${attrs} data-meeting-prop="summary" value="${escapeAttr(item.summary||'')}" placeholder="Название мита"></td><td><input class="hours-input" ${attrs} data-meeting-prop="minutes" value="${escapeAttr(minutesToInput(item.minutes))}" placeholder="0"></td><td class="meeting-time"><div class="meeting-date-wrap">${whenField}${meetingVisibilityButton(item,group,idx)}</div></td></tr>`;
+    const visibility=editable?'':meetingVisibilityButton(item,group,idx);
+    return `<tr class="${item.hidden?'meeting-row-hidden':''}"><td><input ${attrs} data-meeting-prop="summary" value="${escapeAttr(item.summary||'')}" placeholder="Название мита"></td><td><input class="hours-input" ${attrs} data-meeting-prop="minutes" value="${escapeAttr(minutesToInput(item.minutes))}" placeholder="0"></td><td class="meeting-time"><div class="meeting-date-wrap">${whenField}${visibility}</div></td></tr>`;
   }).join('');
 }
 function meetingTableHtml(items, editable){
@@ -519,7 +524,7 @@ function renderMeetings(){
       const item=list?.[Number(index)];
       if(!item)return;
       item.hidden=!item.hidden;
-      state.recalcAfterSave=true; state.revision++;
+      state.recalcAfterSave=true;state.revision++;
       renderMeetings();
       queueAutoSave(false,'meetings');
     });
@@ -866,7 +871,7 @@ async function loadSavedPeriods(){
 function applyReadOnly(){
   const locked=!!state.readOnly;
   document.querySelectorAll('#streamPlanTable input,#manualMeetingsTable input,#taskDistributionTable input,#planTable input').forEach(input=>input.disabled=locked);
-  document.querySelectorAll('[data-delete-meeting-row],[data-remove-field]').forEach(button=>button.disabled=locked);
+  document.querySelectorAll('[data-delete-meeting-row],[data-remove-field],[data-toggle-meeting-visibility]').forEach(button=>button.disabled=locked);
   ['addMeeting','submitPlan','includeWorklogUser','refreshCalendar'].forEach(id=>{const node=$(id);if(node)node.disabled=locked;});
   const note=$('planningPeriod');
   if(note&&state.data?.next_week){note.textContent=`${fmtDate(state.data.next_week.from)} — ${fmtDate(state.data.next_week.to)}${locked?' · только чтение':''}`;note.classList.toggle('readonly-note',locked);}
@@ -890,9 +895,11 @@ async function loadCalendar(persistRefresh=false){
   }
   try{
     const selectedStart=state.selectedWeekStart||state.data?.current_week?.from||'';
+    const selectedEnd=state.data?.current_week?.to||addDaysIso(selectedStart,4);
     const planStart=state.data?.next_week?.from||addDaysIso(selectedStart,7);
-    const nextQs=`email=${encodeURIComponent(state.email)}&calendar_url=${encodeURIComponent(state.calendarUrl)}&week_start=${encodeURIComponent(planStart)}`;
-    const currentQs=`email=${encodeURIComponent(state.email)}&calendar_url=${encodeURIComponent(state.calendarUrl)}&week_start=${encodeURIComponent(selectedStart)}`;
+    const planEnd=state.data?.next_week?.to||addDaysIso(planStart,4);
+    const nextQs=`calendar_url=${encodeURIComponent(state.calendarUrl)}&date_from=${encodeURIComponent(planStart)}&date_to=${encodeURIComponent(planEnd)}`;
+    const currentQs=`calendar_url=${encodeURIComponent(state.calendarUrl)}&date_from=${encodeURIComponent(selectedStart)}&date_to=${encodeURIComponent(selectedEnd)}`;
     const [nextResponse,currentResponse]=await Promise.all([
       fetch(`/api/planning/calendar?period=current&${nextQs}`,{headers:{'Accept':'application/json'}}),
       fetch(`/api/planning/calendar?period=current&${currentQs}`,{headers:{'Accept':'application/json'}})
@@ -1090,7 +1097,7 @@ $('addMeeting').addEventListener('click',addMeeting);
 $('refreshCalendar').addEventListener('click',async()=>{
   const button=$('refreshCalendar');
   if(state.readOnly)return;
-  button.disabled=true; button.textContent='Обновление…';
+  button.disabled=true;button.textContent='Обновление…';
   try{await loadCalendar(true);}finally{button.disabled=false;button.textContent='Обновить';applyReadOnly();}
 });
 $('submitPlan').addEventListener('click',submitSelectedPlan);

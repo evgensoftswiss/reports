@@ -4,16 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Weekly Planner</title>
-  <link rel="stylesheet" href="styles.css">
-  <script src="config.js"></script>
-  <script src="app.js" defer></script>
+  <link rel="icon" href="favicon.svg?v=0.4.11" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css?v=0.4.11">
+  <script src="config.js?v=0.4.11"></script>
+  <script src="version.js?v=0.4.11" defer></script>
+  <script src="app.js?v=0.4.11" defer></script>
   <script src="https://accounts.google.com/gsi/client" async defer onload="window.initGoogleSignIn?.()"></script>
 </head>
 <body>
   <main class="shell gateway-shell">
     <section id="authView" class="auth-card">
       <div class="auth-icon">✓</div>
-      <div class="eyebrow">JIRA PLANNING</div>
+      <div class="eyebrow">PLANNING</div>
       <h1>Weekly Planner</h1>
       <p>Войди через разрешённый Google-аккаунт.</p>
       <div id="googleButton" class="google-button"></div>
@@ -27,11 +29,11 @@
       <div class="route-actions">
         <a class="route-card" href="planner.html"><strong>Мой план</strong><span>Формирование плана на следующую неделю</span></a>
         <a id="managerRoute" class="route-card hidden" href="manager.html"><strong>Менеджер</strong><span>Планы и распределение задач команды</span></a>
-        <a class="route-card" href="https://evgensoftswiss.github.io/reports/"><strong>Нагрузка команды</strong><span>Отчёт по загруженности команды</span></a>
+        <a id="workloadRoute" class="route-card" href="workload.html"><strong>Нагрузка команды</strong><span>JIRA-отчёт с защищённым серверным кешем</span></a>
       </div>
       <button id="logoutBtn" class="button button-ghost" type="button">Выйти</button>
     </section>
   </main>
-  <div class="app-version">Интерфейс v0.3.18</div>
+  <div class="app-version">Интерфейс v0.4.11. API v…</div>
 </body>
 </html>
