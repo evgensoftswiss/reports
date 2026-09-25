@@ -31,7 +31,6 @@ function renderRoutes(user) {
   document.querySelector("#routeView").classList.remove("hidden");
   document.querySelector("#authView").classList.add("hidden");
   document.querySelector("#managerRoute").classList.toggle("hidden", user.role !== "manager");
-  document.querySelector("#workloadRoute").classList.toggle("hidden", user.role !== "manager");
 }
 
 window.initGoogleSignIn = function initGoogleSignIn() {
