@@ -4,11 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Weekly Planner</title>
-  <link rel="icon" href="favicon.svg?v=0.4.16" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css?v=0.4.16">
-  <script src="config.js?v=0.4.16"></script>
-  <script src="version.js?v=0.4.16" defer></script>
-  <script src="app.js?v=0.4.16" defer></script>
+  <link rel="icon" href="favicon.svg?v=0.4.17" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css?v=0.4.17">
+  <script src="config.js?v=0.4.17"></script>
+  <script src="version.js?v=0.4.17" defer></script>
+  <script src="app.js?v=0.4.17" defer></script>
   <script src="https://accounts.google.com/gsi/client" async defer onload="window.initGoogleSignIn?.()"></script>
 </head>
 <body>
@@ -17,8 +17,29 @@
       <div class="auth-icon">✓</div>
       <div class="eyebrow">PLANNING</div>
       <h1>Weekly Planner</h1>
-      <p>Войди через разрешённый Google-аккаунт.</p>
-      <div id="googleButton" class="google-button"></div>
+      <p>Войди через Google или с помощью рабочей почты.</p>
+
+      <div class="login-option">
+        <div class="login-option-title">Google</div>
+        <div id="googleButton" class="google-button"></div>
+      </div>
+
+      <div class="auth-divider"><span>или</span></div>
+
+      <div class="login-option email-login">
+        <div class="login-option-title">Почта</div>
+        <div id="emailRequestStep" class="email-auth-step">
+          <input id="emailInput" class="auth-input" type="email" autocomplete="email" placeholder="name@company.com" aria-label="Email">
+          <button id="emailSendBtn" class="button auth-primary-button" type="button">Получить код</button>
+        </div>
+        <div id="emailVerifyStep" class="email-auth-step hidden">
+          <div class="email-code-hint">Код отправлен на <strong id="emailCodeTarget"></strong></div>
+          <input id="emailCodeInput" class="auth-input auth-code-input" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="000000" aria-label="Код из письма">
+          <button id="emailVerifyBtn" class="button auth-primary-button" type="button">Войти</button>
+          <button id="emailChangeBtn" class="auth-link-button" type="button">Изменить email</button>
+        </div>
+      </div>
+
       <div id="authMessage" class="message" role="status"></div>
     </section>
 
@@ -34,6 +55,6 @@
       <button id="logoutBtn" class="button button-ghost" type="button">Выйти</button>
     </section>
   </main>
-  <div class="app-version">Интерфейс v0.4.16. API v…</div>
+  <div class="app-version">Интерфейс v0.4.17. API v…</div>
 </body>
 </html>

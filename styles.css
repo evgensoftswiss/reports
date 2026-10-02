@@ -103,3 +103,19 @@ select { min-width: 180px; padding: 10px 12px; border: 1px solid var(--line); bo
   .workload-fields { grid-template-columns: 1fr; }
   .workload-actions .button { width: 100%; text-align: center; }
 }
+
+/* Auth methods */
+.login-option { width: min(100%, 320px); margin: 0 auto; }
+.login-option-title { margin-bottom: 9px; color: var(--text); font-size: 13px; font-weight: 750; text-align: left; }
+.auth-divider { display: flex; align-items: center; gap: 12px; width: min(100%, 320px); margin: 20px auto; color: var(--muted); font-size: 12px; }
+.auth-divider::before, .auth-divider::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+.email-auth-step { display: grid; gap: 10px; }
+.auth-input { width: 100%; height: 44px; padding: 0 12px; border: 1px solid #cbd3dc; border-radius: 8px; outline: none; background: #fff; color: var(--text); font: inherit; }
+.auth-input:focus { border-color: #8bb2ed; box-shadow: 0 0 0 3px rgba(56, 120, 216, .12); }
+.auth-primary-button { width: 100%; min-height: 42px; background: var(--blue); color: #fff; font-weight: 700; }
+.auth-primary-button:hover { background: var(--blue-dark); }
+.auth-primary-button:disabled { opacity: .55; cursor: wait; }
+.auth-code-input { text-align: center; font-size: 22px; font-weight: 750; letter-spacing: .22em; padding-left: calc(12px + .22em); }
+.email-code-hint { color: var(--muted); font-size: 12px; line-height: 1.45; text-align: left; word-break: break-word; }
+.auth-link-button { border: 0; padding: 2px 0; background: transparent; color: var(--blue-dark); cursor: pointer; font: inherit; font-size: 12px; }
+.auth-link-button:hover { text-decoration: underline; }
