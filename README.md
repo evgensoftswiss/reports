@@ -1,6 +1,6 @@
-# Weekly Planner Frontend 0.4.14
+# Weekly Planner Frontend 0.4.15
 
-## Изменения 0.4.14
+## Изменения 0.4.15
 
 - Версия интерфейса синхронизирована во всех HTML/JS-файлах и cache-busting параметрах.
 - Менеджерский интерфейс использует `display_name` и `calendar_url`, полученные API из единого `whitelist.json`; отдельный `profiles.json` фронтенду не нужен.
