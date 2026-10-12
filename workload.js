@@ -116,7 +116,12 @@ async function showLatestReport() {
     const response = await fetchWithTimeout("/api/workload/report/latest", {cache: "no-store"}, 30000);
     if (response.status === 404) {
       const restored = await showReport({notFoundIsEmpty: true});
-      setStatus(restored ? "Показан последний отчёт выбранного периода" : "Готово к формированию", restored ? 100 : 0);
+      if (restored) {
+        setStatus("Показан последний отчёт выбранного периода", 100);
+      } else {
+        setStatus("Отчёт ещё не сформирован. Формирую автоматически…", 2);
+        await start("cache");
+      }
       return;
     }
     const latest = await readResponse(response);
@@ -127,7 +132,14 @@ async function showLatestReport() {
       saveSettings();
     }
     setStatus("Открываю последний отчёт…", 70);
-    await showReport();
+    const restored = await showReport({notFoundIsEmpty: true});
+    if (!restored) {
+      // Latest can belong to an older whitelist composition. Build the same
+      // period automatically for the users that are visible now.
+      setStatus("Для текущего состава пользователей отчёта нет. Формирую автоматически…", 2);
+      await start("cache");
+      return;
+    }
     setStatus("Показан последний сформированный отчёт", 100);
   } catch (error) {
     setStatus(error.message, 0, true);

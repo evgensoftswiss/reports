@@ -1,4 +1,4 @@
-<!doctype html><html lang="ru"><head><meta name="wp-build" content="0.4.17"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<!doctype html><html lang="ru"><head><meta name="wp-build" content="0.4.18"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Weekly Planner Manager</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f4f6f8;color:#27313c;font-family:Arial,sans-serif}.wrap{width:100%;padding:22px}
@@ -91,9 +91,15 @@ function periodLabel(period){
   const [from,to]=String(period||'').split('_');
   return from&&to?`${from} — ${to}`:String(period||'');
 }
+function periodTimestamp(period){
+  const [from]=String(period||'').split('_');
+  const parts=String(from||'').split('.').map(Number);
+  if(parts.length!==3||parts.some(value=>!Number.isFinite(value)))return 0;
+  return new Date(parts[2],parts[1]-1,parts[0]).getTime();
+}
 function renderPeriodSelector(){
   const select=$('managerPeriodSelect'); if(!select)return;
-  const values=Array.from(new Set([state.period,...(state.periods||[])]).values()).filter(Boolean);
+  const values=Array.from(new Set([state.period,...(state.periods||[])]).values()).filter(Boolean).sort((a,b)=>periodTimestamp(b)-periodTimestamp(a)||String(b).localeCompare(String(a)));
   select.innerHTML=values.map(period=>`<option value="${esc(period)}"${period===state.period?' selected':''}>${esc(periodLabel(period))}</option>`).join('');
 }
 async function loadPeriods(){

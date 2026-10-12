@@ -1,7 +1,7 @@
 "use strict";
 
 (() => {
-  const UI_VERSION = "0.4.17";
+  const UI_VERSION = "0.4.18";
   let healthPromise = null;
 
   function readApiVersion() {
