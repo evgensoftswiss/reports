@@ -3,6 +3,7 @@
 const API_BASE_URL = String(window.WP_CONFIG?.API_BASE_URL || "").replace(/\/$/, "");
 const TOKEN_KEY = "weeklyPlanner.accessToken";
 const USER_KEY = "weeklyPlanner.user";
+const EXPIRY_KEY = "weeklyPlanner.sessionExpiresAt";
 
 let emailChallengeId = "";
 let emailChallengeAddress = "";
@@ -14,10 +15,43 @@ function setMessage(text, type = "") {
   node.className = `message ${type}`.trim();
 }
 
-function saveSession(payload) {
-  sessionStorage.setItem(TOKEN_KEY, payload.access_token);
-  sessionStorage.setItem(USER_KEY, JSON.stringify(payload.user));
+function clearStoredSession() {
+  sessionStorage.removeItem(TOKEN_KEY);
+  sessionStorage.removeItem(USER_KEY);
+  localStorage.removeItem(TOKEN_KEY);
+  localStorage.removeItem(USER_KEY);
+  localStorage.removeItem(EXPIRY_KEY);
+}
+
+function saveSession(payload, persistent = false) {
+  clearStoredSession();
+  const storage = persistent ? localStorage : sessionStorage;
+  storage.setItem(TOKEN_KEY, payload.access_token);
+  storage.setItem(USER_KEY, JSON.stringify(payload.user));
+  if (persistent) {
+    const ttlSeconds = Math.max(0, Number(payload.expires_in) || 0);
+    localStorage.setItem(EXPIRY_KEY, String(Date.now() + ttlSeconds * 1000));
+  }
   renderRoutes(payload.user);
+}
+
+function restoreSession() {
+  const sessionToken = sessionStorage.getItem(TOKEN_KEY);
+  const sessionUser = sessionStorage.getItem(USER_KEY);
+  if (sessionToken && sessionUser) return { token: sessionToken, user: sessionUser };
+
+  const persistentToken = localStorage.getItem(TOKEN_KEY);
+  const persistentUser = localStorage.getItem(USER_KEY);
+  const expiresAt = Number(localStorage.getItem(EXPIRY_KEY) || 0);
+  if (persistentToken && persistentUser && expiresAt > Date.now()) {
+    return { token: persistentToken, user: persistentUser };
+  }
+  if (persistentToken || persistentUser || expiresAt) {
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(USER_KEY);
+    localStorage.removeItem(EXPIRY_KEY);
+  }
+  return null;
 }
 
 async function requestJson(path, body) {
@@ -34,7 +68,7 @@ async function requestJson(path, body) {
 async function authenticateGoogle(credential) {
   setMessage("Проверяю доступ…");
   const payload = await requestJson("/auth/google", { credential });
-  saveSession(payload);
+  saveSession(payload, false);
 }
 
 async function requestEmailCode() {
@@ -91,7 +125,7 @@ async function verifyEmailCode() {
       challenge_id: emailChallengeId,
       code
     });
-    saveSession(payload);
+    saveSession(payload, true);
   } catch (error) {
     setMessage(error.message, "error");
   } finally {
@@ -133,9 +167,9 @@ window.initGoogleSignIn = function initGoogleSignIn() {
 };
 
 document.addEventListener("DOMContentLoaded", () => {
-  const storedUser = sessionStorage.getItem(USER_KEY);
-  if (storedUser && sessionStorage.getItem(TOKEN_KEY)) {
-    try { renderRoutes(JSON.parse(storedUser)); } catch (_) { sessionStorage.clear(); }
+  const restored = restoreSession();
+  if (restored) {
+    try { renderRoutes(JSON.parse(restored.user)); } catch (_) { clearStoredSession(); }
   }
 
   document.querySelector("#emailSendBtn")?.addEventListener("click", requestEmailCode);
@@ -156,8 +190,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   document.querySelector("#logoutBtn").addEventListener("click", () => {
-    sessionStorage.removeItem(TOKEN_KEY);
-    sessionStorage.removeItem(USER_KEY);
+    clearStoredSession();
     if (window.google?.accounts?.id) google.accounts.id.disableAutoSelect();
     resetEmailLogin();
     setMessage("");

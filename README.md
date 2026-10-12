@@ -1,4 +1,10 @@
-# Weekly Planner Frontend 0.4.18
+# Weekly Planner Frontend 0.4.19
+
+## Изменения 0.4.19
+
+- Email-auth сессия сохраняется в браузере до истечения серверного JWT и переживает закрытие/повторное открытие браузера. Для `email_auth` срок — 30 дней.
+- Google OAuth по-прежнему хранится как сессионный вход и имеет серверный срок 1 час.
+- Logout очищает как Google sessionStorage, так и persistent email-auth данные.
 
 ## Изменения 0.4.18
 

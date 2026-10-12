@@ -3,11 +3,36 @@
 (function installApiBridge() {
   const config = window.WP_CONFIG || {};
   const apiBase = String(config.API_BASE_URL || "").replace(/\/$/, "");
-  const token = sessionStorage.getItem("weeklyPlanner.accessToken");
-  const user = JSON.parse(sessionStorage.getItem("weeklyPlanner.user") || "null");
+  const tokenKey = "weeklyPlanner.accessToken";
+  const userKey = "weeklyPlanner.user";
+  const expiryKey = "weeklyPlanner.sessionExpiresAt";
+
+  const clearSession = () => {
+    sessionStorage.removeItem(tokenKey);
+    sessionStorage.removeItem(userKey);
+    localStorage.removeItem(tokenKey);
+    localStorage.removeItem(userKey);
+    localStorage.removeItem(expiryKey);
+  };
+
+  let token = sessionStorage.getItem(tokenKey);
+  let userRaw = sessionStorage.getItem(userKey);
+  if (!token || !userRaw) {
+    const expiresAt = Number(localStorage.getItem(expiryKey) || 0);
+    if (expiresAt > Date.now()) {
+      token = localStorage.getItem(tokenKey);
+      userRaw = localStorage.getItem(userKey);
+    } else {
+      localStorage.removeItem(tokenKey);
+      localStorage.removeItem(userKey);
+      localStorage.removeItem(expiryKey);
+    }
+  }
+  let user = null;
+  try { user = JSON.parse(userRaw || "null"); } catch (_) { clearSession(); }
+
   const redirectToLogin = () => {
-    sessionStorage.removeItem("weeklyPlanner.accessToken");
-    sessionStorage.removeItem("weeklyPlanner.user");
+    clearSession();
     window.location.replace(new URL("index.html", window.location.href));
   };
   if (!apiBase || !token || !user?.email) {
