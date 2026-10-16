@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ru"><head><meta name="wp-build" content="0.4.20"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Планирование следующей недели</title><style>
+<html lang="ru"><head><meta name="wp-build" content="0.4.22"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Планирование следующей недели</title><style>
 :root{font-family:Inter,Segoe UI,Arial,sans-serif;color:#202124;background:#f4f6f8;font-size:14px}
 *{box-sizing:border-box}
 body{margin:0}
@@ -549,7 +549,7 @@ function addMeeting(){
   renderMeetings();
   syncCommunicationFromMeetings();
 }
-const DEFAULT_STREAMS=['Defects','Live Requests','AI','Product contribution','Setup contribution','Training','Communication','Management','Absence','Documentation','Bench','Setup Work','Automation'];
+const DEFAULT_STREAMS=['Defects','Live Requests','AI','Product contribution','Template contribution','Setup contribution','Training','Communication','Management','Absence','Documentation','Bench','Setup Work','Automation'];
 function initStreamPlan(){
   const saved=state.plan?.stream_plan;
   if(Array.isArray(saved)&&saved.length){
@@ -826,8 +826,24 @@ async function readJsonResponse(response){
     const preview=text.replace(/\s+/g,' ').slice(0,180);
     throw new Error(`Сервер вернул не JSON (HTTP ${response.status}). ${preview||'Пустой ответ'}`);
   }
-  if(!response.ok)throw new Error(payload?.error||`Ошибка HTTP ${response.status}`);
+  if(!response.ok)throw new Error(payload?.error||payload?.detail||`Ошибка HTTP ${response.status}`);
   return payload;
+}
+
+async function fetchPlannerWithRetry(url, options={}){
+  let lastError=null;
+  for(let attempt=0;attempt<2;attempt++){
+    try{return await fetch(url,options);}
+    catch(error){
+      lastError=error;
+      if(attempt===0) await new Promise(resolve=>setTimeout(resolve,800));
+    }
+  }
+  const message=String(lastError?.message||'').trim();
+  if(!message || /failed to fetch/i.test(message)){
+    throw new Error('Не удалось подключиться к API. Повторите попытку через несколько секунд.');
+  }
+  throw lastError;
 }
 async function loadProfile(){
   try{
@@ -971,7 +987,7 @@ async function loadData(){
   hideError(); setSectionsLoading(true,'Загрузка данных…');
   try{
     const periodQuery=state.selectedPeriod?`&period=${encodeURIComponent(state.selectedPeriod)}`:'';
-    const r=await fetch(`/api/planning/bootstrap?email=${encodeURIComponent(state.email)}&calendar_url=${encodeURIComponent(state.calendarUrl)}&include_worklog_user=${state.includeWorklogUser?'1':'0'}${periodQuery}`,{headers:{'Accept':'application/json'}});
+    const r=await fetchPlannerWithRetry(`/api/planning/bootstrap?email=${encodeURIComponent(state.email)}&calendar_url=${encodeURIComponent(state.calendarUrl)}&include_worklog_user=${state.includeWorklogUser?'1':'0'}${periodQuery}`,{headers:{'Accept':'application/json'}});
     const payload=await readJsonResponse(r);
     state.data=payload; state.readOnly=!!payload.read_only; state.selectedPeriod=state.readOnly?(payload.selected_period||state.selectedPeriod):state.selectedPeriod; state.streamColors=payload.stream_colors||{}; state.statusColors=payload.status_colors||{}; state.plan=JSON.parse(JSON.stringify(payload.plan||{})); state.previousPlan=JSON.parse(JSON.stringify(payload.previous_plan||{})); state.planWeekStart=payload.next_week?.from||state.plan.week_start||''; state.streamPlan=Array.isArray(state.plan.stream_plan)?JSON.parse(JSON.stringify(state.plan.stream_plan)):[]; initStreamPlan(); state.manualMeetings=Array.isArray(state.plan?.meetings?.manual)?JSON.parse(JSON.stringify(state.plan.meetings.manual)):[]; const calendarSource=state.readOnly&&Array.isArray(state.plan?.meetings?.calendar)?state.plan.meetings.calendar:(payload.calendar?.items||[]); state.meetings=state.readOnly?mapCalendarMeetings(calendarSource,calendarSource):mapCalendarMeetings(calendarSource,state.plan?.meetings?.calendar||[]); state.dirty=false;
     updateProfileBadge();
@@ -980,6 +996,7 @@ async function loadData(){
     syncCommunicationFromMeetings();
     renderTaskDistribution(); renderMeetings(); renderStreamPlan(); applyReadOnly(); renderPeriodSelector();
     if(payload.config_required)showError(`Jira пока не настроена. Заполните username и password в ../config.ini. ${payload.config_error||''}`.trim());
+    else if(payload.calendar_error)showError(`Календарь временно недоступен: ${payload.calendar_error}`);
   }catch(e){showError(e.message);}
   finally{setSectionsLoading(false);}
 }
