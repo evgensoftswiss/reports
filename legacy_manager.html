@@ -1,10 +1,10 @@
-<!doctype html><html lang="ru"><head><meta name="wp-build" content="0.4.19"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<!doctype html><html lang="ru"><head><meta name="wp-build" content="0.4.20"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Weekly Planner Manager</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f4f6f8;color:#27313c;font-family:Arial,sans-serif}.wrap{width:100%;padding:22px}
 header{display:flex;align-items:flex-start;gap:16px;margin-bottom:18px}.eyebrow{color:#3878d8;font-size:11px;font-weight:800;letter-spacing:.12em;margin-bottom:4px}h1{font-size:25px;letter-spacing:0;margin:0;cursor:pointer}.period{font-size:13px;color:#74808c;margin-top:5px}.export-btn{background:#e8eef8;color:#245cae;border:1px solid #bfd0e8;padding:10px 16px}.export-btn:hover{background:#dce8f8}
 button{font:inherit;border:0;border-radius:10px;cursor:pointer;font-weight:700}.logout-btn{margin-left:auto;background:#fff;color:#a32929;border:1px solid #efb8b8;padding:10px 16px}.logout-btn:hover{background:#fff1f1}.load-btn{background:#73b56c;color:#fff;padding:12px 30px;font-size:16px}.load-btn:hover{background:#5ea456}.load-btn:disabled{opacity:.6;cursor:default}
-.grid{display:grid;grid-template-columns:minmax(320px,1fr) minmax(320px,1fr);gap:16px;align-items:start}.section{background:#fff;border:1px solid #cfcfcf;border-radius:14px;overflow:hidden}.section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 18px;border-bottom:1px solid #edf0f4}.section-head h2{font-size:17px;margin:0}.pad{padding:14px 18px}.left-stack,.right-stack,.selected-user-content{display:flex;flex-direction:column;gap:16px}.right-stack{min-width:0}.selected-user-panel{min-width:0}.selected-user-head{padding:15px 18px;border-bottom:1px solid #edf0f4;background:#f8fafc}.selected-user-head h2{font-size:17px;margin:0}.selected-user-label{font-size:13px;color:#6f7b87;margin-top:4px}.selected-user-content{padding:16px}.inner-section{background:#fff;border:1px solid #e1e5e9;border-radius:12px;overflow:hidden}.subnote{font-size:12px;color:#74808c;margin-top:4px}.users{grid-row:auto}.user{width:100%;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;background:transparent;text-align:left;color:#27313c;font-weight:500}.user:hover{background:#f2f5f8}.user.active{background:#e6f0ff;color:#245cae;font-weight:700}.user-time{flex:0 0 auto;color:#526170;font-size:12px;font-weight:600;white-space:nowrap}.user-time.warning{color:#c62828}
+.grid{display:grid;grid-template-columns:minmax(320px,1fr) minmax(320px,1fr);gap:16px;align-items:start}.section{background:#fff;border:1px solid #cfcfcf;border-radius:14px;overflow:hidden}.section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 18px;border-bottom:1px solid #edf0f4}.section-head h2{font-size:17px;margin:0}.pad{padding:14px 18px}.left-stack,.right-stack,.selected-user-content{display:flex;flex-direction:column;gap:16px}.right-stack{min-width:0}.selected-user-panel{min-width:0}.selected-user-head{padding:15px 18px;border-bottom:1px solid #edf0f4;background:#f8fafc}.selected-user-title-row{display:flex;align-items:center;justify-content:space-between;gap:10px}.selected-user-head h2{font-size:17px;margin:0}.selected-user-label{font-size:13px;color:#6f7b87;margin-top:4px}.clipboard-import-btn{flex:0 0 auto;width:32px;height:32px;padding:6px;border:1px solid #cbd3dc;border-radius:8px;background:#fff;color:#526170;display:inline-flex;align-items:center;justify-content:center;cursor:pointer}.clipboard-import-btn:hover{background:#eef3f8;color:#245cae;border-color:#9fb9da}.clipboard-import-btn:disabled{opacity:.45;cursor:default}.clipboard-import-btn svg{width:18px;height:18px;display:block;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.selected-user-content{padding:16px}.inner-section{background:#fff;border:1px solid #e1e5e9;border-radius:12px;overflow:hidden}.subnote{font-size:12px;color:#74808c;margin-top:4px}.users{grid-row:auto}.user{width:100%;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;background:transparent;text-align:left;color:#27313c;font-weight:500}.user:hover{background:#f2f5f8}.user.active{background:#e6f0ff;color:#245cae;font-weight:700}.user-time{flex:0 0 auto;color:#526170;font-size:12px;font-weight:600;white-space:nowrap}.user-time.warning{color:#c62828}
 .table-wrap{width:100%;overflow-x:auto}table{width:100%;border-collapse:collapse;table-layout:fixed}th,td{padding:9px 10px;border-bottom:1px solid #edf0f4;text-align:left;vertical-align:middle}th{font-size:12px;color:#6b7785;background:#fafbfc}td{font-size:13px}.stream-col{width:160px}.hours-col{width:90px;text-align:center}.hours{text-align:center;background:#f4f5f6;border:1px solid #dfe3e7;border-radius:7px;padding:7px 8px}.stream{display:inline-block;padding:4px 10px 5px;border-radius:999px;background:#eef2f6;white-space:nowrap}.status{display:inline-block;padding:4px 12px 5px;border-radius:999px;background:#eef2f6;color:#56616d;font-size:12px;white-space:nowrap;margin-top:4px}.dist-table{width:100%;table-layout:fixed}.dist-table .task-col{width:30%}.dist-table .stream-col{width:13%}.dist-table .complexity-col{width:9%;text-align:center}.dist-table .days-col{width:48%;padding:0}.empty{padding:20px;color:#7a8693;text-align:center}
 .meetings{table-layout:fixed}.meetings th:first-child,.meetings td:first-child{width:auto;text-align:left}.meetings th:nth-child(2),.meetings td:nth-child(2){width:100px;text-align:right}.meetings th:nth-child(3),.meetings td:nth-child(3){width:180px;text-align:right}.meetings th:nth-child(4),.meetings td:nth-child(4){width:48px;text-align:right}.meetings td:nth-child(n+2) .manager-edit{text-align:right}
 .meeting-table{width:100%;min-width:0;table-layout:fixed}.meeting-table th:nth-child(1),.meeting-table td:nth-child(1){width:auto;text-align:left}.meeting-table th:nth-child(2),.meeting-table td:nth-child(2){width:110px;text-align:right}.meeting-table th:nth-child(3),.meeting-table td:nth-child(3){width:180px;text-align:right}.meeting-table th:nth-child(4),.meeting-table td:nth-child(4){width:64px;text-align:right}.meeting-table td{overflow-wrap:anywhere}.meeting-table input{width:100%;max-width:100%;box-sizing:border-box;min-width:0}.meeting-table td:nth-child(n+2) input,.meeting-table td:nth-child(n+2){text-align:right}.meeting-table input:disabled{background:#f2f4f6;color:#5f6872;border-color:#dfe3e9;opacity:1;cursor:default}.meeting-date-wrap{display:flex;align-items:center;gap:6px}.meeting-date-wrap input[type=date]{min-width:0}.meeting-delete-btn{flex:0 0 auto;width:30px;height:30px;padding:4px;border:1px solid #efb8b8;border-radius:7px;background:#fff;color:#d34a4a;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}.meeting-delete-btn:hover{color:#a82222;background:#fff5f5}.meeting-delete-btn svg,.meeting-visibility-btn svg{width:17px;height:17px;display:block;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.meeting-visibility-btn{flex:0 0 auto;width:30px;height:30px;padding:4px;border:1px solid #cbd3dc;border-radius:7px;background:#fff;color:#596570;display:inline-flex;align-items:center;justify-content:center}.meeting-visibility-btn:hover{background:#eef3f8;color:#2f67b1}.meeting-row-hidden td{opacity:.55}.meeting-row-hidden input{text-decoration:line-through}.meeting-table-wrap{overflow-x:hidden}
@@ -46,7 +46,7 @@ button{font:inherit;border:0;border-radius:10px;cursor:pointer;font-weight:700}.
 </div>
 <section class="section selected-user-panel">
   <div id="userLoading" class="loading-overlay" hidden><div class="loading-card">Загружаются данные пользователя…</div></div>
-  <div class="selected-user-head"><h2>Выбранный пользователь</h2><div id="selectedUserLabel" class="selected-user-label">Пользователь не выбран</div></div>
+  <div class="selected-user-head"><div class="selected-user-title-row"><h2>Выбранный пользователь</h2><button id="importClipboardPlan" class="clipboard-import-btn" type="button" title="Импортировать план из буфера обмена" aria-label="Импортировать план из буфера обмена"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5h6"/><path d="M9 3h6a2 2 0 0 1 2 2v1h2a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h2V5a2 2 0 0 1 2-2Z"/><path d="M12 10v7"/><path d="m9 14 3 3 3-3"/></svg></button></div><div id="selectedUserLabel" class="selected-user-label">Пользователь не выбран</div></div>
   <div class="selected-user-content">
     <section class="inner-section"><div class="section-head"><h2>План на следующую неделю <span id="selectedPlanTotal">(0h)</span></h2></div><div id="plan" class="pad"></div><div id="planSaveNote" class="pad save-note"></div></section>
     <section class="inner-section"><div class="section-head"><h2>Распределение задач на следующую неделю</h2><div id="distributionPeriod" class="subnote"></div></div><div id="distribution" class="pad"></div></section>
@@ -108,6 +108,69 @@ async function loadPeriods(){
   renderPeriodSelector();
 }
 function renderUsers(){const b=$('users');if(!state.users.length){b.innerHTML='<div class="empty">Нет загруженных отчетов</div>';return}b.innerHTML=state.users.map((u,i)=>{const minutes=state.userTotals[u.filename]??state.userTotals[u.email]??null;const label=minutes===null?'…':formatPlanTime(minutes);const warning=minutes!==null&&minutes!==2400?' warning':'';const name=String(u.display_name||'').trim();const profileComplete=!!(name&&String(u.calendar_url||'').trim());const avatar=String(u.avatar_url||'').trim();const slackName=String(u.slack_name||'').trim();const avatarHtml=avatar?`<img class="user-avatar" src="${esc(avatar)}" alt="" title="${esc(slackName||name||u.email)}" loading="lazy">`:'';return `<div class="user-row ${state.selected===i?'active':''}"><button class="user-edit-btn${profileComplete?' profile-complete':''}" type="button" data-profile-i="${i}" title="Редактировать пользователя" aria-label="Редактировать пользователя">✎</button><button class="user" data-i="${i}">${avatarHtml}<span class="user-details"><span>${esc(name||'Без имени')}</span><span class="user-email-label">(${esc(u.email)})</span></span><span class="user-row-meta"><span class="user-time${warning}">${label}</span></span></button></div>`}).join('');b.querySelectorAll('.user').forEach(x=>x.onclick=()=>selectUser(Number(x.dataset.i)));b.querySelectorAll('[data-profile-i]').forEach(button=>button.onclick=event=>{event.stopPropagation();openProfileModal(Number(button.dataset.profileI));})}
+function parseClipboardTsv(text){
+  const rows=[];let row=[],cell='',quoted=false;
+  const source=String(text||'').replace(/\r\n?/g,'\n');
+  for(let i=0;i<source.length;i++){
+    const char=source[i];
+    if(char==='"'){
+      if(quoted&&source[i+1]==='"'){cell+='"';i++;}
+      else quoted=!quoted;
+      continue;
+    }
+    if(!quoted&&char==='\t'){row.push(cell);cell='';continue;}
+    if(!quoted&&char==='\n'){row.push(cell);rows.push(row);row=[];cell='';continue;}
+    cell+=char;
+  }
+  row.push(cell);if(row.some(value=>String(value).trim()))rows.push(row);
+  return rows;
+}
+function normalizeImportedStream(value){return String(value||'').replace(/\u00a0/g,' ').trim().replace(/\s+/g,' ').toLocaleLowerCase();}
+function normalizeImportedComment(value){return String(value||'').replace(/<br\s*\/?>/gi,'\n').replace(/\r\n?/g,'\n').split('\n').map(line=>line.trim()).filter(Boolean).join('\n');}
+async function importPlanFromClipboard(){
+  const user=state.users[state.selected];
+  if(!user||!state.selectedPlan){error('Сначала выберите пользователя');return;}
+  if(!navigator.clipboard?.readText){error('Браузер не поддерживает чтение буфера обмена');return;}
+  const button=$('importClipboardPlan');if(button)button.disabled=true;error('');
+  try{
+    const text=await navigator.clipboard.readText();
+    if(!String(text||'').trim())throw new Error('Буфер обмена пуст');
+    const planRows=state.selectedPlan.stream_plan||[];
+    const streamMap=new Map(planRows.map((row,index)=>[normalizeImportedStream(row.stream),index]));
+    const imported=new Map(),communicationRows=[],unknown=[];
+    for(const cells of parseClipboardTsv(text)){
+      const stream=String(cells[0]||'').trim();
+      if(!stream||normalizeImportedStream(stream)==='stream')continue;
+      const streamKey=normalizeImportedStream(stream),index=streamMap.get(streamKey);
+      if(index===undefined){if(cells.length>=2)unknown.push(stream);continue;}
+      const minutes=parseHours(cells[1]||'0');
+      const comment=normalizeImportedComment(cells.slice(2).join('\t'));
+      if(streamKey==='communication'){
+        communicationRows.push({minutes,comment});
+        continue;
+      }
+      const item=imported.get(index)||{minutes:0,comments:[]};
+      item.minutes+=minutes;if(comment)item.comments.push(comment);imported.set(index,item);
+    }
+    if(!imported.size&&!communicationRows.length)throw new Error('Не удалось найти в буфере стримы из плана пользователя');
+    for(const [index,item] of imported){
+      planRows[index].hours=formatPlanTime(item.minutes);
+      planRows[index].comment=item.comments.join('\n');
+    }
+    if(!state.selectedPlan.meetings)state.selectedPlan.meetings={calendar:[],manual:[]};
+    if(!Array.isArray(state.selectedPlan.meetings.calendar))state.selectedPlan.meetings.calendar=[];
+    if(!Array.isArray(state.selectedPlan.meetings.manual))state.selectedPlan.meetings.manual=[];
+    const firstDay=periodIsoRange(state.period).from;
+    for(const item of communicationRows){
+      const summary=(item.comment||'Communication').replace(/\n+/g,'; ');
+      state.selectedPlan.meetings.manual.push({summary,minutes:item.minutes,when:firstDay});
+    }
+    renderSelectedPlan();refreshSelectedUserTotal();queueManagerSave();
+    if(unknown.length)error(`Не импортированы неизвестные стримы: ${[...new Set(unknown)].join(', ')}`);
+  }catch(e){error(`Не удалось импортировать из буфера обмена: ${e.message}`);}
+  finally{if(button)button.disabled=false;}
+}
+$('importClipboardPlan').addEventListener('click',importPlanFromClipboard);
 function periodIsoRange(period){
   const [from,to]=String(period||'').split('_');
   const iso=value=>{const [day,month,year]=String(value||'').split('.');return day&&month&&year?`${year}-${month}-${day}`:'';};
