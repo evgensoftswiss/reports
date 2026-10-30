@@ -4,9 +4,12 @@ const API_BASE_URL = String(window.WP_CONFIG?.API_BASE_URL || "").replace(/\/$/,
 const TOKEN_KEY = "weeklyPlanner.accessToken";
 const USER_KEY = "weeklyPlanner.user";
 const EXPIRY_KEY = "weeklyPlanner.sessionExpiresAt";
+const EMAIL_COOLDOWN_KEY_PREFIX = "weeklyPlanner.emailAuthCooldown.";
 
 let emailChallengeId = "";
 let emailChallengeAddress = "";
+let emailRequestPending = false;
+let emailCooldownInterval = null;
 
 function setMessage(text, type = "") {
   const node = document.querySelector("#authMessage");
@@ -71,20 +74,73 @@ async function authenticateGoogle(credential) {
   saveSession(payload, false);
 }
 
+function emailCooldownKey(email) {
+  return `${EMAIL_COOLDOWN_KEY_PREFIX}${encodeURIComponent(email)}`;
+}
+
+function getEmailCooldownSeconds(email) {
+  if (!email) return 0;
+  const key = emailCooldownKey(email);
+  const until = Number(localStorage.getItem(key) || 0);
+  const remaining = Math.ceil((until - Date.now()) / 1000);
+  if (!Number.isFinite(until) || remaining <= 0) {
+    localStorage.removeItem(key);
+    return 0;
+  }
+  return remaining;
+}
+
+function updateEmailRequestButton() {
+  const button = document.querySelector("#emailSendBtn");
+  const input = document.querySelector("#emailInput");
+  if (!button) return;
+
+  const email = String(input?.value || "").trim().toLowerCase();
+  const remaining = getEmailCooldownSeconds(email);
+  button.disabled = emailRequestPending || remaining > 0;
+  button.textContent = emailRequestPending
+    ? "Отправляю…"
+    : remaining > 0
+      ? `Повторить через ${remaining} сек.`
+      : "Получить код";
+
+  if (remaining > 0 && !emailCooldownInterval) {
+    emailCooldownInterval = window.setInterval(updateEmailRequestButton, 1000);
+  } else if (remaining === 0 && emailCooldownInterval) {
+    window.clearInterval(emailCooldownInterval);
+    emailCooldownInterval = null;
+  }
+}
+
+function startEmailCooldown(email, seconds) {
+  const duration = Math.max(0, Math.ceil(Number(seconds) || 0));
+  if (!duration) return;
+  localStorage.setItem(emailCooldownKey(email), String(Date.now() + duration * 1000));
+  updateEmailRequestButton();
+}
+
 async function requestEmailCode() {
   const input = document.querySelector("#emailInput");
-  const button = document.querySelector("#emailSendBtn");
   const email = String(input?.value || "").trim().toLowerCase();
+  if (emailRequestPending) return;
   if (!email || !email.includes("@")) {
     setMessage("Введи корректный email", "error");
     input?.focus();
     return;
   }
+  const cooldownSeconds = getEmailCooldownSeconds(email);
+  if (cooldownSeconds > 0) {
+    updateEmailRequestButton();
+    setMessage(`Повторная отправка доступна через ${cooldownSeconds} сек.`, "error");
+    return;
+  }
 
-  button.disabled = true;
+  emailRequestPending = true;
+  updateEmailRequestButton();
   setMessage("Отправляю код…");
   try {
     const payload = await requestJson("/auth/email/request", { email });
+    startEmailCooldown(email, payload.resend_after_seconds);
     emailChallengeId = String(payload.challenge_id || "");
     emailChallengeAddress = email;
     document.querySelector("#emailRequestStep").classList.add("hidden");
@@ -95,9 +151,12 @@ async function requestEmailCode() {
     codeInput.focus();
     setMessage("Код отправлен на почту", "success");
   } catch (error) {
+    const retrySeconds = Number(error.message.match(/через\s+(\d+)\s*сек/i)?.[1] || 0);
+    if (retrySeconds > 0) startEmailCooldown(email, retrySeconds);
     setMessage(error.message, "error");
   } finally {
-    button.disabled = false;
+    emailRequestPending = false;
+    updateEmailRequestButton();
   }
 }
 
@@ -140,6 +199,7 @@ function resetEmailLogin() {
   document.querySelector("#emailVerifyStep")?.classList.add("hidden");
   const codeInput = document.querySelector("#emailCodeInput");
   if (codeInput) codeInput.value = "";
+  updateEmailRequestButton();
 }
 
 function renderRoutes(user) {
@@ -177,10 +237,15 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelector("#emailChangeBtn")?.addEventListener("click", () => {
     resetEmailLogin();
     setMessage("");
+    updateEmailRequestButton();
     document.querySelector("#emailInput")?.focus();
   });
+  document.querySelector("#emailInput")?.addEventListener("input", updateEmailRequestButton);
   document.querySelector("#emailInput")?.addEventListener("keydown", (event) => {
-    if (event.key === "Enter") requestEmailCode();
+    if (event.key === "Enter") {
+      event.preventDefault();
+      requestEmailCode();
+    }
   });
   document.querySelector("#emailCodeInput")?.addEventListener("input", (event) => {
     event.target.value = event.target.value.replace(/\D/g, "").slice(0, 6);
@@ -188,6 +253,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelector("#emailCodeInput")?.addEventListener("keydown", (event) => {
     if (event.key === "Enter") verifyEmailCode();
   });
+  updateEmailRequestButton();
 
   document.querySelector("#logoutBtn").addEventListener("click", () => {
     clearStoredSession();
